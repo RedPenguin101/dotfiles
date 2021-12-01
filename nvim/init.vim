@@ -95,6 +95,7 @@ source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/polyglot.vim
 source ~/.config/nvim/plugins/zig.vim
+source ~/.config/nvim/plugins/stripws.vim
 
 "" Plugins to look at
 " Markdown Preview
