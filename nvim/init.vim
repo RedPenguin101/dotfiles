@@ -50,6 +50,7 @@ autocmd FileType md,markdown setlocal linebreak
 "--------------------------------------------------------------------------
 
 let mapleader="\<Space>"
+let maplocalleader="\<Space>"
 
 " Vim Conf quick editing
 nmap <leader>ve :edit ~/.config/nvim/init.vim<cr>
@@ -90,15 +91,16 @@ endif
 call plug#begin(data_dir . '/plugins')
 
 source ~/.config/nvim/plugins/airline.vim
-source ~/.config/nvim/plugins/dracula.vim
 source ~/.config/nvim/plugins/coc.vim
+source ~/.config/nvim/plugins/conjure.vim
+source ~/.config/nvim/plugins/dracula.vim
+source ~/.config/nvim/plugins/markdown-preview.vim
 source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/polyglot.vim
-source ~/.config/nvim/plugins/zig.vim
 source ~/.config/nvim/plugins/stripws.vim
+source ~/.config/nvim/plugins/zig.vim
 
 "" Plugins to look at
-" Markdown Preview
 " vim-commentary
 " vim surround
 " floatterm
