@@ -23,3 +23,5 @@ Other custom keymaps
 
 conf files live in _~/.config/kitty/_
 
+Kitty is installed by default in _/home/me/.local/kitty.app/bin/kitty_. You have to symlink it to you _/usr/bin/kitty_.
+
