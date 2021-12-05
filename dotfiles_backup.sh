@@ -4,3 +4,4 @@ cp ~/.config/kitty/* ~/dotfiles/kitty/
 cp ~/.config/i3/* ~/dotfiles/i3/
 cp ~/.clojure/deps.edn ~/dotfiles/
 cp ~/.bashrc ~/dotfiles/
+cp ~/.config/rofi/* ~/dotfiles/rofi
