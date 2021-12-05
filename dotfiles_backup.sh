@@ -1,4 +1,5 @@
 cp ~/.config/nvim/init.vim ~/dotfiles/config/nvim/
+cp ~/.config/nvim/coc-settings.json ~/dotfiles/config/nvim/
 cp ~/.config/nvim/plugins/* ~/dotfiles/config/nvim/plugins
 cp ~/.config/kitty/* ~/dotfiles/config/kitty/
 cp ~/.config/i3/* ~/dotfiles/config/i3/
