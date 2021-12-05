@@ -1,0 +1,4 @@
+;; ~/.clojure/deps.edn
+{
+   :aliases {:nrepl {:extra-deps {nrepl/nrepl {:mvn/version "0.8.3"}}}}
+}
