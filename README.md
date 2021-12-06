@@ -10,9 +10,20 @@ Custom leader functions:
 * `q`: close current buffer
 * `Q`: Close all buffers
 * `mp`: Markdown Preview
-* `er`: Conjure eval top level
 
-Other custom keymaps
+### Conjure
+
+* `er` eval top level ('root')
+* `ee` eval expression
+* `ecr` eval root with comment output
+* `e!` eval and replace
+* `eb` eval buffer
+* `K` look up docs
+* `ta`/`tn`/`tc` test all / namespace / under cursor
+* `rr` refresh changed namespaces
+* `ls`/`lv`: log buffer open hor/vert
+
+### Other custom keymaps
 
 * `jj`: escape insert mode
 * `C-hjkl`: Move windows
