@@ -91,6 +91,8 @@ endif
 call plug#begin(data_dir . '/plugins')
 
 source ~/.config/nvim/plugins/airline.vim
+source ~/.config/nvim/plugins/ale.vim
+source ~/.config/nvim/plugins/auto-pairs.vim
 source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/conjure.vim
 source ~/.config/nvim/plugins/dracula.vim
@@ -101,9 +103,15 @@ source ~/.config/nvim/plugins/stripws.vim
 source ~/.config/nvim/plugins/zig.vim
 
 "" Plugins to look at
+" easymotion https://github.com/easymotion/vim-easymotion
+" Other sexp stuff https://oli.me.uk/getting-started-with-clojure-neovim-and-conjure-in-minutes/
 " vim-commentary
 " vim surround
 " floatterm
 
 call plug#end()
 doautocmd User PlugLoaded
+
+let g:ale_linters = {
+      \ 'clojure': ['clj-kondo', 'joker']
+      \}
