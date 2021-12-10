@@ -3,13 +3,6 @@
        "zls" : {
            "command": "~/zls/zls",
            "filetypes": ["zig"]
-       },
-       "clojure-lsp": {
-           "command": "clojure-lsp",
-           "filetypes": ["clojure"],
-           "initializationOptions": {
-             "ignore-classpath-directories": true
-           }
        }
    }
 }
