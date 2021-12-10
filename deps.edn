@@ -1,4 +1,8 @@
 ;; ~/.clojure/deps.edn
 {
-   :aliases {:nrepl {:extra-deps {nrepl/nrepl {:mvn/version "0.8.3"}}}}
+   :aliases {:nREPL {:extra-deps {nrepl/nrepl {:mvn/version "0.8.3"}
+                                  cider/cider-nrepl {:mvn/version "0.27.3"}
+                                  }
+                     :main-opts ["-m" "nrepl.cmdline"
+                                 "--middleware" "[cider.nrepl/cider-middleware]"]}}
 }
