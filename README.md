@@ -23,6 +23,20 @@ Custom leader functions:
 * `rr` refresh changed namespaces
 * `ls`/`lv`: log buffer open hor/vert
 
+### Vim-Sexp
+
+[Link](https://github.com/guns/vim-sexp), [tpope](https://github.com/tpope/vim-sexp-mappings-for-regular-people)
+
+* `==` Auto-indent
+* `<LL>i/w` wrap compound/element in `()`
+* `<LL>(e)[/{` wrap (element) compound in `[]/{}`
+* `<Alt-S-l>` Slurp fwd (h=back)
+* `<Alt-S-k>` Barf fwd (j=back)
+* `>)` slurp fwd
+* `<)` barf fwd
+* `()` move to nearest bracket
+* `W/B`etc are now sexp motions (tpope)
+
 ### Other custom keymaps
 
 * `jj`: escape insert mode
