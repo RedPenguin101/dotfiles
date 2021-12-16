@@ -28,8 +28,8 @@ Custom leader functions:
 [Link](https://github.com/guns/vim-sexp), [tpope](https://github.com/tpope/vim-sexp-mappings-for-regular-people)
 
 * `==` Auto-indent
-* `<LL>i/w` wrap compound/element in `()`
-* `<LL>(e)[/{` wrap (element) compound in `[]/{}`
+* `<L>i/w` wrap compound/element in `()`
+* `<L>(e)[/{` wrap (element) compound in `[]/{}`
 * `<Alt-S-l>` Slurp fwd (h=back)
 * `<Alt-S-k>` Barf fwd (j=back)
 * `>)` slurp fwd
