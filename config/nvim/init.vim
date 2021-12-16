@@ -51,6 +51,38 @@ autocmd FileType md,markdown setlocal wrap
 autocmd FileType md,markdown setlocal linebreak
 
 "--------------------------------------------------------------------------
+" Key maps
+"--------------------------------------------------------------------------
+
+let mapleader="\<Space>"
+let maplocalleader="\<Space>"
+
+" Vim Conf quick editing
+nmap <leader>ve :edit ~/.config/nvim/init.vim<cr>
+nmap <leader>vr :source ~/.config/nvim/init.vim<cr>
+
+" Close all open buffers
+nmap <leader>Q :bufdo bdelete<cr>
+
+" Misc
+imap jj <ESC>
+map gf :edit <cfile><cr>
+
+" PANEL NAVIGATION use ctrl+hjkl to move between split/vsplit panels
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <TAB> :bnext<CR>       " TAB to next buffer
+nnoremap <S-TAB> :bprevious<CR> " SHIFT-TAB will go back
+noremap <leader>q :bd<CR>       " leader q closes the buffer
+
+"--------------------------------------------------------------------------
 " Plugins
 "--------------------------------------------------------------------------
 
@@ -90,36 +122,3 @@ let g:ale_linters = {
       \ 'clojure': ['clj-kondo', 'joker']
       \}
 
-"--------------------------------------------------------------------------
-" Key maps
-"--------------------------------------------------------------------------
-
-let mapleader="\<Space>"
-let maplocalleader="\<Space>"
-
-" Vim Conf quick editing
-nmap <leader>ve :edit ~/.config/nvim/init.vim<cr>
-nmap <leader>vr :source ~/.config/nvim/init.vim<cr>
-
-" Close all open buffers
-nmap <leader>Q :bufdo bdelete<cr>
-
-" Misc
-imap jj <ESC>
-map gf :edit <cfile><cr>
-
-" PANEL NAVIGATION use ctrl+hjkl to move between split/vsplit panels
-tnoremap <C-h> <C-\><C-n><C-w>h
-tnoremap <C-j> <C-\><C-n><C-w>j
-tnoremap <C-k> <C-\><C-n><C-w>k
-tnoremap <C-l> <C-\><C-n><C-w>l
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
-nnoremap <TAB> :bnext<CR>       " TAB to next buffer
-nnoremap <S-TAB> :bprevious<CR> " SHIFT-TAB will go back
-noremap <leader>q :bd<CR>       " leader q closes the buffer
-
-" SEXP
