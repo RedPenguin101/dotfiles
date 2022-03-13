@@ -100,13 +100,14 @@ source ~/.config/nvim/plugins/ale.vim
 "source ~/.config/nvim/plugins/auto-pairs.vim
 source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/conjure.vim
-source ~/.config/nvim/plugins/dracula.vim
 source ~/.config/nvim/plugins/vimsexp.vim
 source ~/.config/nvim/plugins/markdown-preview.vim
 source ~/.config/nvim/plugins/nerdtree.vim
 source ~/.config/nvim/plugins/polyglot.vim
 source ~/.config/nvim/plugins/stripws.vim
 source ~/.config/nvim/plugins/zig.vim
+source ~/.config/nvim/plugins/rose_theme.vim
+"source ~/.config/nvim/plugins/dracula.vim
 
 "" Plugins to look at
 " easymotion https://github.com/easymotion/vim-easymotion
