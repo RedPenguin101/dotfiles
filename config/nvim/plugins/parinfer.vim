@@ -1,0 +1,2 @@
+Plug 'bhurlow/vim-parinfer'
+
