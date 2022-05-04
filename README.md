@@ -50,3 +50,21 @@ conf files live in _~/.config/kitty/_
 
 Kitty is installed by default in _/home/me/.local/kitty.app/bin/kitty_. You have to symlink it to you _/usr/bin/kitty_.
 
+### Shortcuts
+* New tab `ctrl+shift+t`
+* Change tab `ctrl+shift+left/right`
+* Rename tab `ctrl+shift+alt+t`
+* New Window `ctrl+shift+enter`
+* Change Window rel `ctrl+shift+]/[`
+* Change Window abs `ctrl+shift+1,2` etc.
+* Change layout `ctrl+shift+l` Change layouts
+
+### Layouts
+* Fat -- One windows are shown full width on the top
+* Grid
+* Horizontal
+* Splits -- Windows arranged in arbitrary patterns created using horizontal and vertical splits
+* Stack -- Only a single maximized window is shown at a time
+* Tall -- One windows are shown full height on the left
+* Vertical -- All windows are shown one below the other
+
