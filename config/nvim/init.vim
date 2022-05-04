@@ -108,6 +108,7 @@ source ~/.config/nvim/plugins/stripws.vim
 source ~/.config/nvim/plugins/zig.vim
 "source ~/.config/nvim/plugins/rose_theme.vim
 source ~/.config/nvim/plugins/dracula.vim
+source ~/.config/nvim/plugins/easymotion.vim
 
 "" Plugins to look at
 " easymotion https://github.com/easymotion/vim-easymotion
