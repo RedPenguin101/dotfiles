@@ -54,12 +54,13 @@ Kitty is installed by default in _/home/me/.local/kitty.app/bin/kitty_. You have
 
 ### Shortcuts
 * New tab `ctrl+shift+t`
-* Change tab `ctrl+shift+left/right`
+* Change tab `ctrl+shift+h/j/k/l`
 * Rename tab `ctrl+shift+alt+t`
 * New Window `ctrl+shift+enter`
 * Change Window rel `ctrl+shift+]/[`
 * Change Window abs `ctrl+shift+1,2` etc.
-* Change layout `ctrl+shift+l` Change layouts
+* Toggle stack layout `ctrl+shift+l`
+* Change layout `ctrl+alt+shift+l`
 
 ### Layouts
 * Fat -- One windows are shown full width on the top
