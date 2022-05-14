@@ -98,7 +98,7 @@ call plug#begin(data_dir . '/plugins')
 
 source ~/.config/nvim/plugins/airline.vim
 source ~/.config/nvim/plugins/ale.vim
-"source ~/.config/nvim/plugins/auto-pairs.vim
+source ~/.config/nvim/plugins/auto-pairs.vim
 source ~/.config/nvim/plugins/coc.vim
 source ~/.config/nvim/plugins/conjure.vim
 source ~/.config/nvim/plugins/vimsexp.vim
@@ -110,6 +110,7 @@ source ~/.config/nvim/plugins/zig.vim
 "source ~/.config/nvim/plugins/rose_theme.vim
 source ~/.config/nvim/plugins/dracula.vim
 source ~/.config/nvim/plugins/easymotion.vim
+source ~/.config/nvim/plugins/clang-format.vim
 
 "" Plugins to look at
 " easymotion https://github.com/easymotion/vim-easymotion
