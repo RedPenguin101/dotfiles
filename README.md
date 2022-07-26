@@ -3,7 +3,7 @@
 ## NeoVim
 All files in this subfolder should be put to _~/.config/nvim/_
 
-Custom leader functions:
+Custom leader (`space`) functions:
 
 * `ve`/`vr`: edit/re-source config
 * `q`: close current buffer
