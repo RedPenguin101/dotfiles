@@ -71,3 +71,9 @@ Kitty is installed by default in _/home/me/.local/kitty.app/bin/kitty_. You have
 * Tall -- One windows are shown full height on the left
 * Vertical -- All windows are shown one below the other
 
+## Surf
+* Ctrl+h/l back/fwd
+* Crtl+g go to url
+* Ctrl+Shift+k/j: zoom in/out
+* Ctrl+Shift+q: reset zoom
+
