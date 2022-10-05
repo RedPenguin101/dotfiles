@@ -34,6 +34,7 @@ vim.keymap.set('n', '<TAB>', ':bnext<CR>')
 vim.keymap.set('n', 'gf', ':edit <cfile><CR>')
 vim.keymap.set('n', '<Leader>vr', ':source ~/.config/nvim/lua/main.lua<CR>')
 vim.keymap.set('n', '<Leader>ve', ':edit ~/.config/nvim/lua/main.lua<CR>')
+vim.keymap.set('n', '<Leader>mp', '<Plug>MarkdownPreview')
 
 --vim.cmd([[colorscheme onedark]])
 -----------

@@ -9,13 +9,18 @@ return require('packer').startup(function(use)
        config=function()
          require('gitsigns').setup()
        end}
+  use({
+      "iamcco/markdown-preview.nvim",
+      run = function() vim.fn["mkdp#util#install"]() end,
+  })
 
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "c", "lua" },
+    ensure_installed = { "c", "lua"},
     sync_install= false,
     auto_install = true,
     highlight = {
       enable = true,
+      disable = {"markdown"}
     },
   }
 end)
