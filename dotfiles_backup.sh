@@ -9,3 +9,6 @@ cp ~/.config/kitty/* ~/dotfiles/config/kitty/
 cp ~/.clojure/deps.edn ~/dotfiles/
 cp ~/.bashrc ~/dotfiles/
 cp ~/.zshrc ~/dotfiles/
+
+cp ~/.emacs.d/init.el ~/dotfiles
+cp ~/.emacs.d/elpa/doom-themes-2.3.0/doom-opera-light-theme.el ~/dotfiles
