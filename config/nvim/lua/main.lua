@@ -25,18 +25,18 @@ set.clipboard = 'unnamedplus' -- Use Linux system clipboard
 -----------
 --Keymaps--
 -----------
+--leader and local leader both space
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- jj as cancel
 vim.keymap.set('i', 'jj', '<ESC>')
+-- tab management: LD+q to close buffer, tab for next.
 vim.keymap.set('n', '<Leader>q', ':bd<CR>')
 vim.keymap.set('n', '<TAB>', ':bnext<CR>')
+-- gf for goto highlighted file
 vim.keymap.set('n', 'gf', ':edit <cfile><CR>')
-vim.keymap.set('n', '<Leader>vr', ':source ~/.config/nvim/lua/main.lua<CR>')
-vim.keymap.set('n', '<Leader>ve', ':edit ~/.config/nvim/lua/main.lua<CR>')
-vim.keymap.set('n', '<Leader>mp', '<Plug>MarkdownPreview')
 
---vim.cmd([[colorscheme onedark]])
 -----------
 -- TO DO --
 -----------
