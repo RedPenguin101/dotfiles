@@ -1,3 +1,4 @@
+;; tidy up interface
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -7,6 +8,20 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+
+(defvar my-packages
+  '(dracula-theme avy ivy ligature markdown-mode projectile
+    all-the-icons doom-modeline)
+  "A list of packages to ensure are installed at launch.")
+
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+;; modeline
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+(setq doom-modeline-buffer-encoding nil)
 
 ;; parens
 (electric-pair-mode 1)
@@ -47,7 +62,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces

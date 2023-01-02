@@ -1,5 +1,33 @@
 # Dotfiles
 
+## Emacs
+Packages to try
+* dumb-jump: jump to function definition
+* multiple-cursors
+* magit/gitgutter/gittimeline
+* darkroom mode (or olivetti)
+* use-package
+* which-key
+* beacon
+* some tab thing
+* Something for bookmarking
+* Maybe vertico as replacement for ivy
+* dimmer.el (dims non-active windows)
+* highlight-symbol:  (maybe symbol overlay)
+* whitespace - highlights for trailing?
+* rainbox delimiters
+* flycheck? syntax checking
+* apheliei for formatting
+* crux 
+* paredit
+
+### My custom keybinds
+* avy: `C-'`: 2char search
+* avy: `C-"`: goto line
+* `C-c p` projectile
+  * `f`: find file in project
+* `C-xr` open a recent file
+
 ## Setting a solid color background in Gnome
 
 From https://andrewmccarthy.ie/setting-a-blank-desktop-background-in-gnome.html
