@@ -22,6 +22,8 @@ set.sidescrolloff = 20
 
 set.clipboard = 'unnamedplus' -- Use Linux system clipboard
 
+global.errorbells = false
+
 -----------
 --Keymaps--
 -----------
