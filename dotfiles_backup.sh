@@ -12,4 +12,3 @@ cp ~/.zshrc ~/dotfiles/
 cp ~/.config/xmodmap_swap_caps ~/dotfiles/config/
 
 cp ~/.emacs.d/init.el ~/dotfiles
-cp ~/.emacs.d/elpa/doom-themes-2.3.0/doom-opera-light-theme.el ~/dotfiles
