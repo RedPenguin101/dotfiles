@@ -1,5 +1,15 @@
 # Dotfiles
 
+## Setting a solid color background in Gnome
+
+From https://andrewmccarthy.ie/setting-a-blank-desktop-background-in-gnome.html
+
+```bash
+gsettings set org.gnome.desktop.background picture-uri none
+gsettings set org.gnome.desktop.background primary-color '#e6fcfc'
+gsettings set org.gnome.desktop.background color-shading-type 'solid'
+```
+
 ## NeoVim
 All files in this subfolder should be put to _~/.config/nvim/_
 
