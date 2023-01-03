@@ -1,6 +1,12 @@
 # Dotfiles
 
 ## Emacs
+Config to add
+* Jump lines up or down, like alt-up/down in VSCode
+* Join lines, like J in vim
+* kill line - crux has something like: 1press: kill to end, 2 press: kill whole line (from start) - I like that. 
+* Save everything in project - super save. I Also think crux has something like that.
+
 Packages to try
 * dumb-jump: jump to function definition
 * multiple-cursors
@@ -20,6 +26,7 @@ Packages to try
 * apheliei for formatting
 * crux 
 * paredit
+* Something for code completion
 
 ### My custom keybinds
 * avy: `C-'`: 2char search
@@ -27,6 +34,10 @@ Packages to try
 * `C-c p` projectile
   * `f`: find file in project
 * `C-xr` open a recent file
+* `C-x g` Magit status (q to close)
+  * `s` stage, `u` unstage
+  * `k` disgard
+  * `c` start commit, `C-cc` after writing message (`C-ck` cancels)
 
 ## Setting a solid color background in Gnome
 

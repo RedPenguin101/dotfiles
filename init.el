@@ -4,6 +4,12 @@
 (menu-bar-mode -1)
 (setq inhibit-startup-message t)
 
+;; save backups to /tmp/
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 ;; packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -17,6 +23,11 @@
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
+
+;; markdown-mode
+(require markdown-mode)
+(add-hook 'markdown-mode-hook (lambda () (visual-line-mode t)))
+(add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
 ;; modeline
 (require 'doom-modeline)
@@ -62,7 +73,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces
