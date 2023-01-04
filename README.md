@@ -6,6 +6,7 @@ Config to add
 * Join lines, like J in vim
 * kill line - crux has something like: 1press: kill to end, 2 press: kill whole line (from start) - I like that. 
 * Save everything in project - super save. I Also think crux has something like that.
+* Faces for markdown: italic, bold
 
 Packages to try
 * dumb-jump: jump to function definition

@@ -25,7 +25,7 @@
     (package-install p)))
 
 ;; markdown-mode
-(require markdown-mode)
+(require 'markdown-mode)
 (add-hook 'markdown-mode-hook (lambda () (visual-line-mode t)))
 (add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
@@ -52,6 +52,21 @@
 (ivy-mode +1)
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;; general keybinds
+(defun move-line-up ()
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
+
+(defun move-line-down ()
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
+
+(global-set-key (kbd "C-M-p") 'move-line-up)
+(global-set-key (kbd "C-M-n") 'move-line-down)
 
 ;; ligatures
 (ligature-set-ligatures 'prog-mode '(":::" ":=" "!=" "!==" "----" "-->" "->" "->>"
