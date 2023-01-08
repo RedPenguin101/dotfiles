@@ -1,8 +1,9 @@
 # Dotfiles
 
 ## Emacs
+https://github.com/jakebox/jake-emacs
+
 Config to add
-* Jump lines up or down, like alt-up/down in VSCode
 * Join lines, like J in vim
 * kill line - crux has something like: 1press: kill to end, 2 press: kill whole line (from start) - I like that. 
 * Save everything in project - super save. I Also think crux has something like that.
@@ -14,20 +15,17 @@ Packages to try
 * magit/gitgutter/gittimeline
 * darkroom mode (or olivetti)
 * use-package
-* which-key
 * beacon
 * some tab thing
 * Something for bookmarking
-* Maybe vertico as replacement for ivy
 * dimmer.el (dims non-active windows)
 * highlight-symbol:  (maybe symbol overlay)
 * whitespace - highlights for trailing?
-* rainbox delimiters
+* rainbow delimiters
 * flycheck? syntax checking
 * apheliei for formatting
 * crux 
 * paredit
-* Something for code completion
 
 ### My custom keybinds
 * avy: `C-'`: 2char search

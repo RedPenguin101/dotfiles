@@ -4,6 +4,9 @@
 (menu-bar-mode -1)
 (setq inhibit-startup-message t)
 
+;; general editing and text
+(setq-default fill-column 80)
+
 ;; save backups to /tmp/
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -16,8 +19,10 @@
 (package-initialize)
 
 (defvar my-packages
-  '(dracula-theme avy ivy ligature markdown-mode projectile
-    all-the-icons doom-modeline)
+  '(dracula-theme avy ivy ivy-rich prescient ivy-prescient
+    ligature markdown-mode projectile
+    all-the-icons doom-modeline which-key company
+    visual-fill-column writeroom-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -27,6 +32,11 @@
 ;; markdown-mode
 (require 'markdown-mode)
 (add-hook 'markdown-mode-hook (lambda () (visual-line-mode t)))
+(add-hook 'markdown-mode-hook (lambda () (writeroom-mode t)))
+(add-hook 'markdown-mode-hook (lambda () (flyspell-mode t)))
+
+(setq markdown-fontify-code-blocks-natively t)
+
 (add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
 ;; modeline
@@ -52,6 +62,7 @@
 (ivy-mode +1)
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(ivy-prescient-mode +1)
 
 ;; general keybinds
 (defun move-line-up ()
@@ -88,7 +99,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces
