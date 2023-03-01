@@ -38,6 +38,11 @@ Packages to try
   * `k` disgard
   * `c` start commit, `C-cc` after writing message (`C-ck` cancels)
 
+### Help
+* `C-h f` describe funcion
+* `C-h k` describe keybind
+* `C-h m` describe mode
+
 ## Setting a solid color background in Gnome
 
 From https://andrewmccarthy.ie/setting-a-blank-desktop-background-in-gnome.html
