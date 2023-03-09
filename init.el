@@ -1,4 +1,9 @@
 ;; Keybinds
+;; CTRL
+;; number-line=windows. 1:close 2/3 split, 0:switch
+;; tab-line=kill: q:line w:region r:isearch y:yank u:undo
+;; caps-line=navigate: a:start s:end h/j/k/l: move
+;; shift-line=other: b:switch-buffer
 
 (defun move-line-up ()
   (interactive)
@@ -20,9 +25,10 @@
 (global-set-key (kbd "<delete>") 'delete-forward-char)
 (global-set-key (kbd "RET") 'newline)
 
-(global-set-key (kbd "C-x 1") 'delete-other-windows)
-(global-set-key (kbd "C-x 2") 'split-window-below)
-(global-set-key (kbd "C-x 3") 'split-window-right)
+(global-set-key (kbd "C-1") 'delete-other-windows)
+(global-set-key (kbd "C-2") 'split-window-below)
+(global-set-key (kbd "C-3") 'split-window-right)
+(global-set-key (kbd "C-0") 'other-window)
 
 ;; set all keys to self-insert
 (let ((c ?\s))
@@ -43,7 +49,7 @@
 (global-set-key (kbd "C-x C-s") 'save-buffer)
 (global-set-key (kbd "C-x C-c") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-x k") 'kill-buffer)
-(global-set-key (kbd "C-x b") 'switch-to-buffer)
+(global-set-key (kbd "C-b") 'switch-to-buffer)
 
 (global-set-key (kbd "C-u") 'undo)
 
@@ -63,6 +69,13 @@
 
 (global-set-key (kbd "C-M-j") 'move-line-down)
 (global-set-key (kbd "C-M-k") 'move-line-up)
+
+;; sexp-nav
+(global-set-key (kbd "M-k") 'backward-sexp)
+(global-set-key (kbd "M-h") 'backward-sexp)
+(global-set-key (kbd "M-j") 'forward-sexp)
+(global-set-key (kbd "M-l") 'forward-sexp)
+(global-set-key (kbd "M-q") 'kill-sexp)
 
 ;; copy/paste
 
@@ -84,7 +97,9 @@
     all-the-icons doom-modeline which-key company
     visual-fill-column writeroom-mode
     super-save
-    clojure-mode cider)
+    clojure-mode cider
+    lsp-mode company
+    smartparens)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -113,11 +128,8 @@
 ;; markdown-mode
 (require 'markdown-mode)
 (add-hook 'markdown-mode-hook (lambda () (visual-line-mode t)))
-;;(add-hook 'markdown-mode-hook (lambda () (writeroom-mode t)))
 (add-hook 'markdown-mode-hook (lambda () (flyspell-mode t)))
-
 (setq markdown-fontify-code-blocks-natively t)
-
 (add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
 ;; modeline
@@ -141,10 +153,41 @@
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (ivy-prescient-mode +1)
 
+;; lsp
+(setq lsp-lens-enable nil)
+(setq lsp-headerline-breadcrumb-enable nil)
+
+;; smartparens
+;; https://ebzzry.com/en/emacs-pairs/
+
+(defun smartparens-keys ()
+  (progn (local-set-key (kbd "M-l") #'sp-forward-sexp)
+	 (local-set-key (kbd "M-h") #'sp-backward-sexp)
+	 (local-set-key (kbd "M-j") #'sp-down-sexp)
+	 (local-set-key (kbd "M-k") #'sp-up-sexp)
+	 (local-set-key (kbd "M-a") #'sp-beginning-of-sexp)
+	 (local-set-key (kbd "M-s") #'sp-end-of-sexp)
+	 (local-set-key (kbd "M-(") #'sp-wrap-round)
+	 (local-set-key (kbd "M-{") #'sp-wrap-curly)
+	 (local-set-key (kbd "M-,") #'sp-forward-barf-sexp)
+	 (local-set-key (kbd "M-.") #'sp-forward-slurp-sexp)))
+
+;; lisp
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda () (local-set-key (kbd "M-RET")
+				    #'eval-last-sexp)))
+(add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
+(add-hook 'emacs-lisp-mode-hook #'smartparens-keys)
+
 ;; clojure
 (cider-auto-test-mode 1)
 (add-hook 'clojure-mode-hook
-	  (lambda () (local-set-key (kbd "M-v") #'cider-eval-sexp-at-point)))
+	  (lambda () (local-set-key (kbd "M-RET")
+				    #'cider-eval-sexp-at-point)))
+
+(add-hook 'clojure-mode-hook 'lsp)
+(add-hook 'clojure-mode-hook 'smartparens-strict-mode)
+(add-hook 'clojure-mode-hook #'smartparens-keys)
 
 ;; ligatures
 (ligature-set-ligatures 'prog-mode '(":::" ":=" "!=" "!==" "----" "-->" "->" "->>"
@@ -166,7 +209,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(lsp-mode cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces
