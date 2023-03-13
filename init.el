@@ -1,3 +1,6 @@
+(setq exec-path (append exec-path '("/home/joe/.nvm/versions/node/v18.14.2/bin")))
+(setenv "PATH" (concat (getenv "PATH") ":/home/joe/.nvm/versions/node/v18.14.2/bin"))
+
 ;; Keybinds
 ;; CTRL
 ;; number-line=windows. 1:close 2/3 split, 0:switch
@@ -64,6 +67,9 @@
 (global-set-key (kbd "C-k") 'previous-line)
 (global-set-key (kbd "C-S-k") 'scroll-down-command)
 
+(global-set-key (kbd "C-<") 'beginning-of-buffer)
+(global-set-key (kbd "C->") 'end-of-buffer)
+
 (global-set-key (kbd "C-a") 'move-beginning-of-line)
 (global-set-key (kbd "C-s") 'move-end-of-line)
 
@@ -85,6 +91,7 @@
 (global-set-key (kbd "C-q") 'kill-line)
 (global-set-key (kbd "C-w") 'kill-region)
 (global-set-key (kbd "C-y") 'yank)
+(global-set-key (kbd "M-y") 'yank) ;; means you don't have to switch modifier after M-q (kill sexp)
 
 ;; packages
 (require 'package)
@@ -115,6 +122,9 @@
 (setq-default fill-column 80)
 (electric-pair-mode 1)
 (show-paren-mode 1)
+
+(setq visible-bell t)
+(setq ring-bell-function 'ignore)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -151,6 +161,7 @@
 (ivy-mode +1)
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-b") 'projectile-find-file)
 (ivy-prescient-mode +1)
 
 ;; lsp
@@ -159,7 +170,7 @@
 
 ;; smartparens
 ;; https://ebzzry.com/en/emacs-pairs/
-
+(require 'smartparens-config)
 (defun smartparens-keys ()
   (progn (local-set-key (kbd "M-l") #'sp-forward-sexp)
 	 (local-set-key (kbd "M-h") #'sp-backward-sexp)
@@ -167,7 +178,8 @@
 	 (local-set-key (kbd "M-k") #'sp-up-sexp)
 	 (local-set-key (kbd "M-a") #'sp-beginning-of-sexp)
 	 (local-set-key (kbd "M-s") #'sp-end-of-sexp)
-	 (local-set-key (kbd "M-(") #'sp-wrap-round)
+         (local-set-key (kbd "M-(") #'sp-wrap-round)
+	 (local-set-key (kbd "M-9") #'sp-wrap-round)
 	 (local-set-key (kbd "M-{") #'sp-wrap-curly)
 	 (local-set-key (kbd "M-,") #'sp-forward-barf-sexp)
 	 (local-set-key (kbd "M-.") #'sp-forward-slurp-sexp)))
@@ -181,13 +193,17 @@
 
 ;; clojure
 (cider-auto-test-mode 1)
-(add-hook 'clojure-mode-hook
-	  (lambda () (local-set-key (kbd "M-RET")
-				    #'cider-eval-sexp-at-point)))
+
+(defun clojure-keybinds ()
+  (progn (local-set-key (kbd "M-RET") #'cider-eval-sexp-at-point)
+	 (local-set-key (kbd "C-M-RET") #'cider-eval-buffer) 
+	 (local-set-key (kbd "M-i") #'cider-inspect-last-result)))
 
 (add-hook 'clojure-mode-hook 'lsp)
 (add-hook 'clojure-mode-hook 'smartparens-strict-mode)
 (add-hook 'clojure-mode-hook #'smartparens-keys)
+(add-hook 'clojure-mode-hook #'clojure-keybinds)
+(setq cider-shadow-cljs-command "shadow-cljs")
 
 ;; ligatures
 (ligature-set-ligatures 'prog-mode '(":::" ":=" "!=" "!==" "----" "-->" "->" "->>"
