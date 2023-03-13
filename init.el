@@ -39,6 +39,8 @@
 (define-key evil-normal-state-map (kbd "r") 'evil-replace)
 (define-key evil-normal-state-map (kbd "t") 'isearch-forward)
 (define-key evil-normal-state-map (kbd "w") 'evil-visual-char)
+(define-key evil-normal-state-map (kbd "C-w") 'evil-visual-block)
+(define-key evil-normal-state-map (kbd "W") 'evil-visual-line)
 
 (define-key evil-normal-state-map (kbd "f") 'evil-scroll-line-to-center)
 (define-key evil-normal-state-map (kbd "H") 'beginning-of-line)
@@ -56,6 +58,8 @@
 (define-key evil-normal-state-map (kbd "M-j") 'forward-sexp)
 (define-key evil-normal-state-map (kbd "M-l") 'forward-sexp)
 (define-key evil-normal-state-map (kbd "M-q") 'kill-sexp)
+
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; general / small
 (scroll-bar-mode -1)
