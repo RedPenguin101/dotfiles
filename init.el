@@ -14,12 +14,48 @@
     super-save
     clojure-mode cider
     lsp-mode company
-    smartparens)
+    smartparens
+    evil)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
+
+;; evil and keybinds
+
+(require 'evil)
+(evil-mode 1)
+
+(define-key evil-insert-state-map (kbd "C-g") 'evil-force-normal-state)
+
+(define-key evil-normal-state-map (kbd "1") 'delete-other-windows)
+(define-key evil-normal-state-map (kbd "0") 'other-window)
+(define-key evil-normal-state-map (kbd "2") 'split-window-below)
+(define-key evil-normal-state-map (kbd "3") 'split-window-right)
+
+(define-key evil-normal-state-map (kbd "q") 'kill-line)
+(define-key evil-normal-state-map (kbd "y") 'yank)
+(define-key evil-normal-state-map (kbd "r") 'evil-replace)
+(define-key evil-normal-state-map (kbd "t") 'isearch-forward)
+(define-key evil-normal-state-map (kbd "w") 'evil-visual-char)
+
+(define-key evil-normal-state-map (kbd "f") 'evil-scroll-line-to-center)
+(define-key evil-normal-state-map (kbd "H") 'beginning-of-line)
+(define-key evil-normal-state-map (kbd "L") 'end-of-line)
+(define-key evil-normal-state-map (kbd "J") 'evil-scroll-page-down)
+(define-key evil-normal-state-map (kbd "K") 'evil-scroll-page-up)
+
+(define-key evil-normal-state-map (kbd "b") 'switch-to-buffer)
+
+(define-key evil-normal-state-map (kbd "M-RET") 'eval-last-sexp)
+(define-key evil-normal-state-map (kbd "C-M-<return>") 'eval-buffer)
+(define-key evil-normal-state-map (kbd "M-q") 'kill-sexp)
+(define-key evil-normal-state-map (kbd "M-k") 'backward-sexp)
+(define-key evil-normal-state-map (kbd "M-h") 'backward-sexp)
+(define-key evil-normal-state-map (kbd "M-j") 'forward-sexp)
+(define-key evil-normal-state-map (kbd "M-l") 'forward-sexp)
+(define-key evil-normal-state-map (kbd "M-q") 'kill-sexp)
 
 ;; general / small
 (scroll-bar-mode -1)
@@ -73,7 +109,24 @@
 ;; https://ebzzry.com/en/emacs-pairs/
 (require 'smartparens-config)
 
+(defun smartparens-keys ()
+  (progn (local-set-key (kbd "M-l") #'sp-forward-sexp)
+	 (local-set-key (kbd "M-h") #'sp-backward-sexp)
+	 (local-set-key (kbd "M-j") #'sp-down-sexp)
+	 (local-set-key (kbd "M-k") #'sp-up-sexp)
+	 (local-set-key (kbd "M-a") #'sp-beginning-of-sexp)
+	 (local-set-key (kbd "M-s") #'sp-end-of-sexp)
+         (local-set-key (kbd "M-9") #'sp-wrap-round)
+	 (local-set-key (kbd "M-{") #'sp-wrap-curly)
+	 (local-set-key (kbd "M-,") #'sp-forward-barf-sexp)
+	 (local-set-key (kbd "M-.") #'sp-forward-slurp-sexp)))
+
 ;; lisp
+
+(defun elisp-keybinds ()
+  (progn (local-set-key (kbd "M-RET") #'eval-last-sexp)
+	 (local-set-key (kbd "C-M-RET") #'eval-buffer)))
+
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda () (local-set-key (kbd "M-RET")
 				    #'eval-last-sexp)))
@@ -82,8 +135,14 @@
 ;; clojure
 (cider-auto-test-mode 1)
 
+(defun clojure-keybinds ()
+  (progn (local-set-key (kbd "M-RET") #'cider-eval-sexp-at-point)
+	 (local-set-key (kbd "C-M-RET") #'cider-eval-buffer) 
+	 (local-set-key (kbd "M-i") #'cider-inspect-last-result)))
+
 (add-hook 'clojure-mode-hook 'lsp)
 (add-hook 'clojure-mode-hook 'smartparens-strict-mode)
+(add-hook 'clojure-mode-hook #'clojure-keybinds)
 (setq cider-shadow-cljs-command "shadow-cljs")
 
 ;; ligatures
@@ -106,7 +165,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(lsp-mode cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(evil lsp-mode cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces
