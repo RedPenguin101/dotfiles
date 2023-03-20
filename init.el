@@ -1,6 +1,6 @@
 (setq exec-path (append exec-path '("/home/joe/.nvm/versions/node/v18.14.2/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":/home/joe/.nvm/versions/node/v18.14.2/bin"))
-
+(toggle-frame-fullscreen)
 ;; packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -10,7 +10,6 @@
   '(dracula-theme avy ivy ivy-rich prescient ivy-prescient
     ligature markdown-mode projectile
     all-the-icons doom-modeline which-key company
-    visual-fill-column writeroom-mode
     super-save
     clojure-mode cider
     lsp-mode company
@@ -22,10 +21,45 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;; sparsify global keymap
+
+(use-global-map (make-sparse-keymap))
+
+(global-set-key (kbd "M-x") 'execute-extended-command)
+(global-set-key (kbd "C-g") 'keyboard-quit)
+
+(global-set-key (kbd "DEL") 'backward-delete-char-untabify)
+(global-set-key (kbd "<delete>") 'delete-forward-char)
+(global-set-key (kbd "RET") 'newline)
+
+(let ((c ?\s))
+  (while (< c ?\d)
+    (global-set-key (vector c) #'self-insert-command)
+    (setq c (1+ c)))
+  (when (eq system-type 'ms-dos)
+    (setq c 128)
+    (while (< c 160)
+      (global-set-key (vector c) #'self-insert-command)
+      (setq c (1+ c))))
+  (setq c 160)
+  (while (< c 256)
+    (global-set-key (vector c) #'self-insert-command)
+    (setq c (1+ c))))
+
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+(global-set-key (kbd "C-x C-f") 'find-file)
+(global-set-key (kbd "C-x C-s") 'save-buffer)
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-terminal)
+(global-set-key (kbd "C-x k") 'kill-buffer)
+
 ;; evil and keybinds
 
 (require 'evil)
 (evil-mode 1)
+(setq evil-move-beyond-eol t)
+
+(define-key evil-normal-state-map (kbd "M-.") nil)
+(define-key evil-normal-state-map (kbd "M-d") nil)
 
 (define-key evil-insert-state-map (kbd "C-g") 'evil-force-normal-state)
 
@@ -50,16 +84,8 @@
 
 (define-key evil-normal-state-map (kbd "b") 'switch-to-buffer)
 
-(define-key evil-normal-state-map (kbd "M-RET") 'eval-last-sexp)
-(define-key evil-normal-state-map (kbd "C-M-<return>") 'eval-buffer)
-(define-key evil-normal-state-map (kbd "M-q") 'kill-sexp)
-(define-key evil-normal-state-map (kbd "M-k") 'backward-sexp)
-(define-key evil-normal-state-map (kbd "M-h") 'backward-sexp)
-(define-key evil-normal-state-map (kbd "M-j") 'forward-sexp)
-(define-key evil-normal-state-map (kbd "M-l") 'forward-sexp)
 (define-key evil-normal-state-map (kbd "M-q") 'kill-sexp)
 
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; general / small
 (scroll-bar-mode -1)
@@ -104,6 +130,7 @@
 (ivy-mode +1)
 (projectile-mode +1)
 (ivy-prescient-mode +1)
+(define-key evil-normal-state-map (kbd "n") 'projectile-find-file)
 
 ;; lsp
 (setq lsp-lens-enable nil)
@@ -125,15 +152,14 @@
 	 (local-set-key (kbd "M-,") #'sp-forward-barf-sexp)
 	 (local-set-key (kbd "M-.") #'sp-forward-slurp-sexp)))
 
-;; lisp
+(add-hook 'smartparens-strict-mode-hook 'smartparens-keys)
 
+;; lisp
 (defun elisp-keybinds ()
   (progn (local-set-key (kbd "M-RET") #'eval-last-sexp)
 	 (local-set-key (kbd "C-M-RET") #'eval-buffer)))
 
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda () (local-set-key (kbd "M-RET")
-				    #'eval-last-sexp)))
+(add-hook 'emacs-lisp-mode-hook 'elisp-keybinds)
 (add-hook 'emacs-lisp-mode-hook 'smartparens-strict-mode)
 
 ;; clojure
@@ -141,6 +167,7 @@
 
 (defun clojure-keybinds ()
   (progn (local-set-key (kbd "M-RET") #'cider-eval-sexp-at-point)
+	 (local-set-key (kbd "M-\\") #'cider-pprint-eval-last-sexp)
 	 (local-set-key (kbd "C-M-RET") #'cider-eval-buffer) 
 	 (local-set-key (kbd "M-i") #'cider-inspect-last-result)))
 
@@ -169,7 +196,7 @@
  '(custom-safe-themes
    '("fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(package-selected-packages
-   '(evil lsp-mode cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
+   '(evil-smartparens evil lsp-mode cider super-save clojure-mode ace-flyspell writeroom-mode visual-fill-column ivy-prescient prescient ivy-rich company which-key magit treemacs-all-the-icons doom-modeline ligature smartparens ivy projectile avy markdown-mode dracula-theme))
  '(tool-bar-mode nil))
 
 (custom-set-faces
