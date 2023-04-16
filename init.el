@@ -3,6 +3,7 @@
 ;;;;;;;;;;;;;;
 
 (setq ring-bell-function 'ignore)
+(blink-cursor-mode 0)
 
 ;; fix temp file creation
 (setq backup-directory-alist
@@ -28,7 +29,7 @@
 (global-set-key (kbd "C-h n")
 		(lambda ()
 		  (interactive)
-		  (message "    C    M    CM\nfb char word defn\nae line sent sexp")))          
+		  (message "    C    M    CM\nfb char word defn\nae line sent sexp")))
 
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-x C-b") 'ibuffer) ;; replace list-buffer. Suggestion from Mastering Emacs. ibuffer is just better.
@@ -40,7 +41,7 @@
 ;;   beginning and end of buffer
 ;;   maybe m-x to c/m-xm
 ;;   comment region
-;;   maybe rebind move work from M-fb to C-fb. no single char movement 
+;;   maybe rebind move word from M-fb to C-fb. no single char movement
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -48,6 +49,13 @@
 
 (setq markdown-fontify-code-blocks-natively t)
 (add-hook 'markdown-mode-hook 'visual-line-mode)
+
+;;;;;;;;;;;;;;
+;; clojure
+;;;;;;;;;;;;;;
+
+(add-hook 'cider-mode-hook
+	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
