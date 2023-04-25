@@ -98,6 +98,7 @@
 
 (setq org-hide-emphasis-markers t)
 (setq org-hide-leading-stars t)
+(setq org-adapt-indentation t)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'visual-fill-column-mode)
 (add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode)
