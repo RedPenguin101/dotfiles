@@ -7,12 +7,17 @@
 ;;   being language specific
 ;; - a completion frontend. The built in is pretty terrible. Ivy, maybe.
 ;; - Org mode - maybe. Big commitment
+;;   - org bullets if the * are really too much
+;; - from https://www.youtube.com/watch?v=51eSeqcaikM
+;;   - save hist mode: a history for minibuffs. Lighter weight than Ivy
+;;   - save place mode
+;;   - custom vars file location
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;;;;;;;;;;;;
-;; the basics
-;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; the basics and one-line-wonders
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
@@ -29,6 +34,13 @@
 ;; dired-x enables `dired-do-find-marked-files` with `F`, which opens
 ;; all marked files in new windows
 (require 'dired-x)
+
+;; Watches the files and reverts them when they are changed by another
+;; process.  Useful for editing things in a shared folder (GDrive) or
+;; for git pulls. (Instead of manually revert-buffer)
+(global-auto-revert-mode 1)
+;; Same idea for dired
+(setq global-auto-revert-non-file-buffers t)
 
 ;;;;;;;;;;;;;;;;
 ;; recent mode
@@ -81,8 +93,14 @@
 (add-hook 'markdown-mode-hook 'adaptive-wrap-prefix-mode)
 
 ;;;;;;;;;;;;;;
-;; org mode - uh oh
+;; Org mode
 ;;;;;;;;;;;;;;
+
+(setq org-hide-emphasis-markers t)
+(setq org-hide-leading-stars t)
+(add-hook 'org-mode-hook 'visual-line-mode)
+(add-hook 'org-mode-hook 'visual-fill-column-mode)
+(add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode)
 
 ;;;;;;;;;;;;;;
 ;; clojure
@@ -121,8 +139,8 @@
  '(fixed-pitch ((t (:family "Fira Code"))))
  '(markdown-code-face ((t (:foreground "#ffb86c" :family "Fira Code"))))
  '(markdown-inline-code-face ((t (:foreground "#ffb86c" :family "Fira Code" :height 0.8))))
- '(org-block ((t (:inherit fixed-pitch :extend t :background "#EFEBE9" :foreground "#212121"))))
- '(org-code ((t (:inherit fixed-pitch :background "#EFEBE9" :foreground "#212121" :height 1.2))))
+ '(org-block ((t (:inherit fixed-pitch :extend t :background "#EFEBE9" :foreground "#212121" :height 0.8))))
+ '(org-code ((t (:inherit fixed-pitch :background "#EFEBE9" :foreground "#212121" :height 0.8))))
  '(org-level-1 ((t (:inherit font-lock-function-name-face :extend nil :background "--" :box nil :weight bold :height 1.3))))
  '(org-level-2 ((t (:inherit font-lock-function-name-face :extend nil :background "--" :box nil :weight bold :height 1.2))))
  '(org-level-3 ((t (:inherit font-lock-function-name-face :extend nil :weight bold :height 1.1))))
