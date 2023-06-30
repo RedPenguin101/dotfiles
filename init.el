@@ -6,15 +6,14 @@
 ;; - dumb-jump:a package which jumps from symbol to definition without
 ;;   being language specific. Though C-. does this OK.
 ;; - LSP
-;; - a completion frontend. The built in is pretty terrible. Ivy, maybe. Company
 ;; - from https://www.youtube.com/watch?v=51eSeqcaikM
 ;;   - save hist mode: a history for minibuffs. Lighter weight than Ivy
 ;;   - save place mode
 ;;   - custom vars file location
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
+;;     ag - especially ag-at-point - to search for words within a project
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;;     (setq-default show-trailing-whitespace t)
 ;; - bring back recenter-top-bottom - default C-l
 ;;
 ;; Things I tried and didn't like
@@ -23,6 +22,22 @@
 ;;   lsp mode for Clojure. Bit too much
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package installation and initialization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar my-packages
+  '(markdown-mode
+    org
+    ivy ivy-prescient))
+
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+(ivy-mode)
+(ivy-prescient-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the basics and one-line-wonders
@@ -51,6 +66,8 @@
 (global-auto-revert-mode 1)
 ;; Same idea for dired
 (setq global-auto-revert-non-file-buffers t)
+
+(setq enable-recursive-minibuffers t)
 
 ;;;;;;;;;;;;;;;;
 ;; recent mode
@@ -146,11 +163,14 @@
 (add-hook 'org-mode-hook 'visual-fill-column-mode)
 (add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode)
 
-;;;;;;;;;;;;;;
-;; clojure
-;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;; clojure (and elisp)
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda () (electric-pair-local-mode)))
+
 (add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
@@ -171,9 +191,7 @@
  '(display-time-mode t)
  '(line-number-mode nil)
  '(package-selected-packages
-   '(which-key lsp-mode ivy-prescient ivy nov diff-hl
-	       adaptive-wrap visual-fill-column material-theme
-	       markdown-mode dracula-theme cider))
+   '(ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
  '(safe-local-variable-values
    '((cider-clojure-cli-global-options . "-A:dev")
      (cider-preferred-build-tool . clojure-cli)))
