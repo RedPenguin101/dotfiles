@@ -4,11 +4,9 @@
 ;; Things to do or try
 ;;
 ;; - dumb-jump:a package which jumps from symbol to definition without
-;;   being language specific
+;;   being language specific. Though C-. does this OK.
 ;; - LSP
 ;; - a completion frontend. The built in is pretty terrible. Ivy, maybe. Company
-;; - Org mode - maybe. Big commitment
-;;   - org bullets if the * are really too much
 ;; - from https://www.youtube.com/watch?v=51eSeqcaikM
 ;;   - save hist mode: a history for minibuffs. Lighter weight than Ivy
 ;;   - save place mode
@@ -17,12 +15,12 @@
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
 ;;     (setq-default show-trailing-whitespace t)
-;; - from DistroTube https://www.youtube.com/watch?v=qUyFJRuAjmw
-;;     Beacon - flashing cursor on move
+;; - bring back recenter-top-bottom - default C-l
+;;
 ;; Things I tried and didn't like
+;;   Beacon - flashing cursor on move
 ;;   (setq-default show-trailing-whitespace t)
 ;;   lsp mode for Clojure. Bit too much
-;;   org mode. Just no. Markdown is fine.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -69,41 +67,62 @@
 
 ;; Changes to basic moves
 ;;       H/L    K/J
-;; C     char   sent
-;; M     word   para
-;; CM    page   buffer
+;; C     word   line
+;; CM    sent   para
+;; M     page   buffer
 
-(global-set-key (kbd "C-l") 'forward-char) ;; replaces recenter-top-bottom
-(global-set-key (kbd "C-h") 'backward-char) ;; replaces help
-(global-set-key (kbd "C-j") 'forward-sentence) ;; replaces electric-newline-and-maybe-indent
-(global-set-key (kbd "C-k") 'backward-sentence) ;; replaces kill line
+(global-set-key (kbd "C-l") 'forward-word) ;; replaces recenter-top-bottom
+(global-set-key (kbd "C-h") 'backward-word) ;; replaces help :(
 
-(global-set-key (kbd "M-l") 'forward-word) ;; replaces downcase-word
-(global-set-key (kbd "M-h") 'backward-word) ;; replaces mark-paragraph
-(global-set-key (kbd "M-j") 'forward-paragraph) ;;replaces default-indent-new-line
-(global-set-key (kbd "M-k") 'backward-paragraph) ;; replaces kill sentence 
+(global-set-key (kbd "C-j") 'next-line) ;; replaces electric-newline-and-maybe-indent
+(global-set-key (kbd "C-k") 'previous-line) ;; replaces kill line
 
-(global-set-key (kbd "C-M-l") 'scroll-up-command) ;; replaces reposition-window
-(global-set-key (kbd "C-M-h") 'scroll-down-command) ;; replace mark-defun
-(global-set-key (kbd "C-M-j") 'end-of-buffer) ;; also default-indent-new-line
-(global-set-key (kbd "C-M-k") 'beginning-of-buffer) ;; replaces kill sexp
+;; sentence and para are defaults for C-M, but are expected to be
+;; overwritten by sexp fwd/dwn etc. for lisps.
+
+(setq sentence-end-double-space nil)
+
+(global-set-key (kbd "C-M-l") 'forward-sentence) ;; aka page down replaces reposition-window
+(global-set-key (kbd "C-M-h") 'backward-sentence) ;; replace mark-defun
+
+(global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
+(global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
+
+(defun sexp-bindings ()
+  (progn
+    (local-set-key (kbd "C-M-l") 'forward-sexp)
+    (local-set-key (kbd "C-M-h") 'backward-sexp)
+    (local-set-key (kbd "C-M-j") 'down-list)
+    (local-set-key (kbd "C-M-k") 'backward-up-list)))
+
+(global-set-key (kbd "M-l") 'end-of-buffer) ;; replaces downcase-word
+(global-set-key (kbd "M-h") 'beginning-of-buffer) ;; replaces mark-paragraph
+
+(global-set-key (kbd "M-j") 'scroll-up-command) ;;replaces default-indent-new-line
+(global-set-key (kbd "M-k") 'scroll-down-command) ;; replaces kill sentence
 
 (global-set-key (kbd "M-o") 'other-window)
 
-;; A Yegge suggestion to rebind backward-kill-word. The default
-;; bindings of this are C/M-<backspace>/<del>. This replaces the
-;; occasionally useful kill-region, which I should proabably bind to
-;; something else, but haven't needed to yet.
-(global-set-key (kbd "C-w") 'backward-kill-word)
+;; kill rebinds
+;;       w       d
+;; C   bk-wd   fw-char
+;; M   copy-r  fw-word
+;; CM  kill-r
+
+(global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
+(global-set-key (kbd "C-M-w") 'kill-region)
+;; M-w is already kill ring save - aka copy
+
+(global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
 
 ;; This allows retention of tempo when kill-yanking sexps
 (global-set-key (kbd "C-M-y") 'yank)
 
 ;; potential things to keybind (from Yegge)
-;;   beginning and end of buffer
-;;   maybe m-x to c/m-xm
 ;;   comment region
-;;   maybe rebind move word from M-fb to C-fb. no single char movement
+
+;; Use this for command, in place of M-x, avoiding the meta stretch.
+(global-set-key (kbd "C-x C-m") 'execute-extended-command)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -131,6 +150,8 @@
 ;; clojure
 ;;;;;;;;;;;;;;
 
+(add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
+(add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
@@ -143,7 +164,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
  '(custom-enabled-themes '(material-light))
  '(custom-safe-themes
    '("f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
@@ -151,7 +171,9 @@
  '(display-time-mode t)
  '(line-number-mode nil)
  '(package-selected-packages
-   '(which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
+   '(which-key lsp-mode ivy-prescient ivy nov diff-hl
+	       adaptive-wrap visual-fill-column material-theme
+	       markdown-mode dracula-theme cider))
  '(safe-local-variable-values
    '((cider-clojure-cli-global-options . "-A:dev")
      (cider-preferred-build-tool . clojure-cli)))
