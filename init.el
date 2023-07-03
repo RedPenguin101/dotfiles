@@ -14,7 +14,9 @@
 ;;     ag - especially ag-at-point - to search for words within a project
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - bring back recenter-top-bottom - default C-l
+;; - bind dabbrev-expand to something more home-row friendly: C-' maybe
+;; - rebind C-M-SPC to set-mark-command, from mark-sexp. Marking a sexp
+;;   is great, but it's tempo disruptive to not have this
 ;;
 ;; Things I tried and didn't like
 ;;   Beacon - flashing cursor on move
@@ -124,7 +126,7 @@
 ;;       w       d
 ;; C   bk-wd   fw-char
 ;; M   copy-r  fw-word
-;; CM  kill-r
+;; CM  region  sent
 
 (global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
 (global-set-key (kbd "C-M-w") 'kill-region)
@@ -140,6 +142,12 @@
 
 ;; Use this for command, in place of M-x, avoiding the meta stretch.
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
+
+;; Rebind
+(global-set-key (kbd "C-;") 'recenter-top-bottom)
+(global-set-key (kbd "C-'") 'dabbrev-expand)
+
+
 
 ;;;;;;;;;;;;;;
 ;; markdown
