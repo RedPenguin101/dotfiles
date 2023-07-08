@@ -14,7 +14,6 @@
 ;;     ag - especially ag-at-point - to search for words within a project
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - bind dabbrev-expand to something more home-row friendly: C-' maybe
 ;; - rebind C-M-SPC to set-mark-command, from mark-sexp. Marking a sexp
 ;;   is great, but it's tempo disruptive to not have this
 ;;
@@ -146,7 +145,8 @@
 ;; Rebind
 (global-set-key (kbd "C-;") 'recenter-top-bottom)
 (global-set-key (kbd "C-'") 'dabbrev-expand)
-
+(global-set-key (kbd "C-f") 'project-find-file)
+(global-set-key (kbd "C-b") 'switch-to-buffer)
 
 
 ;;;;;;;;;;;;;;
