@@ -16,6 +16,7 @@
 ;;     (setq auto-save-default nil)
 ;; - rebind C-M-SPC to set-mark-command, from mark-sexp. Marking a sexp
 ;;   is great, but it's tempo disruptive to not have this
+;; - change sexp bindings: up should be up-and-in, down should be down-and-out 
 ;;
 ;; Things I tried and didn't like
 ;;   Beacon - flashing cursor on move
@@ -147,7 +148,7 @@
 (global-set-key (kbd "C-'") 'dabbrev-expand)
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
-
+(global-set-key (kbd "C-M-SPC") 'set-mark-command)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -178,9 +179,16 @@
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda () (electric-pair-local-mode)))
 
+(add-hook 'clojure-mode-hook 'electric-pair-local-mode)
 (add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
+
+;; builtin cider commands:
+;;   C-c C-p cider-pprint-eval-last-sexp
+;;   C-c C-e cider-eval-last-sexp
+;;   C-c C-c cider-eval-defun-at-point (defun = top level)
+;;   C-c C-f cider-pprint-eval-defun-at-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
