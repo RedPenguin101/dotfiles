@@ -145,7 +145,7 @@
 
 ;; Rebind
 (global-set-key (kbd "C-;") 'recenter-top-bottom)
-(global-set-key (kbd "C-'") 'dabbrev-expand)
+(global-set-key (kbd "C-'") 'hippie-expand)
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-M-SPC") 'set-mark-command)
@@ -190,6 +190,12 @@
 ;;   C-c C-c cider-eval-defun-at-point (defun = top level)
 ;;   C-c C-f cider-pprint-eval-defun-at-point
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ag
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq ag-reuse-buffers 't)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -206,7 +212,7 @@
  '(display-time-mode t)
  '(line-number-mode nil)
  '(package-selected-packages
-   '(ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
+   '(lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
  '(safe-local-variable-values
    '((cider-clojure-cli-global-options . "-A:dev")
      (cider-preferred-build-tool . clojure-cli)))
