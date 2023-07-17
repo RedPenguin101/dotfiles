@@ -17,6 +17,9 @@
 ;; - rebind C-M-SPC to set-mark-command, from mark-sexp. Marking a sexp
 ;;   is great, but it's tempo disruptive to not have this
 ;; - change sexp bindings: up should be up-and-in, down should be down-and-out 
+;; - do something with the modeline - I don't need all that stuff
+;;   https://occasionallycogent.com/custom_emacs_modeline/index.html
+;;   Nano's headerbar should be an inspiration
 ;;
 ;; Things I tried and didn't like
 ;;   Beacon - flashing cursor on move
@@ -129,8 +132,11 @@
 ;; CM  region  sent
 
 (global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
-(global-set-key (kbd "C-M-w") 'kill-region)
+
+(global-set-key (kbd "M-e") 'kill-region) ;; replaces forward sentence
+(global-set-key (kbd "C-M-e") 'kill-region) ;; replaces end-of-defun
 ;; M-w is already kill ring save - aka copy
+(global-set-key (kbd "C-M-w") 'kill-ring-save)
 
 (global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
 
@@ -209,10 +215,8 @@
  '(custom-safe-themes
    '("f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(display-battery-mode t)
- '(display-time-mode t)
- '(line-number-mode nil)
  '(package-selected-packages
-   '(lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
+   '(nano-modeline lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
  '(safe-local-variable-values
    '((cider-clojure-cli-global-options . "-A:dev")
      (cider-preferred-build-tool . clojure-cli)))
