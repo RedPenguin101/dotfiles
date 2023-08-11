@@ -35,14 +35,17 @@
 (defvar my-packages
   '(markdown-mode
     org
-    ivy ivy-prescient))
+    ivy ivy-prescient
+    which-key))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
-    (package-install p)))
+    (package-install p))
+  (require p))
 
 (ivy-mode)
 (ivy-prescient-mode)
+(which-key-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the basics and one-line-wonders
@@ -73,6 +76,16 @@
 (setq global-auto-revert-non-file-buffers t)
 
 (setq enable-recursive-minibuffers t)
+
+;; prefer spaces over tabs
+(setq-default indent-tabs-mode nil)
+
+;;;;;;;;;;;;;;;;
+;; Mode line
+;;;;;;;;;;;;;;;;
+
+(setq-default mode-line-format
+  '("%e" " " mode-line-buffer-identification "%* "))
 
 ;;;;;;;;;;;;;;;;
 ;; recent mode
@@ -155,6 +168,9 @@
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-M-SPC") 'set-mark-command)
+
+(global-set-key (kbd "C-x v p") 'vc-pull)
+;; to match C-x v P for push
 
 ;;;;;;;;;;;;;;
 ;; markdown
