@@ -164,7 +164,7 @@
 
 ;; Rebind
 (global-set-key (kbd "C-;") 'recenter-top-bottom)
-(global-set-key (kbd "C-'") 'hippie-expand)
+(global-set-key (kbd "C-'") 'dabbrev-expand)
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-M-SPC") 'set-mark-command)
