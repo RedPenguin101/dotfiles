@@ -22,9 +22,9 @@
 ;;   Nano's headerbar should be an inspiration
 ;;
 ;; Things I tried and didn't like
-;;   Beacon - flashing cursor on move
 ;;   (setq-default show-trailing-whitespace t)
 ;;   lsp mode for Clojure. Bit too much
+;;   hippie-expand in place of dabbrev-expand - it took too many liberties.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -36,7 +36,8 @@
   '(markdown-mode
     org
     ivy ivy-prescient
-    which-key))
+    which-key
+    beacon-mode))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -46,6 +47,7 @@
 (ivy-mode)
 (ivy-prescient-mode)
 (which-key-mode)
+(beacon-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the basics and one-line-wonders
@@ -79,6 +81,8 @@
 
 ;; prefer spaces over tabs
 (setq-default indent-tabs-mode nil)
+
+(setq-default cursor-type '(bar . 6))
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -232,7 +236,7 @@
    '("f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
  '(display-battery-mode t)
  '(package-selected-packages
-   '(nano-modeline lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
+   '(beacon nano-modeline lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
  '(safe-local-variable-values
    '((cider-clojure-cli-global-options . "-A:dev")
      (cider-preferred-build-tool . clojure-cli)))
