@@ -36,8 +36,7 @@
   '(markdown-mode
     org
     ivy ivy-prescient
-    which-key
-    beacon-mode))
+    which-key))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -47,7 +46,7 @@
 (ivy-mode)
 (ivy-prescient-mode)
 (which-key-mode)
-(beacon-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the basics and one-line-wonders
