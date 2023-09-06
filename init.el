@@ -11,15 +11,10 @@
 ;;   - save place mode
 ;;   - custom vars file location
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
-;;     ag - especially ag-at-point - to search for words within a project
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - rebind C-M-SPC to set-mark-command, from mark-sexp. Marking a sexp
-;;   is great, but it's tempo disruptive to not have this
 ;; - change sexp bindings: up should be up-and-in, down should be down-and-out 
-;; - do something with the modeline - I don't need all that stuff
-;;   https://occasionallycogent.com/custom_emacs_modeline/index.html
-;;   Nano's headerbar should be an inspiration
+;; - unbind pgup/dn commands. I keep hitting them accidentally.
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -83,6 +78,8 @@
 
 (setq-default cursor-type '(bar . 6))
 
+(setq sentence-end-double-space nil)
+
 ;;;;;;;;;;;;;;;;
 ;; Mode line
 ;;;;;;;;;;;;;;;;
@@ -117,8 +114,6 @@
 
 ;; sentence and para are defaults for C-M, but are expected to be
 ;; overwritten by sexp fwd/dwn etc. for lisps.
-
-(setq sentence-end-double-space nil)
 
 (global-set-key (kbd "C-M-l") 'forward-sentence) ;; aka page down replaces reposition-window
 (global-set-key (kbd "C-M-h") 'backward-sentence) ;; replace mark-defun
@@ -155,6 +150,14 @@
 (global-set-key (kbd "C-M-w") 'kill-ring-save)
 
 (global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
+
+(global-set-key (kbd "C-m") 'kill-region)
+(global-set-key (kbd "C-M-m") 'kill-region)
+(global-set-key (kbd "M-m") 'kill-region)
+
+(global-set-key (kbd "C-n") 'kill-ring-save)
+(global-set-key (kbd "C-M-n") 'kill-ring-save)
+(global-set-key (kbd "M-n") 'kill-ring-save)
 
 ;; This allows retention of tempo when kill-yanking sexps
 (global-set-key (kbd "C-M-y") 'yank)
