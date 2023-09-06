@@ -38,6 +38,14 @@ _Except_ for when in lisp mode, where `C-M` are sexp bindings
  CM  fwdsexp  [none]        yank
 ```
 
+```
+ kill rebinds
+        I            Y
+ C      indent
+ M      
+ CM     back-tab
+```
+
 If there's a region marked, any modifer with N will copy, any modifier with M will kill.
 
 `M-f` kill forward word

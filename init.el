@@ -14,7 +14,6 @@
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
 ;; - change sexp bindings: up should be up-and-in, down should be down-and-out 
-;; - unbind pgup/dn commands. I keep hitting them accidentally.
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -121,6 +120,9 @@
 (global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
 (global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
 
+(global-set-key (kbd "<prior>") nil)
+(global-set-key (kbd "<next>") nil)
+
 (defun sexp-bindings ()
   (progn
     (local-set-key (kbd "C-M-l") 'forward-sexp)
@@ -151,9 +153,9 @@
 
 (global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
 
-(global-set-key (kbd "C-m") 'kill-region)
-(global-set-key (kbd "C-M-m") 'kill-region)
-(global-set-key (kbd "M-m") 'kill-region)
+(global-set-key (kbd "C-i") 'kill-region)
+(global-set-key (kbd "C-M-i") 'kill-region)
+(global-set-key (kbd "M-i") 'kill-region)
 
 (global-set-key (kbd "C-n") 'kill-ring-save)
 (global-set-key (kbd "C-M-n") 'kill-ring-save)
@@ -228,40 +230,6 @@
 ;; automatically generated config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(material-light))
- '(custom-safe-themes
-   '("f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "db86c52e18460fe10e750759b9077333f9414ed456dc94473f9cf188b197bc74" "fe1c13d75398b1c8fd7fdd1241a55c286b86c3e4ce513c4292d01383de152cb7" default))
- '(display-battery-mode t)
- '(package-selected-packages
-   '(beacon nano-modeline lua-mode ag org which-key lsp-mode ivy-prescient ivy nov diff-hl adaptive-wrap visual-fill-column material-theme markdown-mode dracula-theme cider))
- '(safe-local-variable-values
-   '((cider-clojure-cli-global-options . "-A:dev")
-     (cider-preferred-build-tool . clojure-cli)))
- '(scroll-bar-mode nil)
- '(tool-bar-mode nil))
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Fira Code" :foundry "CTDB" :slant normal :weight normal :height 139 :width normal))))
- '(fixed-pitch ((t (:family "Fira Code"))))
- '(markdown-code-face ((t (:height 0.8 :family "Fira Code"))))
- '(markdown-inline-code-face ((t (:height 0.8 :family "Fira Code"))))
- '(markdown-pre-face ((t (:inherit nil :family "Fira Code"))))
- '(org-block ((t (:inherit fixed-pitch :extend t :background "#EFEBE9" :foreground "#212121" :height 0.8))))
- '(org-code ((t (:inherit fixed-pitch :background "#EFEBE9" :foreground "#212121" :height 0.8))))
- '(org-level-1 ((t (:inherit font-lock-function-name-face :extend nil :background "--" :box nil :weight bold :height 1.3))))
- '(org-level-2 ((t (:inherit font-lock-function-name-face :extend nil :background "--" :box nil :weight bold :height 1.2))))
- '(org-level-3 ((t (:inherit font-lock-function-name-face :extend nil :weight bold :height 1.1))))
- '(org-level-4 ((t (:inherit nil :extend nil :height 1.0))))
- '(org-meta-line ((t (:inherit fixed-pitch :height 0.6))))
- '(org-table ((t (:inherit fixed-pitch :background "#e0f7fa" :foreground "#1565c0"))))
- '(org-verbatim ((t (:height 0.8 :family "Fira Code"))))
- '(variable-pitch ((t (:height 1.5 :family "ETBookOT")))))
