@@ -13,7 +13,10 @@
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - change sexp bindings: up should be up-and-in, down should be down-and-out 
+;; - change sexp bindings: up should be up-and-in, down should be
+;;   down-and-out
+;; - make dired open in same buffer (on ENTER - hitting 'a' instead
+;;   reuses the buffer)
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -52,6 +55,8 @@
 (blink-cursor-mode 0)
 (display-battery-mode t)
 (menu-bar-mode -1)
+(setq inhibit-startup-message t) 
+(setq initial-scratch-message nil)
 
 ;; fix temp file creation
 (setq backup-directory-alist
@@ -78,6 +83,8 @@
 (setq-default cursor-type '(bar . 6))
 
 (setq sentence-end-double-space nil)
+
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -153,9 +160,9 @@
 
 (global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
 
-(global-set-key (kbd "C-i") 'kill-region)
-(global-set-key (kbd "C-M-i") 'kill-region)
-(global-set-key (kbd "M-i") 'kill-region)
+(global-set-key (kbd "C-p") 'kill-region)
+(global-set-key (kbd "C-M-p") 'kill-region)
+(global-set-key (kbd "M-p") 'kill-region)
 
 (global-set-key (kbd "C-n") 'kill-ring-save)
 (global-set-key (kbd "C-M-n") 'kill-ring-save)
@@ -179,6 +186,9 @@
 
 (global-set-key (kbd "C-x v p") 'vc-pull)
 ;; to match C-x v P for push
+
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -220,6 +230,15 @@
 ;;   C-c C-c cider-eval-defun-at-point (defun = top level)
 ;;   C-c C-f cider-pprint-eval-defun-at-point
 
+;;;;;;;;;;;;;;;;;;;;;;;
+;; C
+;;;;;;;;;;;;;;;;;;;;;;;
+
+;; create a format file with
+;; clang-format -style=llvm -dump-config > .clang-format
+(setq clang-format-style "file")
+(setq clang-format-fallback-style "llvm")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ag
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -233,3 +252,4 @@
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
+(put 'dired-find-alternate-file 'disabled nil)
