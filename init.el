@@ -27,13 +27,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package installation and initialization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (defvar my-packages
   '(markdown-mode
     org
     ivy ivy-prescient
-    which-key))
+    beacon
+    which-key
+    diff-hl))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -43,18 +47,8 @@
 (ivy-mode)
 (ivy-prescient-mode)
 (which-key-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; the basics and one-line-wonders
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(setq ring-bell-function 'ignore)
-(blink-cursor-mode 0)
-(display-battery-mode t)
-(menu-bar-mode -1)
+(beacon-mode 1)
+(global-diff-hl-mode)
 (setq inhibit-startup-message t) 
 (setq initial-scratch-message nil)
 
@@ -101,6 +95,16 @@
 (setq recentf-max-menu-items 25)
 (setq recentf-max-saved-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+;;;;;;;;;;;;;;;;;
+;; mac
+;;;;;;;;;;;;;;;;;
+
+;;; Use command key for meta
+(setq mac-option-key-is-meta nil
+      mac-command-key-is-meta t
+      mac-command-modifier 'meta
+      mac-option-modifier 'none)
 
 ;;;;;;;;;;;;;;;;;
 ;; keybinds
@@ -198,8 +202,6 @@
 (setq markdown-hide-markup t)
 (setq markdown-max-image-size '(1500 . 1500))
 (add-hook 'markdown-mode-hook 'visual-line-mode)
-(add-hook 'markdown-mode-hook 'visual-fill-column-mode)
-(add-hook 'markdown-mode-hook 'adaptive-wrap-prefix-mode)
 
 ;;;;;;;;;;;;;;
 ;; Org mode
