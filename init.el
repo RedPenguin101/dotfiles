@@ -17,6 +17,8 @@
 ;;   down-and-out
 ;; - make dired open in same buffer (on ENTER - hitting 'a' instead
 ;;   reuses the buffer)
+;; - Shortcut for kill line
+;; - Smartparens and change up sexp navigation
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -37,7 +39,9 @@
     ivy ivy-prescient
     beacon
     which-key
-    diff-hl))
+    diff-hl
+    fsharp-mode
+    eglot-fsharp))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -79,6 +83,8 @@
 (setq sentence-end-double-space nil)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+(setq visible-bell 1)
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -131,15 +137,25 @@
 (global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
 (global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
 
+;; page up and down are unbound because I kept hitting them accidentally
+;; on my XPS.
 (global-set-key (kbd "<prior>") nil)
 (global-set-key (kbd "<next>") nil)
 
 (defun sexp-bindings ()
   (progn
-    (local-set-key (kbd "C-M-l") 'forward-sexp)
-    (local-set-key (kbd "C-M-h") 'backward-sexp)
-    (local-set-key (kbd "C-M-j") 'down-list)
-    (local-set-key (kbd "C-M-k") 'backward-up-list)))
+    (local-set-key (kbd "C-l") 'forward-sexp)
+    (local-set-key (kbd "C-h") 'backward-sexp)
+    (local-set-key (kbd "C-j") 'down-list) ;; aka sp-down-sexp
+    (local-set-key (kbd "C-k") 'backward-up-list))) ;; aka sp-backward-up-sexp (?)
+
+;; other options for sexps to think about using smart-parens
+;; - beginning / end of sexp
+;; - foward-out (sp-up-sexp))
+;; - wrapping / unwrapping
+;; - slurp / barf
+;; - transpose
+;; - kill
 
 (global-set-key (kbd "M-l") 'end-of-buffer) ;; replaces downcase-word
 (global-set-key (kbd "M-h") 'beginning-of-buffer) ;; replaces mark-paragraph
@@ -240,6 +256,23 @@
 ;; clang-format -style=llvm -dump-config > .clang-format
 (setq clang-format-style "file")
 (setq clang-format-fallback-style "llvm")
+
+(add-hook 'c-mode-hook
+	  (lambda () (electric-pair-local-mode)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Common lisp and Slime
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(load (expand-file-name "~/.quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "sbcl")
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; F#
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'eglot-fsharp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ag
