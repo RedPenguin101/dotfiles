@@ -26,6 +26,13 @@
 ;;   #_ for Clojure
 ;; - Think of how to phase out meta from flow. Maybe like C-; or C-'
 ;;   (i.e. double-pinky) could be a C-M replace
+;; - maybe kill and copy should be done with modifiers.
+;;   like if C-l is next word, C-u C-l is kill next word
+;;   C-u C-u C-l is copy next word. This would break the pattern of
+;;   C-u <thing> being do thing 4 times, which probably disqualifies
+;;   this idea.
+;;   Maybe C-p C-l for delete word. or C-' C-l
+;; - M-o should be C-o maybe?
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -83,8 +90,6 @@
 ;; prefer spaces over tabs
 (setq-default indent-tabs-mode nil)
 
-(setq-default cursor-type '(bar . 6))
-
 (setq sentence-end-double-space nil)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -132,9 +137,6 @@
 
 (global-set-key (kbd "C-j") 'next-line) ;; replaces electric-newline-and-maybe-indent
 (global-set-key (kbd "C-k") 'previous-line) ;; replaces kill line
-
-;; sentence and para are defaults for C-M, but are expected to be
-;; overwritten by sexp fwd/dwn etc. for lisps.
 
 (global-set-key (kbd "C-M-l") 'forward-sentence) ;; aka page down replaces reposition-window
 (global-set-key (kbd "C-M-h") 'backward-sentence) ;; replace mark-defun
@@ -187,14 +189,15 @@
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-t") 'delete-other-windows) ;; replaces transpose char
 
+(global-set-key (kbd "C-f") 'project-find-file)
+(global-set-key (kbd "C-b") 'switch-to-buffer)
+
 ;; Use this for command, in place of M-x, avoiding the meta stretch.
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 
 ;; Rebind
 (global-set-key (kbd "C-;") 'recenter-top-bottom)
 (global-set-key (kbd "C-'") 'dabbrev-expand)
-(global-set-key (kbd "C-f") 'project-find-file)
-(global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
 
 (global-set-key (kbd "C-x v p") 'vc-pull)
