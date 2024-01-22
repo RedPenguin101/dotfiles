@@ -20,6 +20,12 @@
 ;; - Shortcut for kill line
 ;; - Smartparens and change up sexp navigation
 ;; - Shortcut for C-x 1 (full screen) I use this all the time.
+;; - maybe get rid of recursive minibuffers? I don't really understand
+;;   what they do TBH.
+;; - shortcuts for commenting. Especially I would like next-sexp comment
+;;   #_ for Clojure
+;; - Think of how to phase out meta from flow. Maybe like C-; or C-'
+;;   (i.e. double-pinky) could be a C-M replace
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -40,9 +46,7 @@
     ivy ivy-prescient
     beacon
     which-key
-    diff-hl
-    fsharp-mode
-    eglot-fsharp))
+    diff-hl))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -138,11 +142,6 @@
 (global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
 (global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
 
-;; page up and down are unbound because I kept hitting them accidentally
-;; on my XPS.
-(global-set-key (kbd "<prior>") nil)
-(global-set-key (kbd "<next>") nil)
-
 (defun sexp-bindings ()
   (progn
     (local-set-key (kbd "C-l") 'forward-sexp)
@@ -164,22 +163,10 @@
 (global-set-key (kbd "M-j") 'scroll-up-command) ;;replaces default-indent-new-line
 (global-set-key (kbd "M-k") 'scroll-down-command) ;; replaces kill sentence
 
-(global-set-key (kbd "M-o") 'other-window)
-
 ;; kill rebinds
-;;       w       d
-;; C   bk-wd   fw-char
-;; M   copy-r  fw-word
-;; CM  region  sent
+;; p=cut, n=copy
 
 (global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
-
-(global-set-key (kbd "M-e") 'kill-region) ;; replaces forward sentence
-(global-set-key (kbd "C-M-e") 'kill-region) ;; replaces end-of-defun
-;; M-w is already kill ring save - aka copy
-(global-set-key (kbd "C-M-w") 'kill-ring-save)
-
-(global-set-key (kbd "C-M-d") 'kill-sentence) ;; replaces down-list
 
 (global-set-key (kbd "C-p") 'kill-region)
 (global-set-key (kbd "C-M-p") 'kill-region)
@@ -192,8 +179,13 @@
 ;; This allows retention of tempo when kill-yanking sexps
 (global-set-key (kbd "C-M-y") 'yank)
 
-;; potential things to keybind (from Yegge)
-;;   comment region
+;; page up and down are unbound because I kept hitting them accidentally
+;; on my XPS.
+(global-set-key (kbd "<prior>") nil)
+(global-set-key (kbd "<next>") nil)
+
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "C-t") 'delete-other-windows) ;; replaces transpose char
 
 ;; Use this for command, in place of M-x, avoiding the meta stretch.
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -203,13 +195,17 @@
 (global-set-key (kbd "C-'") 'dabbrev-expand)
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
-(global-set-key (kbd "C-M-SPC") 'set-mark-command)
+(global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
 
 (global-set-key (kbd "C-x v p") 'vc-pull)
 ;; to match C-x v P for push
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; stop accidentally zooming
+(global-set-key (kbd "C-<wheel-up>") nil)
+(global-set-key (kbd "C-<wheel-down>") nil)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -268,12 +264,6 @@
 
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; F#
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'eglot-fsharp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ag
