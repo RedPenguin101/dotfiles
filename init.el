@@ -19,6 +19,7 @@
 ;;   reuses the buffer)
 ;; - Shortcut for kill line
 ;; - Smartparens and change up sexp navigation
+;; - Shortcut for C-x 1 (full screen) I use this all the time.
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
