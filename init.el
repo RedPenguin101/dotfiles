@@ -33,6 +33,16 @@
 ;;   this idea.
 ;;   Maybe C-p C-l for delete word. or C-' C-l
 ;; - M-o should be C-o maybe?
+;; - some shortcut about deleting all the whitespace - fixup-whitespace maybe
+;;   or delete-horizontal-whitespace (M-\) or just-one-space (M-SPC, but
+;;   that's spotlight on mac). None of these do exactly what I want, which is
+;;   to make a block like this:
+;;     (defn [hello] (expression number 1)
+;;       (expression number 2))
+;;   into this in a single keystroke. 
+;;     (defn [hello] (expression number 1) (expression number 2))
+;;   actually, delete-indentation M-^ seems to do what I want.
+;;
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -187,7 +197,7 @@
 (global-set-key (kbd "<next>") nil)
 
 (global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "C-t") 'delete-other-windows) ;; replaces transpose char
+(global-set-key (kbd "C-d") 'delete-other-windows) ;; replaces transpose char
 
 (global-set-key (kbd "C-f") 'project-find-file)
 (global-set-key (kbd "C-b") 'switch-to-buffer)

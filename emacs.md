@@ -43,7 +43,7 @@ Mostly the changes are just shortcuts for very commonly used things.
 `C-f` is find file in project.
 `C-b` is switch to buffer (a shortcut for `C-x b`).
 `M-o` is other-window (`C-x o` shortcut).
-`C-t` is delete-other-windows (`C-x 1` shortcut).
+`C-d` is delete-other-windows (`C-x 1` shortcut).
 `C-+` and `C--` increase and decrease the text scale.
 
 ## Other keyboard things
