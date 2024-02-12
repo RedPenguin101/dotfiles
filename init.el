@@ -154,21 +154,6 @@
 (global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
 (global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
 
-(defun sexp-bindings ()
-  (progn
-    (local-set-key (kbd "C-l") 'forward-sexp)
-    (local-set-key (kbd "C-h") 'backward-sexp)
-    (local-set-key (kbd "C-j") 'down-list) ;; aka sp-down-sexp
-    (local-set-key (kbd "C-k") 'backward-up-list))) ;; aka sp-backward-up-sexp (?)
-
-;; other options for sexps to think about using smart-parens
-;; - beginning / end of sexp
-;; - foward-out (sp-up-sexp))
-;; - wrapping / unwrapping
-;; - slurp / barf
-;; - transpose
-;; - kill
-
 (global-set-key (kbd "M-l") 'end-of-buffer) ;; replaces downcase-word
 (global-set-key (kbd "M-h") 'beginning-of-buffer) ;; replaces mark-paragraph
 
@@ -243,10 +228,32 @@
 ;; clojure (and elisp)
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'smartparens-config)
+
+(defun sexp-bindings ()
+  (progn
+    (local-set-key (kbd "C-l") 'forward-sexp)
+    (local-set-key (kbd "C-h") 'backward-sexp)
+    (local-set-key (kbd "C-j") 'sp-end-of-sexp)
+    (local-set-key (kbd "C-k") 'sp-beginning-of-sexp)
+
+    (local-set-key (kbd "C-M-l") 'sp-down-sexp)
+    (local-set-key (kbd "C-M-h") 'sp-backward-up-sexp)
+    (local-set-key (kbd "C-M-j") 'sp-backward-down-sexp)
+    (local-set-key (kbd "C-M-k") 'sp-up-sexp)))
+
+;; other options for sexps to think about using smart-parens
+;; - wrapping / unwrapping
+;; - slurp / barf
+;; - transpose
+;; - kill
+
+(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
 (add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda () (electric-pair-local-mode)))
 
+(add-hook 'clojure-mode-hook #'smartparens-mode)
 (add-hook 'clojure-mode-hook 'electric-pair-local-mode)
 (add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
