@@ -177,9 +177,9 @@
 (global-set-key (kbd "C-M-y") 'yank)
 
 ;; page up and down are unbound because I kept hitting them accidentally
-;; on my XPS.
-(global-set-key (kbd "<prior>") nil)
-(global-set-key (kbd "<next>") nil)
+;; on my XPS. But now I'm not using my XPS, so these are commented out.
+;(global-set-key (kbd "<prior>") nil)
+;(global-set-key (kbd "<next>") nil)
 
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-d") 'delete-other-windows) ;; replaces transpose char
@@ -222,7 +222,6 @@
 (setq org-hide-leading-stars t)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'visual-fill-column-mode)
-(add-hook 'org-mode-hook 'adaptive-wrap-prefix-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)
@@ -234,13 +233,13 @@
   (progn
     (local-set-key (kbd "C-l") 'forward-sexp)
     (local-set-key (kbd "C-h") 'backward-sexp)
-    (local-set-key (kbd "C-j") 'sp-end-of-sexp)
-    (local-set-key (kbd "C-k") 'sp-beginning-of-sexp)
+    (local-set-key (kbd "C-k") 'sp-end-of-sexp)
+    (local-set-key (kbd "C-j") 'sp-beginning-of-sexp)
 
-    (local-set-key (kbd "C-M-l") 'sp-down-sexp)
+    (local-set-key (kbd "C-M-k") 'sp-down-sexp)
     (local-set-key (kbd "C-M-h") 'sp-backward-up-sexp)
     (local-set-key (kbd "C-M-j") 'sp-backward-down-sexp)
-    (local-set-key (kbd "C-M-k") 'sp-up-sexp)))
+    (local-set-key (kbd "C-M-l") 'sp-up-sexp)))
 
 ;; other options for sexps to think about using smart-parens
 ;; - wrapping / unwrapping
@@ -254,7 +253,8 @@
 	  (lambda () (electric-pair-local-mode)))
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
-(add-hook 'clojure-mode-hook 'electric-pair-local-mode)
+;; electric pair mode doesn't play nice with smartparens
+;;(add-hook 'clojure-mode-hook 'electric-pair-local-mode)
 (add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
@@ -275,8 +275,12 @@
 (setq clang-format-fallback-style "llvm")
 
 (add-hook 'c-mode-hook
-	  (lambda () (electric-pair-local-mode)))
-
+	  (lambda ()
+            (progn
+              (electric-pair-local-mode)
+              (local-set-key (kbd "C-c C-c") 'recompile)
+              (local-set-key (kbd "C-c f") 'clang-format-buffer)
+              (local-set-key (kbd "C-d") 'delete-other-windows))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Common lisp and Slime
