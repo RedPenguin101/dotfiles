@@ -13,15 +13,10 @@
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - change sexp bindings: up should be up-and-in, down should be
-;;   down-and-out
 ;; - make dired open in same buffer (on ENTER - hitting 'a' instead
 ;;   reuses the buffer)
 ;; - Shortcut for kill line
-;; - Smartparens and change up sexp navigation
-;; - Shortcut for C-x 1 (full screen) I use this all the time.
-;; - maybe get rid of recursive minibuffers? I don't really understand
-;;   what they do TBH.
+;; - Shortcut for duplicate line? useful in C
 ;; - shortcuts for commenting. Especially I would like next-sexp comment
 ;;   #_ for Clojure
 ;; - Think of how to phase out meta from flow. Maybe like C-; or C-'
@@ -32,7 +27,7 @@
 ;;   C-u <thing> being do thing 4 times, which probably disqualifies
 ;;   this idea.
 ;;   Maybe C-p C-l for delete word. or C-' C-l
-;; - M-o should be C-o maybe?
+;; - M-o should be C-o maybe? C-o is insertline, never use it
 ;; - some shortcut about deleting all the whitespace - fixup-whitespace maybe
 ;;   or delete-horizontal-whitespace (M-\) or just-one-space (M-SPC, but
 ;;   that's spotlight on mac). None of these do exactly what I want, which is
@@ -42,7 +37,7 @@
 ;;   into this in a single keystroke. 
 ;;     (defn [hello] (expression number 1) (expression number 2))
 ;;   actually, delete-indentation M-^ seems to do what I want.
-;;
+;; - Multiple cursors
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -95,8 +90,6 @@
 ;; Same idea for dired
 (setq global-auto-revert-non-file-buffers t)
 
-(setq enable-recursive-minibuffers t)
-
 ;; prefer spaces over tabs
 (setq-default indent-tabs-mode nil)
 
@@ -109,6 +102,7 @@
 ;;;;;;;;;;;;;;;;
 ;; Mode line
 ;;;;;;;;;;;;;;;;
+;; Minimal mode line with just the file name and the status indicator
 
 (setq-default mode-line-format
   '("%e" " " mode-line-buffer-identification "%* "))
@@ -196,7 +190,7 @@
 (global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
 
 (global-set-key (kbd "C-x v p") 'vc-pull)
-;; to match C-x v P for push
+;; to match C-x v P for push. + is generally pull
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -253,8 +247,6 @@
 	  (lambda () (electric-pair-local-mode)))
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
-;; electric pair mode doesn't play nice with smartparens
-;;(add-hook 'clojure-mode-hook 'electric-pair-local-mode)
 (add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
