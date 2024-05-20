@@ -5,7 +5,6 @@
 ;;
 ;; - dumb-jump:a package which jumps from symbol to definition without
 ;;   being language specific. Though C-. does this OK.
-;; - LSP
 ;; - from https://www.youtube.com/watch?v=51eSeqcaikM
 ;;   - save hist mode: a history for minibuffs. Lighter weight than Ivy
 ;;   - save place mode
@@ -34,10 +33,12 @@
 ;;   to make a block like this:
 ;;     (defn [hello] (expression number 1)
 ;;       (expression number 2))
-;;   into this in a single keystroke. 
+;;   into this in a single keystroke.
 ;;     (defn [hello] (expression number 1) (expression number 2))
 ;;   actually, delete-indentation M-^ seems to do what I want.
-;; - Multiple cursors
+;; - Multiple cursors https://github.com/magnars/multiple-cursors.el
+;; - Misc stuff from Batsov https://github.com/bbatsov/emacs.d/blob/master/init.el
+;; - avy - stoped using it for some reason, not sure why
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -46,31 +47,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Package installation and initialization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Basic editor functionality ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-(defvar my-packages
-  '(markdown-mode
-    org
-    ivy ivy-prescient
-    beacon
-    which-key
-    diff-hl))
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p))
-  (require p))
-
-(ivy-mode)
-(ivy-prescient-mode)
-(which-key-mode)
-(beacon-mode 1)
-(global-diff-hl-mode)
-(setq inhibit-startup-message t) 
+(setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 
 ;; fix temp file creation
@@ -78,10 +61,6 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
-
-;; dired-x enables `dired-do-find-marked-files` with `F`, which opens
-;; all marked files in new windows
-(require 'dired-x)
 
 ;; Watches the files and reverts them when they are changed by another
 ;; process.  Useful for editing things in a shared folder (GDrive) or
@@ -98,6 +77,18 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (setq visible-bell 1)
+
+;; Always linenumbers in programming modes, and _relative_ line
+;; numbers
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(setq-default display-line-numbers-type 'relative)
+
+;; programming visibility
+(show-paren-mode +1)
+(global-hl-line-mode +1)
+(setq whitespace-line-column 120)
+(setq whitespace-style '(face tabs empty trailing lines-tail))
+(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -126,9 +117,11 @@
       mac-command-modifier 'meta
       mac-option-modifier 'none)
 
-;;;;;;;;;;;;;;;;;
-;; keybinds
-;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; universal keybind changes ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Changes to basic moves
 ;;       H/L    K/J
@@ -156,6 +149,7 @@
 
 ;; kill rebinds
 ;; p=cut, n=copy
+;; y=paste
 
 (global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
 
@@ -169,11 +163,6 @@
 
 ;; This allows retention of tempo when kill-yanking sexps
 (global-set-key (kbd "C-M-y") 'yank)
-
-;; page up and down are unbound because I kept hitting them accidentally
-;; on my XPS. But now I'm not using my XPS, so these are commented out.
-;(global-set-key (kbd "<prior>") nil)
-;(global-set-key (kbd "<next>") nil)
 
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-d") 'delete-other-windows) ;; replaces transpose char
@@ -198,6 +187,29 @@
 ;; stop accidentally zooming
 (global-set-key (kbd "C-<wheel-up>") nil)
 (global-set-key (kbd "C-<wheel-down>") nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package / Mode specific configuration ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(defvar my-packages
+  '(ivy ivy-prescient
+    which-key
+    diff-hl))
+
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p))
+  (require p))
+
+(ivy-mode)
+(ivy-prescient-mode)
+(which-key-mode)
+(global-diff-hl-mode)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -248,6 +260,7 @@
 
 (add-hook 'clojure-mode-hook #'smartparens-mode)
 (add-hook 'clojure-mode-hook 'sexp-bindings)
+(add-hook 'clojure-mode-hook 'subword-mode)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
@@ -270,6 +283,7 @@
 	  (lambda ()
             (progn
               (electric-pair-local-mode)
+              (c-toggle-comment-style -1)
               (local-set-key (kbd "C-c C-c") 'recompile)
               (local-set-key (kbd "C-c f") 'clang-format-buffer)
               (local-set-key (kbd "C-d") 'delete-other-windows))))
