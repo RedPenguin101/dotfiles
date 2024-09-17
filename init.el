@@ -75,6 +75,13 @@
 (setq sentence-end-double-space nil)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(split-window-horizontally)
+
+(defun no-split-window ()
+  (interactive)
+  nil)
+
+(setq split-window-preferred-function 'no-split-window)
 
 (setq visible-bell 1)
 
@@ -89,6 +96,19 @@
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Visuals
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(let ((bg (face-attribute 'mode-line :background)))
+  (set-face-attribute 'mode-line nil
+                      :box (list :line-width 4 :color bg :style nil)))
+
+(let ((bg (face-attribute 'mode-line-inactive :background)))
+  (set-face-attribute 'mode-line-inactive nil
+                      :box (list :line-width 4 :color bg :style nil)))
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -117,7 +137,10 @@
       mac-command-modifier 'meta
       mac-option-modifier 'none)
 
+;;; adding brew llvm path
 
+(add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
+(setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;
@@ -219,6 +242,7 @@
 (setq markdown-hide-markup t)
 (setq markdown-max-image-size '(1500 . 1500))
 (add-hook 'markdown-mode-hook 'visual-line-mode)
+(add-hook 'markdown-mode-hook 'auto-fill-mode)
 
 ;;;;;;;;;;;;;;
 ;; Org mode
@@ -280,13 +304,18 @@
 (setq clang-format-fallback-style "llvm")
 
 (add-hook 'c-mode-hook
-	  (lambda ()
+          (lambda ()
             (progn
               (electric-pair-local-mode)
               (c-toggle-comment-style -1)
               (local-set-key (kbd "C-c C-c") 'recompile)
               (local-set-key (kbd "C-c f") 'clang-format-buffer)
               (local-set-key (kbd "C-d") 'delete-other-windows))))
+
+; best way to hook LSP up properly is to use bear
+; (https://github.com/rizsotto/Bear) to generate a
+; compile_commands.json file (just run `bear -- make`) clangd will
+; pick up on that automatically then just `eglot` to launch the lsp
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Common lisp and Slime
