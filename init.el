@@ -146,11 +146,27 @@
 ;; universal keybind changes ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Changes to basic moves
-;;       H/L    K/J
-;; C     word   line
-;; CM    sent   para
-;; M     page   buffer
+;; C-m should not be interpreted as RET
+(define-key input-decode-map [?\C-m] [C-m])
+
+;; Moves and kills
+;; |             | C-         | M-        | C-M- (code) |
+;; |:------------|:-----------|:----------|:------------|
+;; | a/start     | line*      | buff      | defn*       |
+;; | e/end       | line*      | buff      | defn*       |
+;; | h/back      | word       | sent      | sexp        |
+;; | l/fwd       | word       | sent      | sexp        |
+;; | j/nxt       | line       | pg down   | down-in     |
+;; | k/prv       | line       | pg up     | up-out      |
+;; | ;           | recenter*  |           |             |
+;; |:------------|:-----------|:----------|:------------|
+;; | SPACE       | set mark*  |           | mark sexp*  |
+;; |:------------|:-----------|:----------|:------------|
+;; | w           | kill rgn*  | KR save*  | KR append*  |
+;; | n/kill back | word       | sentence  | sexp        |
+;; | m/kill fwd  | word       | sentence  | sexp        |
+;; | p/line      | rest line  | back line | whole line  |
+;; | y/yank      | yank last* | KR Cycle* |             |
 
 (global-set-key (kbd "C-l") 'forward-word) ;; replaces recenter-top-bottom
 (global-set-key (kbd "C-h") 'backward-word) ;; replaces help :(
@@ -158,50 +174,54 @@
 (global-set-key (kbd "C-j") 'next-line) ;; replaces electric-newline-and-maybe-indent
 (global-set-key (kbd "C-k") 'previous-line) ;; replaces kill line
 
-(global-set-key (kbd "C-M-l") 'forward-sentence) ;; aka page down replaces reposition-window
-(global-set-key (kbd "C-M-h") 'backward-sentence) ;; replace mark-defun
+(global-set-key (kbd "C-M-l") 'forward-sexp) ;; replaces reposition-window
+(global-set-key (kbd "C-M-h") 'backward-sexp) ;; replace mark-defun
 
-(global-set-key (kbd "C-M-j") 'forward-paragraph) ;; also default-indent-new-line
-(global-set-key (kbd "C-M-k") 'backward-paragraph) ;; replaces kill
+(global-set-key (kbd "C-M-k") 'backward-up-list) ;; also default-indent-new-line
+(global-set-key (kbd "C-M-j") 'down-list) ;; replaces kill
 
-(global-set-key (kbd "M-l") 'end-of-buffer) ;; replaces downcase-word
-(global-set-key (kbd "M-h") 'beginning-of-buffer) ;; replaces mark-paragraph
+(global-set-key (kbd "M-e") 'end-of-buffer) ;; replaces fwd sentence
+(global-set-key (kbd "M-a") 'beginning-of-buffer) ;; replaces backward sentence
 
-(global-set-key (kbd "M-j") 'scroll-up-command) ;;replaces default-indent-new-line
+(global-set-key (kbd "M-l") 'forward-sentence) ;; replaces downcase-word
+(global-set-key (kbd "M-h") 'backward-sentence) ;; replaces mark-paragraph
+
+(global-set-key (kbd "M-j") 'scroll-up-command) ;; replaces default-indent-new-line
 (global-set-key (kbd "M-k") 'scroll-down-command) ;; replaces kill sentence
 
-;; kill rebinds
-;; p=cut, n=copy
-;; y=paste
+(global-set-key (kbd "C-n") 'backward-kill-word) ;; replaces next line
+(global-set-key (kbd "<C-m>") 'kill-word)
+(global-set-key (kbd "M-n") 'backward-kill-sentence)
+(global-set-key (kbd "M-m") 'kill-sentence) ;; replaces first whitespace
+(global-set-key (kbd "C-M-n") 'backward-kill-sexp) ;; replaces fwd list
+(global-set-key (kbd "C-M-m") 'kill-sexp) ;; aka M-RET
 
-(global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill-region
+(defun backward-kill-line ()
+  (interactive)
+  (kill-line 0))
 
-(global-set-key (kbd "C-p") 'kill-region)
-(global-set-key (kbd "C-M-p") 'kill-region)
-(global-set-key (kbd "M-p") 'kill-region)
+(global-set-key (kbd "C-p") 'kill-line) ;; replaces prv line.
 
-(global-set-key (kbd "C-n") 'kill-ring-save)
-(global-set-key (kbd "C-M-n") 'kill-ring-save)
-(global-set-key (kbd "M-n") 'kill-ring-save)
+(global-set-key (kbd "M-p") 'backward-kill-line)
+(global-set-key (kbd "C-M-p") 'kill-whole-line) ;; replaces prv line
 
-;; This allows retention of tempo when kill-yanking sexps
-(global-set-key (kbd "C-M-y") 'yank)
+;; other stuff
 
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-d") 'delete-other-windows) ;; replaces transpose char
 
 (global-set-key (kbd "C-f") 'project-find-file)
-(global-set-key (kbd "C-b") 'switch-to-buffer)
+(global-set-key (kbd "C-b") 'switch-to-buffer) ; maybe project STB?
 
 ;; Use this for command, in place of M-x, avoiding the meta stretch.
-(global-set-key (kbd "C-x C-m") 'execute-extended-command)
+(global-set-key (kbd "C-x <C-m>") 'execute-extended-command)
 
 ;; Rebind
 (global-set-key (kbd "C-;") 'recenter-top-bottom)
 (global-set-key (kbd "C-'") 'dabbrev-expand)
-(global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
+;(global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
 
-(global-set-key (kbd "C-x v p") 'vc-pull)
+;(global-set-key (kbd "C-x v p") 'vc-pull)
 ;; to match C-x v P for push. + is generally pull
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -239,7 +259,7 @@
 ;;;;;;;;;;;;;;
 
 (setq markdown-fontify-code-blocks-natively t)
-(setq markdown-hide-markup t)
+;(setq markdown-hide-markup t)
 (setq markdown-max-image-size '(1500 . 1500))
 (add-hook 'markdown-mode-hook 'visual-line-mode)
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
@@ -277,13 +297,13 @@
 ;; - transpose
 ;; - kill
 
-(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
-(add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
+;(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+;(add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda () (electric-pair-local-mode)))
 
-(add-hook 'clojure-mode-hook #'smartparens-mode)
-(add-hook 'clojure-mode-hook 'sexp-bindings)
+;(add-hook 'clojure-mode-hook #'smartparens-mode)
+;(add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'clojure-mode-hook 'subword-mode)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
