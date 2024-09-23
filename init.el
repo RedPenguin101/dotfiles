@@ -6,26 +6,15 @@
 ;; - dumb-jump:a package which jumps from symbol to definition without
 ;;   being language specific. Though C-. does this OK.
 ;; - from https://www.youtube.com/watch?v=51eSeqcaikM
-;;   - save hist mode: a history for minibuffs. Lighter weight than Ivy
 ;;   - save place mode
-;;   - custom vars file location
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
 ;; - make dired open in same buffer (on ENTER - hitting 'a' instead
 ;;   reuses the buffer)
-;; - Shortcut for kill line
 ;; - Shortcut for duplicate line? useful in C
 ;; - shortcuts for commenting. Especially I would like next-sexp comment
 ;;   #_ for Clojure
-;; - Think of how to phase out meta from flow. Maybe like C-; or C-'
-;;   (i.e. double-pinky) could be a C-M replace
-;; - maybe kill and copy should be done with modifiers.
-;;   like if C-l is next word, C-u C-l is kill next word
-;;   C-u C-u C-l is copy next word. This would break the pattern of
-;;   C-u <thing> being do thing 4 times, which probably disqualifies
-;;   this idea.
-;;   Maybe C-p C-l for delete word. or C-' C-l
 ;; - M-o should be C-o maybe? C-o is insertline, never use it
 ;; - some shortcut about deleting all the whitespace - fixup-whitespace maybe
 ;;   or delete-horizontal-whitespace (M-\) or just-one-space (M-SPC, but
@@ -39,6 +28,9 @@
 ;; - Multiple cursors https://github.com/magnars/multiple-cursors.el
 ;; - Misc stuff from Batsov https://github.com/bbatsov/emacs.d/blob/master/init.el
 ;; - avy - stoped using it for some reason, not sure why
+;; - use mark-pops more?
+;;   https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+;; - https://www.masteringemacs.org/article/demystifying-emacs-window-manager
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -46,6 +38,14 @@
 ;;   hippie-expand in place of dabbrev-expand - it took too many liberties.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(global-unset-key (kbd "<right>"))
+(global-unset-key (kbd "<left>"))
+(global-unset-key (kbd "<up>"))
+(global-unset-key (kbd "<down>"))
+(global-unset-key (kbd "<down-mouse-1>"))
+(global-unset-key (kbd "<mouse-1>"))
+(global-unset-key (kbd "<down-mouse-3>"))
+(global-unset-key (kbd "<mouse-3>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
@@ -77,11 +77,11 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (split-window-horizontally)
 
-(defun no-split-window ()
-  (interactive)
-  nil)
+;; (defun no-split-window ()
+;;   (interactive)
+;;   nil)
 
-(setq split-window-preferred-function 'no-split-window)
+;; (setq split-window-preferred-function 'no-split-window)
 
 (setq visible-bell 1)
 
@@ -97,6 +97,10 @@
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
+;; Auto-completion in minibuffs - FIDO is great, no need for IVY any friends
+;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
+
+(fido-vertical-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Visuals
@@ -125,7 +129,20 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (setq recentf-max-saved-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;; I used to have this as a separate buffer which opened. But now I
+;; just use a mini-buffer with FIDO, per here:
+;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
+
+;;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(global-set-key (kbd "C-x C-r") 'recentf-open-minibuff)
+
+(defun recentf-open-minibuff ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
 
 ;;;;;;;;;;;;;;;;;
 ;; mac
@@ -189,6 +206,7 @@
 (global-set-key (kbd "M-j") 'scroll-up-command) ;; replaces default-indent-new-line
 (global-set-key (kbd "M-k") 'scroll-down-command) ;; replaces kill sentence
 
+(global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill region
 (global-set-key (kbd "C-n") 'backward-kill-word) ;; replaces next line
 (global-set-key (kbd "<C-m>") 'kill-word)
 (global-set-key (kbd "M-n") 'backward-kill-sentence)
@@ -204,6 +222,8 @@
 
 (global-set-key (kbd "M-p") 'backward-kill-line)
 (global-set-key (kbd "C-M-p") 'kill-whole-line) ;; replaces prv line
+
+(global-set-key (kbd "C-M-y") 'yank) ;; for maintaining tempo
 
 ;; other stuff
 
@@ -240,17 +260,13 @@
   (package-install 'use-package))
 
 (defvar my-packages
-  '(ivy ivy-prescient
-    which-key
-    diff-hl))
+  '(which-key diff-hl))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p))
   (require p))
 
-(ivy-mode)
-(ivy-prescient-mode)
 (which-key-mode)
 (global-diff-hl-mode)
 
@@ -328,6 +344,7 @@
             (progn
               (electric-pair-local-mode)
               (c-toggle-comment-style -1)
+              (local-set-key (kbd "C-M-h") 'backward-sexp)
               (local-set-key (kbd "C-c C-c") 'recompile)
               (local-set-key (kbd "C-c f") 'clang-format-buffer)
               (local-set-key (kbd "C-d") 'delete-other-windows))))
