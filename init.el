@@ -38,14 +38,14 @@
 ;;   hippie-expand in place of dabbrev-expand - it took too many liberties.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(global-unset-key (kbd "<right>"))
-(global-unset-key (kbd "<left>"))
-(global-unset-key (kbd "<up>"))
-(global-unset-key (kbd "<down>"))
-(global-unset-key (kbd "<down-mouse-1>"))
-(global-unset-key (kbd "<mouse-1>"))
-(global-unset-key (kbd "<down-mouse-3>"))
-(global-unset-key (kbd "<mouse-3>"))
+;; (global-unset-key (kbd "<right>"))
+;; (global-unset-key (kbd "<left>"))
+;; (global-unset-key (kbd "<up>"))
+;; (global-unset-key (kbd "<down>"))
+;; (global-unset-key (kbd "<down-mouse-1>"))
+;; (global-unset-key (kbd "<mouse-1>"))
+;; (global-unset-key (kbd "<down-mouse-3>"))
+;; (global-unset-key (kbd "<mouse-3>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
@@ -101,6 +101,10 @@
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 
 (fido-vertical-mode)
+
+(electric-pair-mode)
+
+(setq scroll-conservatively 101)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Visuals
@@ -251,6 +255,15 @@
 (global-set-key (kbd "C-<wheel-up>") nil)
 (global-set-key (kbd "C-<wheel-down>") nil)
 
+(global-set-key (kbd "C-c w") 'whitespace-cleanup)
+
+(global-set-key (kbd "C-M-s") 'avy-goto-char-2) ;; replaces regex isearch
+
+;; Keys I always hit accidentally
+
+(global-unset-key (kbd "C-x f")) ;; col fill
+(global-unset-key (kbd "C-t")) ;; transpose char
+(global-unset-key (kbd "M-c"))   ;; capitalize
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package / Mode specific configuration ;;
@@ -269,6 +282,8 @@
 
 (which-key-mode)
 (global-diff-hl-mode)
+(require 'doom-modeline)
+(doom-modeline-mode 1)
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -320,7 +335,7 @@
 
 ;(add-hook 'clojure-mode-hook #'smartparens-mode)
 ;(add-hook 'clojure-mode-hook 'sexp-bindings)
-(add-hook 'clojure-mode-hook 'subword-mode)
+(add-hook 'clojure-mode-hook 'subword-mode 'electric-pair-mode)
 (add-hook 'cider-mode-hook
 	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
@@ -349,10 +364,37 @@
               (local-set-key (kbd "C-c f") 'clang-format-buffer)
               (local-set-key (kbd "C-d") 'delete-other-windows))))
 
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (progn
+              (electric-pair-local-mode)
+              (c-toggle-comment-style -1)
+              (local-set-key (kbd "C-M-h") 'backward-sexp)
+              (local-set-key (kbd "C-c C-c") 'recompile)
+              (local-set-key (kbd "C-c f") 'clang-format-buffer)
+              (local-set-key (kbd "C-d") 'delete-other-windows))))
+
+
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
 ; compile_commands.json file (just run `bear -- make`) clangd will
 ; pick up on that automatically then just `eglot` to launch the lsp
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Odin
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Mode is here https://git.sr.ht/~mgmarlow/odin-mode
+;; install with M-x package-vc-install RET https://git.sr.ht/~mgmarlow/odin-mode
+
+(use-package odin-mode
+  :bind (:map odin-mode-map
+              ("C-c C-c" . 'recompile)))
+
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(odin-mode . ("ols"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Common lisp and Slime
