@@ -3,8 +3,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Things to do or try
 ;;
-;; - dumb-jump:a package which jumps from symbol to definition without
-;;   being language specific. Though C-. does this OK.
 ;; - from https://www.youtube.com/watch?v=51eSeqcaikM
 ;;   - save place mode
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
@@ -12,7 +10,7 @@
 ;;     (setq auto-save-default nil)
 ;; - make dired open in same buffer (on ENTER - hitting 'a' instead
 ;;   reuses the buffer)
-;; - Shortcut for duplicate line? useful in C
+;; - Shortcut for duplicate line? useful in C duplicate-dwim command
 ;; - shortcuts for commenting. Especially I would like next-sexp comment
 ;;   #_ for Clojure
 ;; - M-o should be C-o maybe? C-o is insertline, never use it
@@ -31,6 +29,9 @@
 ;; - use mark-pops more?
 ;;   https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
 ;; - https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+;; - Solo (https://www.youtube.com/watch?v=j_2QkCcf8zE, https://github.com/LionyxML/emacs-solo/).
+;;    Go through and steal the stuff
+;;    (What does narrow to region do?)
 ;;
 ;; Things I tried and didn't like
 ;;   (setq-default show-trailing-whitespace t)
@@ -166,6 +167,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Suspend frames - v annoying to hit by accident
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
 
 ;; C-m should not be interpreted as RET
 (define-key input-decode-map [?\C-m] [C-m])
@@ -337,7 +342,7 @@
 ;(add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'clojure-mode-hook 'subword-mode 'electric-pair-mode)
 (add-hook 'cider-mode-hook
-	  (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
+          (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
 ;; builtin cider commands:
 ;;   C-c C-p cider-pprint-eval-last-sexp
