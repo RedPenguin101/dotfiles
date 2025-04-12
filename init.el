@@ -223,7 +223,7 @@
 ;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
 
 (load "~/.emacs.d/lisp/modal.el")
-(my-modal-mode 1)
+(modal-mode 1)
 
 (define-key modal-command-map (kbd "a") 'execute-extended-command)
 
@@ -253,6 +253,9 @@
 (define-key modal-command-map (kbd "x") 'kill-region)
 (define-key modal-command-map (kbd "c") 'kill-ring-save)
 (define-key modal-command-map (kbd "v") 'yank)
+
+;; files
+(define-key modal-command-map (kbd "b") 'switch-to-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;

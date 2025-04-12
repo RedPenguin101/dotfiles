@@ -13,6 +13,10 @@
 (define-key modal-insert-map  (kbd "<escape>") #'command-mode-init)
 (define-key modal-command-map (kbd "f") #'insert-mode-init)
 
+(define-key modal-command-map (kbd "d") 'ignore)
+(define-key modal-command-map (kbd "b") 'ignore)
+
+
 ;; Activation
 ;;;;;;;;;;;;;;;
 
@@ -27,16 +31,14 @@
   (setq current-mode 'command)
   (update-key-map)
   (setq mode-line-front-space command-mode-indicator)
-  (force-mode-line-update)
-  (message "Command mode"))
+  (force-mode-line-update))
 
-(defun insert-mode-init (&optional no-indication)
+(defun insert-mode-init ()
   (interactive)
   (setq current-mode 'insert)
   (update-key-map)
   (setq mode-line-front-space insert-mode-indicator)
-  (force-mode-line-update)
-  (message "insert mode"))
+  (force-mode-line-update))
 
 (define-minor-mode modal-mode
   "My modal mode"
@@ -46,10 +48,12 @@
   (if modal-mode
       (progn
         (add-hook 'minibuffer-setup-hook 'insert-mode-init)
+        (add-hook 'magit-mode-hook 'insert-mode-init)
         (add-hook 'minibuffer-exit-hook 'command-mode-init)
         (command-mode-init))
     (progn
       (remove-hook 'minibuffer-setup-hook 'insert-mode-init)
+      (remove-hook 'magit-mode-hook 'insert-mode-init)
       (remove-hook 'minibuffer-exit-hook 'command-mode-init)
       (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
       (force-mode-line-update))))
