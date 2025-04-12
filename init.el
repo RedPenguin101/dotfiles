@@ -134,43 +134,43 @@
 ;; Side windows ;;
 ;;;;;;;;;;;;;;;;;;
 
-(use-package window
-  :ensure nil
-  :custom
-  (display-buffer-alist
-   '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\|Bookmark List\\|Occur\\|eldoc\\)\\*"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 0))
-     ("\\*\\([Hh]elp\\)\\*"
-      (display-buffer-in-side-window)
-      (window-width . 75)
-      (side . right)
-      (slot . 0))
-     ("\\*\\(Ibuffer\\)\\*"
-      (display-buffer-in-side-window)
-      (window-width . 100)
-      (side . right)
-      (slot . 1))
-     ("\\*\\(Flymake diagnostics\\|xref\\|Completions\\)"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 1))
-     ("\\*\\(grep\\|find\\)\\*"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 2)))))
+;; (use-package window
+;;   :ensure nil
+;;   :custom
+;;   (display-buffer-alist
+;;    '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\|Bookmark List\\|Occur\\|eldoc\\)\\*"
+;;       (display-buffer-in-side-window)
+;;       (window-height . 0.25)
+;;       (side . bottom)
+;;       (slot . 0))
+;;      ("\\*\\([Hh]elp\\)\\*"
+;;       (display-buffer-in-side-window)
+;;       (window-width . 75)
+;;       (side . right)
+;;       (slot . 0))
+;;      ("\\*\\(Ibuffer\\)\\*"
+;;       (display-buffer-in-side-window)
+;;       (window-width . 100)
+;;       (side . right)
+;;       (slot . 1))
+;;      ("\\*\\(Flymake diagnostics\\|xref\\|Completions\\)"
+;;       (display-buffer-in-side-window)
+;;       (window-height . 0.25)
+;;       (side . bottom)
+;;       (slot . 1))
+;;      ("\\*\\(grep\\|find\\)\\*"
+;;       (display-buffer-in-side-window)
+;;       (window-height . 0.25)
+;;       (side . bottom)
+;;       (slot . 2)))))
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
 ;;;;;;;;;;;;;;;;
 ;; Minimal mode line with just the file name and the status indicator
 
-(setq-default mode-line-format
-  '("%e" " " mode-line-buffer-identification "%* "))
+;; (setq-default mode-line-format
+;;   '("%e" " " mode-line-buffer-identification "%* "))
 
 (let ((bg (face-attribute 'mode-line :background)))
   (set-face-attribute 'mode-line nil
@@ -216,6 +216,10 @@
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH"))))
 
+;;;;;;;;;;;;;;;;;;;;
+;; Modal keybinds ;;
+;;;;;;;;;;;;;;;;;;;;
+;; Largely taken from https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;
@@ -353,9 +357,9 @@
   :config
   (global-diff-hl-mode))
 
-(use-package doom-modeline
-  :config
-  (doom-modeline-mode 1))
+;; (use-package doom-modeline
+;;   :config
+;;   (doom-modeline-mode 1))
 
 ;;;;;;;;;;;;;;
 ;; markdown
