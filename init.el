@@ -8,116 +8,154 @@
 ;; - from C.Meier's config https://github.com/gigasquid/emacs-config
 ;;     (setq make-backup-files nil)
 ;;     (setq auto-save-default nil)
-;; - make dired open in same buffer (on ENTER - hitting 'a' instead
-;;   reuses the buffer)
 ;; - Shortcut for duplicate line? useful in C duplicate-dwim command
 ;; - shortcuts for commenting. Especially I would like next-sexp comment
 ;;   #_ for Clojure
-;; - M-o should be C-o maybe? C-o is insertline, never use it
-;; - some shortcut about deleting all the whitespace - fixup-whitespace maybe
-;;   or delete-horizontal-whitespace (M-\) or just-one-space (M-SPC, but
-;;   that's spotlight on mac). None of these do exactly what I want, which is
-;;   to make a block like this:
-;;     (defn [hello] (expression number 1)
-;;       (expression number 2))
-;;   into this in a single keystroke.
-;;     (defn [hello] (expression number 1) (expression number 2))
-;;   actually, delete-indentation M-^ seems to do what I want.
-;; - Multiple cursors https://github.com/magnars/multiple-cursors.el
 ;; - Misc stuff from Batsov https://github.com/bbatsov/emacs.d/blob/master/init.el
 ;; - avy - stoped using it for some reason, not sure why
-;; - use mark-pops more?
-;;   https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
-;; - https://www.masteringemacs.org/article/demystifying-emacs-window-manager
 ;; - Solo (https://www.youtube.com/watch?v=j_2QkCcf8zE, https://github.com/LionyxML/emacs-solo/).
 ;;    Go through and steal the stuff
 ;;    (What does narrow to region do?)
+;;     - savehist / save-place
+;; - Check out https://github.com/adityaathalye/dotemacs/blob/master/init.el
 ;;
-;; Things I tried and didn't like
-;;   (setq-default show-trailing-whitespace t)
-;;   lsp mode for Clojure. Bit too much
-;;   hippie-expand in place of dabbrev-expand - it took too many liberties.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (global-unset-key (kbd "<right>"))
-;; (global-unset-key (kbd "<left>"))
-;; (global-unset-key (kbd "<up>"))
-;; (global-unset-key (kbd "<down>"))
-;; (global-unset-key (kbd "<down-mouse-1>"))
-;; (global-unset-key (kbd "<mouse-1>"))
-;; (global-unset-key (kbd "<down-mouse-3>"))
-;; (global-unset-key (kbd "<mouse-3>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
+;; Remove most of the initial noisy stuff at startup
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
-
-;; fix temp file creation
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; Watches the files and reverts them when they are changed by another
-;; process.  Useful for editing things in a shared folder (GDrive) or
-;; for git pulls. (Instead of manually revert-buffer)
-(global-auto-revert-mode 1)
-;; Same idea for dired
-(setq global-auto-revert-non-file-buffers t)
-
-;; prefer spaces over tabs
-(setq-default indent-tabs-mode nil)
-
-(setq sentence-end-double-space nil)
-
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-(split-window-horizontally)
-
-;; (defun no-split-window ()
-;;   (interactive)
-;;   nil)
-
-;; (setq split-window-preferred-function 'no-split-window)
-
+(setq ring-bell-function 'ignore)
 (setq visible-bell 1)
 
-;; Always linenumbers in programming modes, and _relative_ line
-;; numbers
+;; File operations
+(setq create-lockfiles nil)
+(setq make-backup-files nil)
+(setq backup-inhibited t)
+(setq delete-by-moving-to-trash t)
+
+;; Autoreverts
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t) ; for dired
+
+;; On save, add an option to press d to see a diff
+;; C-x s d
+(add-to-list 'save-some-buffers-action-alist
+             (list "d"
+                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+                   "show diff between the buffer and its file"))
+
+;; scrolling
+(setq pixel-scroll-precision-mode t)
+(setq pixel-scroll-precision-use-momentum nil)
+(setq scroll-conservatively 101)
+(setq scroll-margin 5)
+
+;; line numbers display
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setq-default display-line-numbers-type 'relative)
 
-;; programming visibility
-(show-paren-mode +1)
-(global-hl-line-mode +1)
+;; Windows and splitting
+(setq split-width-threshold 170)     ; So vertical splits are preferred
+(setq split-height-threshold nil)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(setq frame-resize-pixelwise t)
+(setq resize-mini-windows 'grow-only)
+
+;; Editing preferences
+(setq delete-selection-mode 1)
+(setq kill-do-not-save-duplicates t) ;; doesn't duplicate things in the kill ring
+
+;; Whitespace, tabs and spaces
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
+(setq-default indent-tabs-mode nil)
+(setq sentence-end-double-space nil)
+(setq tab-width 2)
 
-;; Auto-completion in minibuffs - FIDO is great, no need for IVY any friends
-;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
-
-(fido-vertical-mode)
-
+;; parens
+(show-paren-mode +1)
 (electric-pair-mode)
 
-(setq scroll-conservatively 101)
+;; Diffs and version control
+(global-hl-line-mode +1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Visuals
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; completions
+(setq completion-ignore-case t)
+(setq completions-detailed t)
+;; TAB first tries to indent the current line, and if the line was
+;; already indented, then try to complete the thing at point.
+(setq tab-always-indent 'complete)
 
-(let ((bg (face-attribute 'mode-line :background)))
-  (set-face-attribute 'mode-line nil
-                      :box (list :line-width 4 :color bg :style nil)))
+;; FIDO/Minibuffer
+;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
+(fido-vertical-mode)
 
-(let ((bg (face-attribute 'mode-line-inactive :background)))
-  (set-face-attribute 'mode-line-inactive nil
-                      :box (list :line-width 4 :color bg :style nil)))
+;; Savehist
+(setq savehist-additional-variables
+      '(kill-ring                            ; clipboard
+        register-alist                       ; macros
+        mark-ring global-mark-ring           ; marks
+        search-ring regexp-search-ring))     ; searches
+(setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
+(setq save-place-limit 600)
+
+;; Stuff I don't have a place for currently
+(setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
+(setq use-short-answers t)
+(setq set-mark-command-repeat-pop t) ;; So we can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
+(setq truncate-lines t)
+
+;;;;;;;;;;;
+;; dired ;;
+;;;;;;;;;;;
+
+(put 'dired-find-alternate-file 'disabled nil)
+
+(use-package wdired
+  :ensure nil
+  :commands (wdired-change-to-wdired-mode)
+  :config
+  (setq wdired-allow-to-change-permissions t)
+  (setq wdired-create-parent-directories t))
+
+;;;;;;;;;;;;;;;;;;
+;; Side windows ;;
+;;;;;;;;;;;;;;;;;;
+
+(use-package window
+  :ensure nil
+  :custom
+  (display-buffer-alist
+   '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\|Bookmark List\\|Occur\\|eldoc\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 0))
+     ("\\*\\([Hh]elp\\)\\*"
+      (display-buffer-in-side-window)
+      (window-width . 75)
+      (side . right)
+      (slot . 0))
+     ("\\*\\(Ibuffer\\)\\*"
+      (display-buffer-in-side-window)
+      (window-width . 100)
+      (side . right)
+      (slot . 1))
+     ("\\*\\(Flymake diagnostics\\|xref\\|Completions\\)"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 1))
+     ("\\*\\(grep\\|find\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 2)))))
 
 ;;;;;;;;;;;;;;;;
 ;; Mode line
@@ -127,18 +165,26 @@
 (setq-default mode-line-format
   '("%e" " " mode-line-buffer-identification "%* "))
 
+(let ((bg (face-attribute 'mode-line :background)))
+  (set-face-attribute 'mode-line nil
+                      :box (list :line-width 4 :color bg :style nil)))
+
+(let ((bg (face-attribute 'mode-line-inactive :background)))
+  (set-face-attribute 'mode-line-inactive nil
+                      :box (list :line-width 4 :color bg :style nil)))
+
+;; (possibly modified if doom-modeline is enabled further on)
+
 ;;;;;;;;;;;;;;;;
 ;; recent mode
 ;;;;;;;;;;;;;;;;
 
 (recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 25)
+(setq recentf-max-menu-items 300)
+(setq recentf-max-saved-items 15)
 ;; I used to have this as a separate buffer which opened. But now I
 ;; just use a mini-buffer with FIDO, per here:
 ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
-
-;;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 (global-set-key (kbd "C-x C-r") 'recentf-open-minibuff)
 
@@ -154,45 +200,45 @@
 ;;;;;;;;;;;;;;;;;
 
 ;;; Use command key for meta
-(setq mac-option-key-is-meta nil
-      mac-command-key-is-meta t
-      mac-command-modifier 'meta
-      mac-option-modifier 'none)
+(when (eq system-type 'darwin)
+  (setq mac-option-key-is-meta nil
+        mac-command-key-is-meta t
+        mac-command-modifier 'meta
+        mac-option-modifier 'none)
+  ;;; adding brew llvm path
+  (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
+  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH"))))
 
-;;; adding brew llvm path
-
-(add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
-(setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Suspend frames - v annoying to hit by accident
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
+;; Configuring keybinds in Emacs:
+;; - (global-set-key KEY COMMAND)
 
 ;; C-m should not be interpreted as RET
 (define-key input-decode-map [?\C-m] [C-m])
 
-;; Moves and kills
+;; Moves and kill
 ;; |             | C-         | M-        | C-M- (code) |
 ;; |:------------|:-----------|:----------|:------------|
-;; | a/start     | line*      | buff      | defn*       |
-;; | e/end       | line*      | buff      | defn*       |
-;; | h/back      | word       | sent      | sexp        |
-;; | l/fwd       | word       | sent      | sexp        |
-;; | j/nxt       | line       | pg down   | down-in     |
-;; | k/prv       | line       | pg up     | up-out      |
-;; | ;           | recenter*  |           |             |
+;; | a start     | line*      | buff      | defn*       |
+;; | e end       | line*      | buff      | defn*       |
+;; |             |            |           |             |
+;; | h back      | word       | sent      | sexp        |
+;; | l fwd       | word       | sent      | sexp        |
+;; | j nxt       | line       | pg down   | down-in     |
+;; | k prv       | line       | pg up     | up-out      |
 ;; |:------------|:-----------|:----------|:------------|
+;; | ;           | recenter*  |           |             |
 ;; | SPACE       | set mark*  |           | mark sexp*  |
 ;; |:------------|:-----------|:----------|:------------|
-;; | w           | kill rgn*  | KR save*  | KR append*  |
-;; | n/kill back | word       | sentence  | sexp        |
-;; | m/kill fwd  | word       | sentence  | sexp        |
-;; | p/line      | rest line  | back line | whole line  |
-;; | y/yank      | yank last* | KR Cycle* |             |
+;; | w kill rng  | kill rgn*  | KR save*  | KR append*  |
+;; | n kill back | word       | sentence  | sexp        |
+;; | m kill fwd  | word       | sentence  | sexp        |
+;; | p kill line | rest line  | back line | whole line  |
+;; | y yank      | yank last* | KR Cycle* |             |
 
 (global-set-key (kbd "C-l") 'forward-word) ;; replaces recenter-top-bottom
 (global-set-key (kbd "C-h") 'backward-word) ;; replaces help :(
@@ -266,13 +312,31 @@
 
 ;; Keys I always hit accidentally
 
+(global-unset-key (kbd "C-z")) ;; suspend
+(global-unset-key (kbd "C-x C-z")) ;; suspend
 (global-unset-key (kbd "C-x f")) ;; col fill
 (global-unset-key (kbd "C-t")) ;; transpose char
 (global-unset-key (kbd "M-c"))   ;; capitalize
 
+;;;;;;;;;;;;;;;;
+;; compilation
+;;;;;;;;;;;;;;;;
+;; Taken from emacs-solo
+
+(use-package compile
+  :ensure nil
+  :custom
+  (compilation-always-kill t)
+  (compilation-scroll-output t)
+  (ansi-color-for-compilation-mode t)
+  :config
+  (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package / Mode specific configuration ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -336,7 +400,7 @@
 ;(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
 ;(add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
 (add-hook 'emacs-lisp-mode-hook
-	  (lambda () (electric-pair-local-mode)))
+          (lambda () (electric-pair-local-mode)))
 
 ;(add-hook 'clojure-mode-hook #'smartparens-mode)
 ;(add-hook 'clojure-mode-hook 'sexp-bindings)
@@ -396,6 +460,8 @@
   :bind (:map odin-mode-map
               ("C-c C-c" . 'recompile)))
 
+(add-hook 'c++-mode-hook 'subword-mode)
+
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
@@ -419,6 +485,4 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
-(load custom-file 'noerror)
-
-(put 'dired-find-alternate-file 'disabled nil)
+(load custom-file 'noerror 'nomessage)
