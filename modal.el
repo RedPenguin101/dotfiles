@@ -60,6 +60,10 @@
   (setq mode-line-front-space insert-mode-indicator)
   (force-mode-line-update))
 
+(defun unset-modal-mode ()
+  (interactive)
+  (modal-mode 0))
+
 (define-minor-mode modal-mode
   "My modal mode"
   :global t
@@ -68,13 +72,13 @@
   (if modal-mode
       (progn
         (add-hook 'minibuffer-setup-hook 'insert-mode-init)
-        (add-hook 'magit-mode-hook 'insert-mode-init)
+        (add-hook 'magit-mode-hook 'unset-modal-mode)
         (add-hook 'minibuffer-exit-hook 'command-mode-init)
         (add-hook 'isearch-mode-end-hook 'command-mode-init)
         (command-mode-init))
     (progn
       (remove-hook 'minibuffer-setup-hook 'insert-mode-init)
-      (remove-hook 'magit-mode-hook 'insert-mode-init)
+      (remove-hook 'magit-mode-hook 'unset-modal-mode)
       (remove-hook 'minibuffer-exit-hook 'command-mode-init)
       (remove-hook 'isearch-mode-end-hook 'command-mode-init)
       (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))

@@ -1,0 +1,54 @@
+LEFT HAND
+---------
+
+a - execute command  (ag proj)
+s -                  (save)
+f - insert mode      (proj find file)
+d -                  (dired-jump)
+g -                  (magit status)
+
+q - fill para
+w -                  (whitespace cleanup)
+e - back word kill
+r - fwd word kill
+t -
+
+z - comment dwim
+x - kill region
+c - copy region
+v - paste
+b - buffer switch   (proj buffer)
+
+1 - delete other windows
+2 - split hor
+3 - split vert
+4 - 
+5 - 
+6 - 
+
+RIGHT HAND
+----------
+
+h - 
+j - left word
+k - down line
+l - right word
+; - 
+' - recenter
+
+y - 
+u - start line
+i - up line
+o - end line        (occur)
+p - 
+
+n - isearch fwd     (avy search)
+m - 
+, - other window
+. -                 (univ)
+/ - undo
+
+7 - 
+8 - 
+9 - 
+0 - 

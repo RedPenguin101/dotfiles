@@ -219,8 +219,18 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
-;; Largely taken from
+;; inspired by
 ;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
+;; things to bind:
+;; - sexp expressions
+;; - page up/down
+;; - more kills, expecially sexp kills
+;; - steal xah's dwim copy and paste commands
+;; - uppercase (maybe some better case stuff?)
+;; - add global versions of basic moves with C-
+;; - query replace
+;; - write-file (save as)
+;; - take q off command - too used in dired and friends
 
 (load "~/.emacs.d/lisp/modal.el")
 (modal-mode 1)
@@ -251,7 +261,7 @@
    ("x" . kill-region)
    ("c" . kill-ring-save)
    ("v" . yank)
-   ("y" . undo)
+   ("/" . undo)
 
    ;; EDITS
    ("q" . fill-paragraph)
@@ -266,17 +276,28 @@
    ))
 
 (define-leader-keys
- '(("s" . save-some-buffers)
+ '(("s" . save-buffer)
    ("f" . project-find-file)
    ("a" . ag-project)
-   ("g" . magit-status)))
+   ("g" . magit-status)
+   ("n" . avy-goto-char-2)
+   ("w" . whitespace-cleanup)
+   ("b" . project-switch-to-buffer)
+   ("." . universal-argument)
+   ("o" . occur)
+   ("d" . dired-jump)))
 
 ;; globals
 (global-set-key (kbd "C-;") 'dabbrev-expand)
 (global-set-key (kbd "C-b") 'switch-to-buffer)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
 
 ;; Keys I always hit accidentally and things I have mapped to other things
 (global-unset-key (kbd "C-l")) ;; recenter
+
+(global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
+(global-unset-key (kbd "C-<wheel-down>"))
 
 (global-unset-key (kbd "C-z")) ;; suspend
 (global-unset-key (kbd "C-x C-z")) ;; suspend
