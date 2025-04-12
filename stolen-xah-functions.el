@@ -148,3 +148,32 @@ Version: 2023-07-12"
           (insert "\n"))))
      (t (progn
           (message "nothing done. logic error 40873. shouldn't reach here"))))))
+
+(defun xah/toggle-letter-case ()
+  "Toggle the letter case of current word or selection.
+Always cycle in this order: Init Caps, ALL CAPS, all lower.
+
+URL `http://xahlee.info/emacs/emacs/emacs_toggle_letter_case.html'
+Created: 2020-06-26
+Version: 2024-06-17"
+  (interactive)
+  (let ((deactivate-mark nil) xbeg xend)
+    (if (region-active-p)
+        (setq xbeg (region-beginning) xend (region-end))
+      (save-excursion
+        (skip-chars-backward "[:alnum:]")
+        (setq xbeg (point))
+        (skip-chars-forward "[:alnum:]")
+        (setq xend (point))))
+    (when (not (eq last-command this-command))
+      (put this-command 'state 0))
+    (cond
+     ((equal 0 (get this-command 'state))
+      (upcase-initials-region xbeg xend)
+      (put this-command 'state 1))
+     ((equal 1 (get this-command 'state))
+      (upcase-region xbeg xend)
+      (put this-command 'state 2))
+     ((equal 2 (get this-command 'state))
+      (downcase-region xbeg xend)
+      (put this-command 'state 0)))))

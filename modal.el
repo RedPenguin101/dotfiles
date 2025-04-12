@@ -12,6 +12,7 @@
   (define-key modal-command-map (char-to-string (+ ?A i)) 'ignore))
 
 (define-key modal-insert-map  (kbd "<escape>") #'command-mode-init)
+(define-key modal-insert-map  (kbd "C-SPC") #'command-mode-init)
 
 (defun map-over-keys (keymap keys-alist)
   (mapcar

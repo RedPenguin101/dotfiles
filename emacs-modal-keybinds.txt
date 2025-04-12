@@ -2,13 +2,13 @@ LEFT HAND
 ---------
 
 a - execute command  (ag proj)
-s -                  (save)
+s - back kill sexp   (save)
+d - kill sexp        (dired-jump)
 f - insert mode      (proj find file)
-d -                  (dired-jump)
 g -                  (magit status)
 
 q - fill para
-w -                  (whitespace cleanup)
+w - shrink whitespace (whitespace cleanup)
 e - back word kill
 r - fwd word kill    (recent mode)
 t - mark
@@ -29,22 +29,22 @@ b - buffer switch   (proj buffer)
 RIGHT HAND
 ----------
 
-h - 
-j - left word
+h - back block
+j - left word     (goto line)
 k - down line
 l - right word
-; - 
+; - fwd block
 ' - recenter
 
 y - 
-u - start line
-i - up line
-o - end line        (occur)
-p - 
+u - back char
+i - up line         (imenu)
+o - fwd char        (occur)
+p - upcase dwim     (query-replace)
 
 n - isearch fwd     (avy search)
 m - 
-, - other window
+, - other window    (neg arg)
 . -                 (univ)
 / - undo
 
