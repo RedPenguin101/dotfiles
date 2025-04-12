@@ -219,7 +219,40 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
-;; Largely taken from https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
+;; Largely taken from
+;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
+
+(load "~/.emacs.d/lisp/modal.el")
+(my-modal-mode 1)
+
+(define-key modal-command-map (kbd "a") 'execute-extended-command)
+
+;; Moves
+
+(define-key modal-command-map (kbd "k") 'previous-line)
+(define-key modal-command-map (kbd "j") 'next-line)
+(define-key modal-command-map (kbd "h") 'backward-word)
+(define-key modal-command-map (kbd "l") 'forward-word)
+
+(define-key modal-command-map (kbd "u") 'move-beginning-of-line)
+(define-key modal-command-map (kbd "p") 'move-end-of-line)
+
+(define-key modal-command-map (kbd "'") 'recenter-top-bottom)
+
+;; Windows
+(define-key modal-command-map (kbd "o") 'other-window)
+(define-key modal-command-map (kbd "3") 'split-window-right)
+(define-key modal-command-map (kbd "2") 'split-window-below)
+(define-key modal-command-map (kbd "1") 'delete-other-windows)
+
+;; Edits
+(define-key modal-command-map (kbd "q") 'fill-paragraph)
+
+;; CUA
+(define-key modal-command-map (kbd "z") 'undo)
+(define-key modal-command-map (kbd "x") 'kill-region)
+(define-key modal-command-map (kbd "c") 'kill-ring-save)
+(define-key modal-command-map (kbd "v") 'yank)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; universal keybind changes ;;
