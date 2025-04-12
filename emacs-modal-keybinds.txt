@@ -10,8 +10,8 @@ g -                  (magit status)
 q - fill para
 w -                  (whitespace cleanup)
 e - back word kill
-r - fwd word kill
-t -
+r - fwd word kill    (recent mode)
+t - mark
 
 z - comment dwim
 x - kill region

@@ -40,6 +40,7 @@
 ;; Autoreverts
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t) ; for dired
+(setq auto-revert-verbose nil)
 
 ;; scrolling
 (setq pixel-scroll-precision-mode t)
@@ -97,20 +98,13 @@
 (setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
 (setq save-place-limit 600)
 (save-place-mode 1)
+
 (desktop-save-mode 1)
 (setq desktop-save t)
 (setq desktop-load-locked-desktop t)
 (setq desktop-restore-frames t)
 (setq desktop-auto-save-timeout 300)
 (setq desktop-globals-to-save nil)
-
-;; On save, add an option to press d to see a diff
-;; C-x s d
-(add-to-list 'save-some-buffers-action-alist
-             (list "d"
-                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-                   "show diff between the buffer and its file"))
-
 
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
@@ -130,47 +124,10 @@
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t))
 
-;;;;;;;;;;;;;;;;;;
-;; Side windows ;;
-;;;;;;;;;;;;;;;;;;
-
-;; (use-package window
-;;   :ensure nil
-;;   :custom
-;;   (display-buffer-alist
-;;    '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|Messages\\|Bookmark List\\|Occur\\|eldoc\\)\\*"
-;;       (display-buffer-in-side-window)
-;;       (window-height . 0.25)
-;;       (side . bottom)
-;;       (slot . 0))
-;;      ("\\*\\([Hh]elp\\)\\*"
-;;       (display-buffer-in-side-window)
-;;       (window-width . 75)
-;;       (side . right)
-;;       (slot . 0))
-;;      ("\\*\\(Ibuffer\\)\\*"
-;;       (display-buffer-in-side-window)
-;;       (window-width . 100)
-;;       (side . right)
-;;       (slot . 1))
-;;      ("\\*\\(Flymake diagnostics\\|xref\\|Completions\\)"
-;;       (display-buffer-in-side-window)
-;;       (window-height . 0.25)
-;;       (side . bottom)
-;;       (slot . 1))
-;;      ("\\*\\(grep\\|find\\)\\*"
-;;       (display-buffer-in-side-window)
-;;       (window-height . 0.25)
-;;       (side . bottom)
-;;       (slot . 2)))))
-
 ;;;;;;;;;;;;;;;;
 ;; Mode line
 ;;;;;;;;;;;;;;;;
 ;; Minimal mode line with just the file name and the status indicator
-
-;; (setq-default mode-line-format
-;;   '("%e" " " mode-line-buffer-identification "%* "))
 
 (let ((bg (face-attribute 'mode-line :background)))
   (set-face-attribute 'mode-line nil
@@ -179,8 +136,6 @@
 (let ((bg (face-attribute 'mode-line-inactive :background)))
   (set-face-attribute 'mode-line-inactive nil
                       :box (list :line-width 4 :color bg :style nil)))
-
-;; (possibly modified if doom-modeline is enabled further on)
 
 ;;;;;;;;;;;;;;;;
 ;; recent mode
@@ -192,8 +147,6 @@
 ;; I used to have this as a separate buffer which opened. But now I
 ;; just use a mini-buffer with FIDO, per here:
 ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
-
-(global-set-key (kbd "C-x C-r") 'recentf-open-minibuff)
 
 (defun recentf-open-minibuff ()
   "Use `ido-completing-read' to \\[find-file] a recent file"
@@ -215,7 +168,6 @@
   ;;; adding brew llvm path
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH"))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Xah's functions ;;
@@ -239,6 +191,7 @@
 ;; - query replace
 ;; - write-file (save as)
 ;; - take q off command - too used in dired and friends
+;; - mark popping
 
 (load "~/.emacs.d/lisp/modal.el")
 
@@ -247,6 +200,7 @@
 (define-command-keys
  '(;; general
    ("a" . execute-extended-command)
+   ("t" . set-mark-command)
 
    ;; MOVES
    ("i" . previous-line)
@@ -283,8 +237,7 @@
    ("b" . switch-to-buffer)
 
    ;; SEARCH
-   ("n" . isearch-forward)
-   ))
+   ("n" . isearch-forward)))
 
 (define-leader-keys
  '(("s" . save-buffer)
@@ -296,7 +249,8 @@
    ("b" . project-switch-to-buffer)
    ("." . universal-argument)
    ("o" . occur)
-   ("d" . dired-jump)))
+   ("d" . dired-jump)
+   ("r" . recentf-open-minibuff)))
 
 ;; globals
 (global-set-key (kbd "C-;") 'dabbrev-expand)
@@ -336,17 +290,9 @@
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-(use-package which-key
-  :config
-  (which-key-mode))
-
 (use-package diff-hl
   :config
   (global-diff-hl-mode))
-
-;; (use-package doom-modeline
-;;   :config
-;;   (doom-modeline-mode 1))
 
 ;;;;;;;;;;;;;;
 ;; markdown
