@@ -1,12 +1,3 @@
-;; TODO
-;; - when major mode is lispy, switch move keymaps to sexp versions
-;; - space leader and keybinds
-
-(defvar current-mode 'insert)
-
-(defvar command-mode-indicator "c")
-(defvar insert-mode-indicator "i")
-
 (defvar modal-key-map     (make-sparse-keymap))
 (defvar modal-command-map (make-sparse-keymap))
 (defvar modal-insert-map  (make-sparse-keymap))
@@ -31,7 +22,7 @@
   (map-over-keys modal-command-map keys-alist))
 
 (define-command-keys
- '(("f" . insert-mode-init)
+ '(("f"   . insert-mode-init)
    ("SPC" . modal-leader-command)))
 
 (defun define-leader-keys (keys-alist)
@@ -40,27 +31,21 @@
 ;; Activation
 ;;;;;;;;;;;;;;;
 
-(defun update-key-map ()
+(defun update-key-map (mode)
   (set-keymap-parent modal-key-map
-                     (pcase current-mode
+                     (pcase mode
                        ('insert modal-insert-map)
                        ('command modal-command-map))))
 
 (defun command-mode-init ()
   (interactive)
-  (setq current-mode 'command)
-  (update-key-map)
-  (setq cursor-type 'box)
-  ;;(setq mode-line-front-space command-mode-indicator)
-  (force-mode-line-update))
+  (update-key-map 'command)
+  (setq cursor-type 'box))
 
 (defun insert-mode-init ()
   (interactive)
-  (setq current-mode 'insert)
-  (update-key-map)
-  (setq cursor-type 'bar)
-  ;;(setq mode-line-front-space insert-mode-indicator)
-  (force-mode-line-update))
+  (update-key-map 'insert)
+  (setq cursor-type 'bar))
 
 (define-minor-mode modal-mode
   "My modal mode"
