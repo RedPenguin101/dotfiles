@@ -225,45 +225,55 @@
 (load "~/.emacs.d/lisp/modal.el")
 (modal-mode 1)
 
-(define-key modal-command-map (kbd "a") 'execute-extended-command)
+(define-command-keys
+ '(;; general
+   ("a" . execute-extended-command)
 
-;; Moves
-(define-key modal-command-map (kbd "i") 'previous-line)
-(define-key modal-command-map (kbd "k") 'next-line)
-(define-key modal-command-map (kbd "j") 'backward-word)
-(define-key modal-command-map (kbd "l") 'forward-word)
+   ;; MOVES
+   ("i" . previous-line)
+   ("k" . next-line)
+   ("j" . backward-word)
+   ("l" . forward-word)
+   ("u" . move-beginning-of-line)
+   ("o" . move-end-of-line)
 
-(define-key modal-command-map (kbd "u") 'move-beginning-of-line)
-(define-key modal-command-map (kbd "o") 'move-end-of-line)
+   ;; WINDOWS
+   ("," . other-window)
+   ("3" . split-window-right)
+   ("2" . split-window-below)
+   ("1" . delete-other-windows)
 
-;; Windows
-(define-key modal-command-map (kbd ",") 'other-window)
-(define-key modal-command-map (kbd "3") 'split-window-right)
-(define-key modal-command-map (kbd "2") 'split-window-below)
-(define-key modal-command-map (kbd "1") 'delete-other-windows)
+   ;; KILLS
+   ("e" . backward-kill-word)
+   ("r" . kill-word)
 
-;; Edits
-(define-key modal-command-map (kbd "q") 'fill-paragraph)
+   ;; CUA
+   ("x" . kill-region)
+   ("c" . kill-ring-save)
+   ("v" . yank)
+   ("y" . undo)
 
-;; Kills
-(define-key modal-command-map (kbd "e") 'backward-kill-word)
-(define-key modal-command-map (kbd "r") 'forward-kill-word)
+   ;; EDITS
+   ("q" . fill-paragraph)
+   ("z" . comment-dwim)
 
-;; CUA
-(define-key modal-command-map (kbd "z") 'comment-dwim)
-(define-key modal-command-map (kbd "x") 'kill-region)
-(define-key modal-command-map (kbd "c") 'kill-ring-save)
-(define-key modal-command-map (kbd "v") 'yank)
-(define-key modal-command-map (kbd "y") 'undo)
 
-;; files
-(define-key modal-command-map (kbd "b") 'switch-to-buffer)
+   ;; FILES AND BUFFERS
+   ("b" . switch-to-buffer)
 
-;; search
-(define-key modal-command-map (kbd "n") 'isearch-forward)
+   ;; SEARCH
+   ("n" . isearch-forward)
+   ))
+
+(define-leader-keys
+ '(("s" . save-some-buffers)
+   ("f" . project-find-file)
+   ("a" . ag-project)
+   ("g" . magit-status)))
 
 ;; globals
 (global-set-key (kbd "C-;") 'dabbrev-expand)
+(global-set-key (kbd "C-b") 'switch-to-buffer)
 
 ;; Keys I always hit accidentally and things I have mapped to other things
 (global-unset-key (kbd "C-l")) ;; recenter

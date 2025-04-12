@@ -15,17 +15,27 @@
 ;;;;;;;;;;;;;;
 
 (dotimes (i 26)
-  (define-key modal-command-map
-    (char-to-string (+ ?a i))
-    'ignore))
+  (define-key modal-command-map (char-to-string (+ ?a i)) 'ignore))
 
 (dotimes (i 26)
-  (define-key modal-command-map
-    (char-to-string (+ ?A i))
-    'ignore))
+  (define-key modal-command-map (char-to-string (+ ?A i)) 'ignore))
 
 (define-key modal-insert-map  (kbd "<escape>") #'command-mode-init)
-(define-key modal-command-map (kbd "f") #'insert-mode-init)
+
+(defun map-over-keys (keymap keys-alist)
+  (mapcar
+   (lambda (x) (define-key keymap (kbd (car x)) (cdr x)))
+   keys-alist))
+
+(defun define-command-keys (keys-alist)
+  (map-over-keys modal-command-map keys-alist))
+
+(define-command-keys
+ '(("f" . insert-mode-init)
+   ("SPC" . modal-leader-command)))
+
+(defun define-leader-keys (keys-alist)
+  (map-over-keys (define-prefix-command 'modal-leader-command) keys-alist))
 
 ;; Activation
 ;;;;;;;;;;;;;;;
