@@ -228,19 +228,16 @@
 (define-key modal-command-map (kbd "a") 'execute-extended-command)
 
 ;; Moves
-
-(define-key modal-command-map (kbd "k") 'previous-line)
-(define-key modal-command-map (kbd "j") 'next-line)
-(define-key modal-command-map (kbd "h") 'backward-word)
+(define-key modal-command-map (kbd "i") 'previous-line)
+(define-key modal-command-map (kbd "k") 'next-line)
+(define-key modal-command-map (kbd "j") 'backward-word)
 (define-key modal-command-map (kbd "l") 'forward-word)
 
 (define-key modal-command-map (kbd "u") 'move-beginning-of-line)
-(define-key modal-command-map (kbd "p") 'move-end-of-line)
-
-(define-key modal-command-map (kbd "'") 'recenter-top-bottom)
+(define-key modal-command-map (kbd "o") 'move-end-of-line)
 
 ;; Windows
-(define-key modal-command-map (kbd "o") 'other-window)
+(define-key modal-command-map (kbd ",") 'other-window)
 (define-key modal-command-map (kbd "3") 'split-window-right)
 (define-key modal-command-map (kbd "2") 'split-window-below)
 (define-key modal-command-map (kbd "1") 'delete-other-windows)
@@ -248,116 +245,28 @@
 ;; Edits
 (define-key modal-command-map (kbd "q") 'fill-paragraph)
 
+;; Kills
+(define-key modal-command-map (kbd "e") 'backward-kill-word)
+(define-key modal-command-map (kbd "r") 'forward-kill-word)
+
 ;; CUA
-(define-key modal-command-map (kbd "z") 'undo)
+(define-key modal-command-map (kbd "z") 'comment-dwim)
 (define-key modal-command-map (kbd "x") 'kill-region)
 (define-key modal-command-map (kbd "c") 'kill-ring-save)
 (define-key modal-command-map (kbd "v") 'yank)
+(define-key modal-command-map (kbd "y") 'undo)
 
 ;; files
 (define-key modal-command-map (kbd "b") 'switch-to-buffer)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; universal keybind changes ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; search
+(define-key modal-command-map (kbd "n") 'isearch-forward)
 
-;; Configuring keybinds in Emacs:
-;; - (global-set-key KEY COMMAND)
+;; globals
+(global-set-key (kbd "C-;") 'dabbrev-expand)
 
-;; C-m should not be interpreted as RET
-(define-key input-decode-map [?\C-m] [C-m])
-
-;; Moves and kill
-;; |             | C-         | M-        | C-M- (code) |
-;; |:------------|:-----------|:----------|:------------|
-;; | a start     | line*      | buff      | defn*       |
-;; | e end       | line*      | buff      | defn*       |
-;; |             |            |           |             |
-;; | h back      | word       | sent      | sexp        |
-;; | l fwd       | word       | sent      | sexp        |
-;; | j nxt       | line       | pg down   | down-in     |
-;; | k prv       | line       | pg up     | up-out      |
-;; |:------------|:-----------|:----------|:------------|
-;; | ;           | recenter*  |           |             |
-;; | SPACE       | set mark*  |           | mark sexp*  |
-;; |:------------|:-----------|:----------|:------------|
-;; | w kill rng  | kill rgn*  | KR save*  | KR append*  |
-;; | n kill back | word       | sentence  | sexp        |
-;; | m kill fwd  | word       | sentence  | sexp        |
-;; | p kill line | rest line  | back line | whole line  |
-;; | y yank      | yank last* | KR Cycle* |             |
-
-(global-set-key (kbd "C-l") 'forward-word) ;; replaces recenter-top-bottom
-(global-set-key (kbd "C-h") 'backward-word) ;; replaces help :(
-
-(global-set-key (kbd "C-j") 'next-line) ;; replaces electric-newline-and-maybe-indent
-(global-set-key (kbd "C-k") 'previous-line) ;; replaces kill line
-
-(global-set-key (kbd "C-M-l") 'forward-sexp) ;; replaces reposition-window
-(global-set-key (kbd "C-M-h") 'backward-sexp) ;; replace mark-defun
-
-(global-set-key (kbd "C-M-k") 'backward-up-list) ;; also default-indent-new-line
-(global-set-key (kbd "C-M-j") 'down-list) ;; replaces kill
-
-(global-set-key (kbd "M-e") 'end-of-buffer) ;; replaces fwd sentence
-(global-set-key (kbd "M-a") 'beginning-of-buffer) ;; replaces backward sentence
-
-(global-set-key (kbd "M-l") 'forward-sentence) ;; replaces downcase-word
-(global-set-key (kbd "M-h") 'backward-sentence) ;; replaces mark-paragraph
-
-(global-set-key (kbd "M-j") 'scroll-up-command) ;; replaces default-indent-new-line
-(global-set-key (kbd "M-k") 'scroll-down-command) ;; replaces kill sentence
-
-(global-set-key (kbd "C-w") 'backward-kill-word) ;; replaces kill region
-(global-set-key (kbd "C-n") 'backward-kill-word) ;; replaces next line
-(global-set-key (kbd "<C-m>") 'kill-word)
-(global-set-key (kbd "M-n") 'backward-kill-sentence)
-(global-set-key (kbd "M-m") 'kill-sentence) ;; replaces first whitespace
-(global-set-key (kbd "C-M-n") 'backward-kill-sexp) ;; replaces fwd list
-(global-set-key (kbd "C-M-m") 'kill-sexp) ;; aka M-RET
-
-(defun backward-kill-line ()
-  (interactive)
-  (kill-line 0))
-
-(global-set-key (kbd "C-p") 'kill-line) ;; replaces prv line.
-
-(global-set-key (kbd "M-p") 'backward-kill-line)
-(global-set-key (kbd "C-M-p") 'kill-whole-line) ;; replaces prv line
-
-(global-set-key (kbd "C-M-y") 'yank) ;; for maintaining tempo
-
-;; other stuff
-
-(global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "C-d") 'delete-other-windows) ;; replaces transpose char
-
-(global-set-key (kbd "C-f") 'project-find-file)
-(global-set-key (kbd "C-b") 'switch-to-buffer) ; maybe project STB?
-
-;; Use this for command, in place of M-x, avoiding the meta stretch.
-(global-set-key (kbd "C-x <C-m>") 'execute-extended-command)
-
-;; Rebind
-(global-set-key (kbd "C-;") 'recenter-top-bottom)
-(global-set-key (kbd "C-'") 'dabbrev-expand)
-;(global-set-key (kbd "C-M-SPC") 'set-mark-command) ;for tempo
-
-;(global-set-key (kbd "C-x v p") 'vc-pull)
-;; to match C-x v P for push. + is generally pull
-
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-
-;; stop accidentally zooming
-(global-set-key (kbd "C-<wheel-up>") nil)
-(global-set-key (kbd "C-<wheel-down>") nil)
-
-(global-set-key (kbd "C-c w") 'whitespace-cleanup)
-
-(global-set-key (kbd "C-M-s") 'avy-goto-char-2) ;; replaces regex isearch
-
-;; Keys I always hit accidentally
+;; Keys I always hit accidentally and things I have mapped to other things
+(global-unset-key (kbd "C-l")) ;; recenter
 
 (global-unset-key (kbd "C-z")) ;; suspend
 (global-unset-key (kbd "C-x C-z")) ;; suspend

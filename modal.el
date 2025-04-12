@@ -1,3 +1,7 @@
+;; TODO
+;; - when major mode is lispy, switch move keymaps to sexp versions
+;; - space leader and keybinds
+
 (defvar current-mode 'insert)
 
 (defvar command-mode-indicator "c")
@@ -10,12 +14,18 @@
 ;; Keybinds
 ;;;;;;;;;;;;;;
 
+(dotimes (i 26)
+  (define-key modal-command-map
+    (char-to-string (+ ?a i))
+    'ignore))
+
+(dotimes (i 26)
+  (define-key modal-command-map
+    (char-to-string (+ ?A i))
+    'ignore))
+
 (define-key modal-insert-map  (kbd "<escape>") #'command-mode-init)
 (define-key modal-command-map (kbd "f") #'insert-mode-init)
-
-(define-key modal-command-map (kbd "d") 'ignore)
-(define-key modal-command-map (kbd "b") 'ignore)
-
 
 ;; Activation
 ;;;;;;;;;;;;;;;
@@ -50,11 +60,13 @@
         (add-hook 'minibuffer-setup-hook 'insert-mode-init)
         (add-hook 'magit-mode-hook 'insert-mode-init)
         (add-hook 'minibuffer-exit-hook 'command-mode-init)
+        (add-hook 'isearch-mode-end-hook 'command-mode-init)
         (command-mode-init))
     (progn
       (remove-hook 'minibuffer-setup-hook 'insert-mode-init)
       (remove-hook 'magit-mode-hook 'insert-mode-init)
       (remove-hook 'minibuffer-exit-hook 'command-mode-init)
+      (remove-hook 'isearch-mode-end-hook 'command-mode-init)
       (setq mode-line-front-space '(:eval (if (display-graphic-p) " " "-")))
       (force-mode-line-update))))
 
