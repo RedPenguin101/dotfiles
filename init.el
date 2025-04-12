@@ -216,6 +216,14 @@
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH"))))
 
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Xah's functions ;;
+;;;;;;;;;;;;;;;;;;;;;
+;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
+
+(load "~/.emacs.d/lisp/xah.el")
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -247,6 +255,8 @@
    ("l" . forward-word)
    ("u" . move-beginning-of-line)
    ("o" . move-end-of-line)
+   ("h" . xah/beginning-of-line-or-block)
+   (";" . xah/end-of-line-or-block)
 
    ;; WINDOWS
    ("," . other-window)
@@ -259,15 +269,15 @@
    ("r" . kill-word)
 
    ;; CUA
-   ("x" . kill-region)
-   ("c" . kill-ring-save)
+   ("x" . xah/cut-line-or-region)
+   ("c" . xah/copy-line-or-region)
    ("v" . yank)
    ("/" . undo)
 
    ;; EDITS
    ("q" . fill-paragraph)
    ("z" . comment-dwim)
-
+   ("w" . xah/shrink-whitespace)
 
    ;; FILES AND BUFFERS
    ("b" . switch-to-buffer)
