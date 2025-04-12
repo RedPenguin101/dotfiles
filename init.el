@@ -233,7 +233,8 @@
 ;; - take q off command - too used in dired and friends
 
 (load "~/.emacs.d/lisp/modal.el")
-(modal-mode 1)
+
+(add-hook 'prog-mode-hook 'modal-mode)
 
 (define-command-keys
  '(;; general
