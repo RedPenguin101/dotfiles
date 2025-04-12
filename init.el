@@ -41,13 +41,6 @@
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t) ; for dired
 
-;; On save, add an option to press d to see a diff
-;; C-x s d
-(add-to-list 'save-some-buffers-action-alist
-             (list "d"
-                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-                   "show diff between the buffer and its file"))
-
 ;; scrolling
 (setq pixel-scroll-precision-mode t)
 (setq pixel-scroll-precision-use-momentum nil)
@@ -103,12 +96,26 @@
         search-ring regexp-search-ring))     ; searches
 (setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
 (setq save-place-limit 600)
+(save-place-mode 1)
+(desktop-save-mode 1)
+(setq desktop-save t)
+(setq desktop-load-locked-desktop t)
+(setq desktop-restore-frames t)
+(setq desktop-auto-save-timeout 300)
+(setq desktop-globals-to-save nil)
+
+;; On save, add an option to press d to see a diff
+;; C-x s d
+(add-to-list 'save-some-buffers-action-alist
+             (list "d"
+                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+                   "show diff between the buffer and its file"))
+
 
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
 (setq set-mark-command-repeat-pop t) ;; So we can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
-(setq truncate-lines t)
 
 ;;;;;;;;;;;
 ;; dired ;;
@@ -332,27 +339,23 @@
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Package / Mode specific configuration ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; None native packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+(use-package which-key
+  :config
+  (which-key-mode))
 
-(defvar my-packages
-  '(which-key diff-hl))
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode))
 
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p))
-  (require p))
-
-(which-key-mode)
-(global-diff-hl-mode)
-(require 'doom-modeline)
-(doom-modeline-mode 1)
+(use-package doom-modeline
+  :config
+  (doom-modeline-mode 1))
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -364,32 +367,9 @@
 (add-hook 'markdown-mode-hook 'visual-line-mode)
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
 
-;;;;;;;;;;;;;;
-;; Org mode
-;;;;;;;;;;;;;;
-
-(setq org-hide-emphasis-markers t)
-(setq org-hide-leading-stars t)
-(add-hook 'org-mode-hook 'visual-line-mode)
-(add-hook 'org-mode-hook 'visual-fill-column-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)
 ;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'smartparens-config)
-
-(defun sexp-bindings ()
-  (progn
-    (local-set-key (kbd "C-l") 'forward-sexp)
-    (local-set-key (kbd "C-h") 'backward-sexp)
-    (local-set-key (kbd "C-k") 'sp-end-of-sexp)
-    (local-set-key (kbd "C-j") 'sp-beginning-of-sexp)
-
-    (local-set-key (kbd "C-M-k") 'sp-down-sexp)
-    (local-set-key (kbd "C-M-h") 'sp-backward-up-sexp)
-    (local-set-key (kbd "C-M-j") 'sp-backward-down-sexp)
-    (local-set-key (kbd "C-M-l") 'sp-up-sexp)))
 
 ;; other options for sexps to think about using smart-parens
 ;; - wrapping / unwrapping
@@ -397,13 +377,9 @@
 ;; - transpose
 ;; - kill
 
-;(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
-;(add-hook 'emacs-lisp-mode-hook 'sexp-bindings)
 (add-hook 'emacs-lisp-mode-hook
           (lambda () (electric-pair-local-mode)))
 
-;(add-hook 'clojure-mode-hook #'smartparens-mode)
-;(add-hook 'clojure-mode-hook 'sexp-bindings)
 (add-hook 'clojure-mode-hook 'subword-mode 'electric-pair-mode)
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
