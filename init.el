@@ -223,7 +223,7 @@
 (add-hook 'prog-mode-hook 'modal-mode)
 (add-hook 'text-mode-hook 'modal-mode)
 
-(define-command-keys
+(define-modal-command-keys
  '(;; general
    ("a" . execute-extended-command)
    ("t" . set-mark-command)
@@ -268,13 +268,13 @@
    ;; FILES AND BUFFERS
    ("b" . switch-to-buffer)))
 
-(define-sexp-mode-overrides
+(define-modal-sexp-overrides
  '(("j" . backward-sexp)
    ("l" . forward-sexp)
    ("i" . backward-up-list)
    ("k" . down-list)))
 
-(define-leader-keys
+(define-modal-leader-keys
  '(("." . universal-argument)
    ("," . negative-argument)
 
@@ -292,7 +292,7 @@
 
    ("w" . whitespace-cleanup)))
 
-(define-project-keys
+(define-modal-project-keys
  '(("a" . ag-project)
    ("f" . project-find-file)
    ("k" . project-kill-buffers)
@@ -341,9 +341,9 @@
 ;; - transpose
 ;; - kill
 
-(add-hook 'emacs-lisp-mode-hook 'modal-mode-sexp-override)
+(add-hook 'emacs-lisp-mode-hook 'modal-mode-sexp)
 (add-hook 'clojure-mode-hook 'subword-mode)
-(add-hook 'clojure-mode-hook 'modal-mode-sexp-override)
+(add-hook 'clojure-mode-hook 'modal-mode-sexp)
 
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
