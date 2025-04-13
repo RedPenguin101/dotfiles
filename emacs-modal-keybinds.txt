@@ -1,54 +1,55 @@
 LEFT HAND
 ---------
 
-a - execute command  (ag proj)
-s - back kill sexp   (save)
-d - kill sexp        (dired-jump)
-f - insert mode      (proj find file)
-g -                  (magit status)
+     COMMAND             LEADER            PROJECT
+a    execute command                       ag proj
+s    back kill sexp      save
+d    back kill word      dired-jump
+f    kill word                             proj find file
+g    kill sexp                             magit
 
-q - fill para
-w - shrink whitespace (whitespace cleanup)
-e - back word kill
-r - fwd word kill    (recent mode)
-t - mark
+q    fill para           query replace
+w    shrink whitespace   WS clean
+e    upcase
+r    undo                recent mode
+t    mark
 
-z - comment dwim
-x - kill region
-c - copy region
-v - paste
-b - buffer switch   (proj buffer)
+z    comment dwim
+x    kill region
+c    copy region
+v    paste
+b    buffer switch                         proj buffer
 
-1 - delete other windows
-2 - split hor
-3 - split vert
-4 - 
-5 - 
-6 - 
+1    delete other windows
+2    split hor
+3    split vert
+4
+5
+6
 
 RIGHT HAND
 ----------
 
-h - back block
-j - left word     (goto line)
-k - down line
-l - right word
-; - fwd block
-' - recenter
+h     back block
+j     left word            goto line
+k     down line            kill buffer      proj kill buffers
+l     right word
+;     fwd block
+'     recenter
 
-y - 
-u - back char
-i - up line         (imenu)
-o - fwd char        (occur)
-p - upcase dwim     (query-replace)
+y
+u     back char
+i     up line              imenu
+o     fwd char             occur
+p
 
-n - isearch fwd     (avy search)
-m - 
-, - other window    (neg arg)
-. -                 (univ)
-/ - undo
+n     isearch fwd          avy search
+m
+,     other window         neg arg
+.                          univ
+/
 
-7 - 
-8 - 
-9 - 
-0 - 
+7
+8
+9
+0

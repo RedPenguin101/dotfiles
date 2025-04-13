@@ -40,24 +40,18 @@
 ;; Autoreverts
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t) ; for dired
-(setq auto-revert-verbose nil)
+(setq auto-revert-verbose nil) ;; don't message me
 
 ;; scrolling
-(setq pixel-scroll-precision-mode t)
+(pixel-scroll-precision-mode)
 (setq pixel-scroll-precision-use-momentum nil)
-(setq scroll-conservatively 101)
-(setq scroll-margin 5)
 
 ;; line numbers display
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setq-default display-line-numbers-type 'relative)
 
 ;; Windows and splitting
-(setq split-width-threshold 170)     ; So vertical splits are preferred
-(setq split-height-threshold nil)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-(setq frame-resize-pixelwise t)
-(setq resize-mini-windows 'grow-only)
 
 ;; Editing preferences
 (setq delete-selection-mode 1)
@@ -67,6 +61,7 @@
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
+(add-hook 'text-mode-hook 'whitespace-mode)
 (setq-default indent-tabs-mode nil)
 (setq sentence-end-double-space nil)
 (setq tab-width 2)
@@ -75,7 +70,7 @@
 (show-paren-mode +1)
 (electric-pair-mode)
 
-;; Diffs and version control
+;; highlights the currently selected line
 (global-hl-line-mode +1)
 
 ;; completions
@@ -99,6 +94,7 @@
 (setq save-place-limit 600)
 (save-place-mode 1)
 
+;; desktop save mode reloads all your windows after restart
 (desktop-save-mode 1)
 (setq desktop-save t)
 (setq desktop-load-locked-desktop t)
@@ -109,13 +105,19 @@
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
-(setq set-mark-command-repeat-pop t) ;; So we can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
+;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
+(setq set-mark-command-repeat-pop t)
 
 ;;;;;;;;;;;
 ;; dired ;;
 ;;;;;;;;;;;
+;; look into dired-omit-mode
+;; remember and write down how to do that dired append thing, where
+;; subdirs are added to the buffer
+;; dired-collapse
 
 (put 'dired-find-alternate-file 'disabled nil)
+(setq dired-kill-when-opening-new-dired-buffer t)
 
 (use-package wdired
   :ensure nil
@@ -127,7 +129,8 @@
 ;;;;;;;;;;;;;;;;
 ;; Mode line
 ;;;;;;;;;;;;;;;;
-;; Minimal mode line with just the file name and the status indicator
+;; makes modeline a tiny bit thicker and gets rid of border to
+;; get rid of that 90's look
 
 (let ((bg (face-attribute 'mode-line :background)))
   (set-face-attribute 'mode-line nil
@@ -155,6 +158,20 @@
       (message "Opening file...")
     (message "Aborting")))
 
+;;;;;;;;;;;;;;;;
+;; compilation
+;;;;;;;;;;;;;;;;
+;; Taken from emacs-solo
+
+(use-package compile
+  :ensure nil
+  :custom
+  (compilation-always-kill t)
+  (compilation-scroll-output t)
+  (ansi-color-for-compilation-mode t)
+  :config
+  (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
+
 ;;;;;;;;;;;;;;;;;
 ;; mac
 ;;;;;;;;;;;;;;;;;
@@ -176,6 +193,19 @@
 
 (load "~/.emacs.d/lisp/xah.el")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; None native packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode))
+
+(use-package magit)
+(use-package avy)
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -185,9 +215,13 @@
 ;; - sexp expressions
 ;; - write-file (save as)
 
+(define-key input-decode-map [?\C-m] [C-m]) ;; RET
+(define-key input-decode-map [?\C-i] [C-i]) ;; TAB
+
 (load "~/.emacs.d/lisp/modal.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
+(add-hook 'text-mode-hook 'modal-mode)
 
 (define-command-keys
  '(;; general
@@ -204,6 +238,9 @@
    ("h" . xah/beginning-of-line-or-block)
    (";" . xah/end-of-line-or-block)
 
+   ;; SEARCH
+   ("n" . isearch-forward)
+
    ;; WINDOWS
    ("," . other-window)
    ("3" . split-window-right)
@@ -211,49 +248,54 @@
    ("1" . delete-other-windows)
 
    ;; KILLS
-   ("e" . backward-kill-word)
-   ("r" . kill-word)
-   ("d" . kill-sexp)
+   ("d" . backward-kill-word)
+   ("f" . kill-word)
+   ("g" . kill-sexp)
    ("s" . backward-kill-sexp)
 
    ;; CUA
    ("x" . xah/cut-line-or-region)
    ("c" . xah/copy-line-or-region)
    ("v" . yank)
-   ("/" . undo)
+   ("r" . undo)
 
    ;; EDITS
    ("q" . fill-paragraph)
    ("z" . comment-dwim)
    ("w" . xah/shrink-whitespace)
-   ("p" . upcase-dwim)
+   ("e" . upcase-dwim)
 
    ;; FILES AND BUFFERS
-   ("b" . switch-to-buffer)
-
-   ;; SEARCH
-   ("n" . isearch-forward)))
+   ("b" . switch-to-buffer)))
 
 (define-leader-keys
  '(("SPC" . insert-mode-init)
-   ("s" . save-buffer)
-   ("f" . project-find-file)
-   ("a" . ag-project)
-   ("g" . magit-status)
-   ("n" . avy-goto-char-2)
-   ("p" . query-replace)
-   ("w" . whitespace-cleanup)
-   ("b" . project-switch-to-buffer)
    ("." . universal-argument)
    ("," . negative-argument)
-   ("o" . occur)
-   ("d" . dired-jump)
+
+   ("s" . save-buffer)
+   ("f" . find-file)
    ("r" . recentf-open-minibuff)
+   ("d" . dired-jump)
+   ("k" . kill-buffer)
+
+   ("l" . goto-line)
+   ("n" . avy-goto-char-2)
+   ("q" . query-replace)
+   ("o" . occur)
    ("i" . imenu)
-   ("l" . goto-line)))
+
+   ("w" . whitespace-cleanup)))
+
+(define-project-keys
+ '(("a" . ag-project)
+   ("f" . project-find-file)
+   ("k" . project-kill-buffers)
+   ("g" . magit-status)
+   ("b" . project-switch-to-buffer)))
 
 ;; globals
-(global-set-key (kbd "C-i") 'previous-line)
+;; (global-set-key (kbd "C-i") 'previous-line) this gets confused with TAB, so indent-for-tab-command
 (global-set-key (kbd "C-k") 'next-line)
 (global-set-key (kbd "C-u") 'backward-char)
 (global-set-key (kbd "C-o") 'forward-char)
@@ -275,39 +317,14 @@
 (global-unset-key (kbd "C-t")) ;; transpose char
 (global-unset-key (kbd "M-c"))   ;; capitalize
 
-;;;;;;;;;;;;;;;;
-;; compilation
-;;;;;;;;;;;;;;;;
-;; Taken from emacs-solo
-
-(use-package compile
-  :ensure nil
-  :custom
-  (compilation-always-kill t)
-  (compilation-scroll-output t)
-  (ansi-color-for-compilation-mode t)
-  :config
-  (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; None native packages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(use-package diff-hl
-  :config
-  (global-diff-hl-mode))
-
 ;;;;;;;;;;;;;;
 ;; markdown
 ;;;;;;;;;;;;;;
 
 (setq markdown-fontify-code-blocks-natively t)
-;(setq markdown-hide-markup t)
 (setq markdown-max-image-size '(1500 . 1500))
-(add-hook 'markdown-mode-hook 'visual-line-mode)
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
+(add-hook 'markdown-mode-hook 'visual-line-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)
@@ -319,10 +336,8 @@
 ;; - transpose
 ;; - kill
 
-(add-hook 'emacs-lisp-mode-hook
-          (lambda () (electric-pair-local-mode)))
+(add-hook 'clojure-mode-hook 'subword-mode)
 
-(add-hook 'clojure-mode-hook 'subword-mode 'electric-pair-mode)
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
 
@@ -344,23 +359,11 @@
 (add-hook 'c-mode-hook
           (lambda ()
             (progn
-              (electric-pair-local-mode)
               (c-toggle-comment-style -1)
               (local-set-key (kbd "C-M-h") 'backward-sexp)
               (local-set-key (kbd "C-c C-c") 'recompile)
               (local-set-key (kbd "C-c f") 'clang-format-buffer)
               (local-set-key (kbd "C-d") 'delete-other-windows))))
-
-(add-hook 'c++-mode-hook
-          (lambda ()
-            (progn
-              (electric-pair-local-mode)
-              (c-toggle-comment-style -1)
-              (local-set-key (kbd "C-M-h") 'backward-sexp)
-              (local-set-key (kbd "C-c C-c") 'recompile)
-              (local-set-key (kbd "C-c f") 'clang-format-buffer)
-              (local-set-key (kbd "C-d") 'delete-other-windows))))
-
 
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
@@ -378,8 +381,7 @@
   :bind (:map odin-mode-map
               ("C-c C-c" . 'recompile)))
 
-(add-hook 'c++-mode-hook 'subword-mode)
-
+(add-hook 'odin-mode-hook 'subword-mode)
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
@@ -391,12 +393,6 @@
 
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ag
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq ag-reuse-buffers 't)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config

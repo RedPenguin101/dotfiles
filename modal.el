@@ -23,11 +23,14 @@
   (map-over-keys modal-command-map keys-alist))
 
 (define-command-keys
- '(("f"   . insert-mode-init)
-   ("SPC" . modal-leader-command)))
+ '(("SPC" . modal-leader-command)
+   ("p"   . modal-leader-project)))
 
 (defun define-leader-keys (keys-alist)
   (map-over-keys (define-prefix-command 'modal-leader-command) keys-alist))
+
+(defun define-project-keys (keys-alist)
+  (map-over-keys (define-prefix-command 'modal-leader-project) keys-alist))
 
 ;; Activation
 ;;;;;;;;;;;;;;;
