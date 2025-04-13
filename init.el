@@ -268,9 +268,14 @@
    ;; FILES AND BUFFERS
    ("b" . switch-to-buffer)))
 
+(define-sexp-mode-overrides
+ '(("j" . backward-sexp)
+   ("l" . forward-sexp)
+   ("i" . backward-up-list)
+   ("k" . down-list)))
+
 (define-leader-keys
- '(("SPC" . insert-mode-init)
-   ("." . universal-argument)
+ '(("." . universal-argument)
    ("," . negative-argument)
 
    ("s" . save-buffer)
@@ -336,7 +341,9 @@
 ;; - transpose
 ;; - kill
 
+(add-hook 'emacs-lisp-mode-hook 'modal-mode-sexp-override)
 (add-hook 'clojure-mode-hook 'subword-mode)
+(add-hook 'clojure-mode-hook 'modal-mode-sexp-override)
 
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
