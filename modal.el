@@ -71,12 +71,17 @@
         (setq-local modal-mode--sexp-flag t)
         (modal-mode--command-mode-init))))
 
+(defvar-local modal-mode--active-map nil)
+
 (defun modal-mode--update-key-map (mode)
-  (set-keymap-parent modal-mode--main-keymap
-                     (pcase mode
-                       ('insert modal-mode--insert-keymap)
-                       ('command modal-mode--command-keymap)
-                       ('command-sexp modal-mode--command-sexp-keymap))))
+  "Set up the correct keymap based on current mode."
+  (setq modal-mode--active-map
+        (pcase mode
+          ('command      modal-mode--command-keymap)
+          ('insert       modal-mode--insert-keymap)
+          ('command-sexp modal-mode--command-sexp-keymap)))
+  (setq-local minor-mode-overriding-map-alist
+              `((modal-mode . ,modal-mode--active-map))))
 
 (defun modal-mode--command-mode-init ()
   (interactive)
