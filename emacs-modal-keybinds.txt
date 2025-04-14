@@ -43,8 +43,8 @@ i     up line              imenu
 o     fwd char             occur
 p
 
-n     isearch fwd          avy search
-m
+n     isearch fwd          isearch-backward
+m     avy-search
 ,     other window         neg arg
 .                          univ
 /

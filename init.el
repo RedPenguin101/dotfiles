@@ -214,6 +214,7 @@
 ;; things to bind:
 ;; - sexp expressions
 ;; - write-file (save as)
+;; - mark-sexp
 
 (define-key input-decode-map [?\C-m] [C-m]) ;; RET
 (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
@@ -240,6 +241,7 @@
 
    ;; SEARCH
    ("n" . isearch-forward)
+   ("m" . avy-goto-char-2)
 
    ;; WINDOWS
    ("," . other-window)
@@ -285,7 +287,7 @@
    ("k" . kill-buffer)
 
    ("l" . goto-line)
-   ("n" . avy-goto-char-2)
+   ("n" . isearch-backward)
    ("q" . query-replace)
    ("o" . occur)
    ("i" . imenu)
