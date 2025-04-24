@@ -1,31 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Joe's Emacs init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Things to do or try
-;;
-;; - from https://www.youtube.com/watch?v=51eSeqcaikM
-;;   - save place mode
-;; - from C.Meier's config https://github.com/gigasquid/emacs-config
-;;     (setq make-backup-files nil)
-;;     (setq auto-save-default nil)
-;; - Shortcut for duplicate line? useful in C duplicate-dwim command
-;; - shortcuts for commenting. Especially I would like next-sexp comment
-;;   #_ for Clojure
-;; - Misc stuff from Batsov https://github.com/bbatsov/emacs.d/blob/master/init.el
-;; - avy - stoped using it for some reason, not sure why
-;; - Solo (https://www.youtube.com/watch?v=j_2QkCcf8zE, https://github.com/LionyxML/emacs-solo/).
-;;    Go through and steal the stuff
-;;    (What does narrow to region do?)
-;;     - savehist / save-place
-;; - Check out https://github.com/adityaathalye/dotemacs/blob/master/init.el
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Remove most of the initial noisy stuff at startup
+;; Remove noise at startup
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (setq ring-bell-function 'ignore)
@@ -102,18 +83,37 @@
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
 ;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
+;; (SPC-. t t t t.. in modal-mode)
 (setq set-mark-command-repeat-pop t)
 
 ;;;;;;;;;;;
 ;; dired ;;
 ;;;;;;;;;;;
-;; look into dired-omit-mode
-;; remember and write down how to do that dired append thing, where
-;; subdirs are added to the buffer
+;; How to actually use dired to manage files
+;; - use wdired to rename stuff (including rect mode)
+;; - for mass delete, copy, open use marks
+;; - use marks, including `* %` to mark by regex and t to invert
+;; - F to open all marked files
+;; - i when on a dir to put the content of the dir into the same dired buffer.
+;; - collapse the subdir with $
+;; - use `find-name-dired' to build a dired buffer with all files that fit a pattern
+;;
 ;; dired-collapse
+;; dired-dwim-target
 
 (put 'dired-find-alternate-file 'disabled nil)
 (setq dired-kill-when-opening-new-dired-buffer t)
+
+;; if the option dired-dwim-target is non-nil, and if there is another
+;; Dired buffer displayed in some window, that other buffer’s
+;; directory is suggested instead.
+(setq dired-dwim-target 1)
+
+(require 'dired-x)
+
+;; omit mode exludes noise like . and ..
+(add-hook 'dired-mode-hook 'dired-omit-mode)
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 (use-package wdired
   :ensure nil
@@ -288,10 +288,6 @@
 
    ("w" . whitespace-cleanup)))
 
-(define-modal-project-keys
- '(("f" . project-find-file)
-   ("k" . project-kill-buffers)))
-
 ;; globals
 ;; (global-set-key (kbd "C-i") 'previous-line) this gets confused with TAB, so indent-for-tab-command
 (global-set-key (kbd "C-k") 'next-line)
@@ -334,9 +330,7 @@
 ;; - transpose
 ;; - kill
 
-(add-hook 'emacs-lisp-mode-hook 'modal-mode-sexp)
 (add-hook 'clojure-mode-hook 'subword-mode)
-(add-hook 'clojure-mode-hook 'modal-mode-sexp)
 
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
