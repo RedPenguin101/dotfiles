@@ -22,7 +22,7 @@ z
 x
 c
 v
-b
+b  switch-to-buffer
 
 1
 2
@@ -52,7 +52,7 @@ n
 m
 ,
 .
-/
+/   Undo
 
 7
 8

@@ -115,81 +115,41 @@
 
 (provide 'modal-mode)
 
-;; My keybinds
+;; My modal setup
 ;;;;;;;;;;;;;;;;
-;; Some of the functions are custom ones taken from xah fly. The
-;; keybinds themselves are also heavily inspired by xah fly, though
-;; not exactly the same.
-;;
 ;; (load "~/.emacs.d/lisp/modal.el")
 
 ;; (add-hook 'prog-mode-hook 'modal-mode)
 ;; (add-hook 'text-mode-hook 'modal-mode)
 ;; (add-hook 'conf-mode-hook 'modal-mode)
 
+;; Most of these are just common modified keybinds without the
+;; modifier bit.
+;;
 ;; (define-modal-command-keys
-;;  '(;; general
-;;    ("a" . execute-extended-command)
-;;    ("t" . set-mark-command)
+;;  '(("j" . scroll-up-command)
+;;    ("k" . scroll-down-command)
 
-;;    ;; MOVES
-;;    ("i" . previous-line)
-;;    ("k" . next-line)
-;;    ("u" . backward-char)
-;;    ("o" . forward-char)
-;;    ("j" . backward-word)
-;;    ("l" . forward-word)
-;;    ("h" . xah/beginning-of-line-or-block)
-;;    (";" . xah/end-of-line-or-block)
+;;    ("l" . recenter-top-bottom)
 
-;;    ;; SEARCH
-;;    ("n" . isearch-forward)
-;;    ("m" . avy-goto-char-2)
+;;    ("x" . execute-extended-command)
+;;    ("b" . switch-to-buffer)
+;;    ("/" . undo)
+;;    ("i" . modal-mode--insert-mode-init)
+;;    ("a" . avy-goto-char-2)
+;;    ("s" . isearch-forward)
+;;    ("r" . isearch-backward)
 
-;;    ;; WINDOWS
-;;    ("," . other-window)
+;;    ("o" . other-window)
 ;;    ("1" . delete-other-windows)
 ;;    ("2" . split-window-below)
-;;    ("3" . split-window-right)
-
-;;    ;; KILLS
-;;    ("d" . backward-kill-word)
-;;    ("f" . kill-word)
-;;    ("g" . kill-sexp)
-;;    ("s" . backward-kill-sexp)
-
-;;    ;; CUA
-;;    ("x" . xah/cut-line-or-region)
-;;    ("c" . xah/copy-line-or-region)
-;;    ("v" . yank)
-;;    ("/" . undo)
-
-;;    ;; EDITS
-;;    ("q" . fill-paragraph)
-;;    ("z" . comment-dwim)
-;;    ("w" . xah/shrink-whitespace)
-;;    ("e" . upcase-dwim)
-
-;;    ;; FILES AND BUFFERS
-;;    ("b" . switch-to-buffer)))
+;;    ("3" . split-window-right)))
 
 ;; (define-modal-leader-keys
-;;  '(("." . universal-argument)
-;;    ("," . negative-argument)
-;;    ("g" . magit-status)
-
-;;    ("s" . save-buffer)
-;;    ("f" . find-file)
-;;    ("r" . recentf-open-minibuff)
-;;    ("d" . dired-jump)
-;;    ("k" . kill-buffer)
-
-;;    ("h" . highlight-regexp)
-;;    ("l" . goto-line)
-;;    ("a" . ag-project)
-;;    ("n" . isearch-backward)
-;;    ("q" . query-replace)
+;;  '(("a" . ag-project)
 ;;    ("o" . occur)
-;;    ("i" . imenu)
-
+;;    ("f" . find-file)
+;;    ("s" . save-buffer)
+;;    ("d" . dired-jump)
+;;    ("g" . magit-status)
 ;;    ("w" . whitespace-cleanup)))

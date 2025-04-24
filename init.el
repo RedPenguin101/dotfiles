@@ -83,8 +83,9 @@
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
 ;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
-;; (SPC-. t t t t.. in modal-mode)
+;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
+(global-subword-mode 1)
 
 ;;;;;;;;;;;
 ;; dired ;;
@@ -112,6 +113,7 @@
 (require 'dired-x)
 
 ;; omit mode exludes noise like . and ..
+;(setq dired-omit-verbose nil)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
@@ -193,6 +195,8 @@
 ;; None native packages ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'package)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (use-package diff-hl
@@ -205,12 +209,6 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
-;; inspired by
-;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
-;; things to bind:
-;; - sexp expressions
-;; - write-file (save as)
-;; - mark-sexp
 
 (define-key input-decode-map [?\C-m] [C-m]) ;; RET
 (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
@@ -222,82 +220,35 @@
 (add-hook 'conf-mode-hook 'modal-mode)
 
 (define-modal-command-keys
- '(;; general
-   ("a" . execute-extended-command)
-   ("t" . set-mark-command)
+ '(("j" . scroll-up-command)
+   ("k" . scroll-down-command)
 
-   ;; MOVES
-   ("i" . previous-line)
-   ("k" . next-line)
-   ("u" . backward-char)
-   ("o" . forward-char)
-   ("j" . backward-word)
-   ("l" . forward-word)
-   ("h" . xah/beginning-of-line-or-block)
-   (";" . xah/end-of-line-or-block)
+   ("l" . recenter-top-bottom)
 
-   ;; SEARCH
-   ("n" . isearch-forward)
-   ("m" . avy-goto-char-2)
+   ("x" . execute-extended-command)
+   ("b" . switch-to-buffer)
+   ("/" . undo)
+   ("i" . modal-mode--insert-mode-init)
+   ("a" . avy-goto-char-2)
+   ("s" . isearch-forward)
+   ("r" . isearch-backward)
 
-   ;; WINDOWS
-   ("," . other-window)
+   ("o" . other-window)
    ("1" . delete-other-windows)
    ("2" . split-window-below)
-   ("3" . split-window-right)
-
-   ;; KILLS
-   ("d" . backward-kill-word)
-   ("f" . kill-word)
-   ("g" . kill-sexp)
-   ("s" . backward-kill-sexp)
-
-   ;; CUA
-   ("x" . xah/cut-line-or-region)
-   ("c" . xah/copy-line-or-region)
-   ("v" . yank)
-   ("/" . undo)
-
-   ;; EDITS
-   ("q" . fill-paragraph)
-   ("z" . comment-dwim)
-   ("w" . xah/shrink-whitespace)
-   ("e" . upcase-dwim)
-
-   ;; FILES AND BUFFERS
-   ("b" . switch-to-buffer)))
+   ("3" . split-window-right)))
 
 (define-modal-leader-keys
- '(("." . universal-argument)
-   ("," . negative-argument)
-   ("g" . magit-status)
-
-   ("s" . save-buffer)
-   ("f" . find-file)
-   ("r" . recentf-open-minibuff)
-   ("d" . dired-jump)
-   ("k" . kill-buffer)
-
-   ("h" . highlight-regexp)
-   ("l" . goto-line)
-   ("a" . ag-project)
-   ("n" . isearch-backward)
-   ("q" . query-replace)
+ '(("a" . ag-project)
    ("o" . occur)
-   ("i" . imenu)
-
+   ("f" . find-file)
+   ("s" . save-buffer)
+   ("d" . dired-jump)
+   ("r" . recentf-open-minibuff)
+   ("g" . magit-status)
    ("w" . whitespace-cleanup)))
 
 ;; globals
-;; (global-set-key (kbd "C-i") 'previous-line) this gets confused with TAB, so indent-for-tab-command
-(global-set-key (kbd "C-k") 'next-line)
-(global-set-key (kbd "C-u") 'backward-char)
-(global-set-key (kbd "C-o") 'forward-char)
-(global-set-key (kbd "C-j") 'backward-word)
-(global-set-key (kbd "C-l") 'forward-word)
-
-(global-set-key (kbd "C-;") 'dabbrev-expand)
-(global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
@@ -318,7 +269,6 @@
 (setq markdown-fontify-code-blocks-natively t)
 (setq markdown-max-image-size '(1500 . 1500))
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
-(add-hook 'markdown-mode-hook 'visual-line-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)
@@ -329,8 +279,6 @@
 ;; - slurp / barf
 ;; - transpose
 ;; - kill
-
-(add-hook 'clojure-mode-hook 'subword-mode)
 
 (add-hook 'cider-mode-hook
           (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
@@ -380,13 +328,6 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(odin-mode . ("ols"))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; Common lisp and Slime
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-(load (expand-file-name "~/.quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
