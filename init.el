@@ -42,10 +42,6 @@
 (setq global-auto-revert-non-file-buffers t) ; for dired
 (setq auto-revert-verbose nil) ;; don't message me
 
-;; scrolling
-(pixel-scroll-precision-mode)
-(setq pixel-scroll-precision-use-momentum nil)
-
 ;; line numbers display
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setq-default display-line-numbers-type 'relative)
@@ -223,6 +219,7 @@
 
 (add-hook 'prog-mode-hook 'modal-mode)
 (add-hook 'text-mode-hook 'modal-mode)
+(add-hook 'conf-mode-hook 'modal-mode)
 
 (define-modal-command-keys
  '(;; general
@@ -245,9 +242,9 @@
 
    ;; WINDOWS
    ("," . other-window)
-   ("3" . split-window-right)
-   ("2" . split-window-below)
    ("1" . delete-other-windows)
+   ("2" . split-window-below)
+   ("3" . split-window-right)
 
    ;; KILLS
    ("d" . backward-kill-word)
@@ -259,7 +256,7 @@
    ("x" . xah/cut-line-or-region)
    ("c" . xah/copy-line-or-region)
    ("v" . yank)
-   ("r" . undo)
+   ("/" . undo)
 
    ;; EDITS
    ("q" . fill-paragraph)
@@ -270,15 +267,10 @@
    ;; FILES AND BUFFERS
    ("b" . switch-to-buffer)))
 
-(define-modal-sexp-overrides
- '(("j" . backward-sexp)
-   ("l" . forward-sexp)
-   ("i" . backward-up-list)
-   ("k" . down-list)))
-
 (define-modal-leader-keys
  '(("." . universal-argument)
    ("," . negative-argument)
+   ("g" . magit-status)
 
    ("s" . save-buffer)
    ("f" . find-file)
@@ -286,7 +278,9 @@
    ("d" . dired-jump)
    ("k" . kill-buffer)
 
+   ("h" . highlight-regexp)
    ("l" . goto-line)
+   ("a" . ag-project)
    ("n" . isearch-backward)
    ("q" . query-replace)
    ("o" . occur)
@@ -295,11 +289,8 @@
    ("w" . whitespace-cleanup)))
 
 (define-modal-project-keys
- '(("a" . ag-project)
-   ("f" . project-find-file)
-   ("k" . project-kill-buffers)
-   ("g" . magit-status)
-   ("b" . project-switch-to-buffer)))
+ '(("f" . project-find-file)
+   ("k" . project-kill-buffers)))
 
 ;; globals
 ;; (global-set-key (kbd "C-i") 'previous-line) this gets confused with TAB, so indent-for-tab-command

@@ -1,3 +1,91 @@
+TAKE 2
+======
+
+
+LEFT HAND
+---------
+
+     COMMAND             LEADER            PROJECT
+a
+s
+d
+f
+g
+
+q
+w
+e
+r
+t
+
+z
+x
+c
+v
+b
+
+1
+2
+3
+4
+5
+6
+
+RIGHT HAND
+----------
+
+     COMMAND             LEADER            PROJECT
+h
+j
+k
+l
+;
+'
+
+y
+u
+i
+o
+p
+
+n
+m
+,
+.
+/
+
+7
+8
+9
+0
+
+Idioms
+------
+
+/   : Undo
+hjkl: moves
+xcv:  cut copy paste
+q:    fill para
+
+w: Whitespace
+
+1,2,3: 1 delete other window, split below, split right
+
+
+To Map:
+-------
+Moves: word and line moves
+Kills: word kills
+Takes: copy, cut, paste
+Files: Save, Open, recent, buffer, dired jump
+Window: switch window, kill others, split hor, split vert
+Search: search fwd/back, ag search, avy search, occur
+Mark: Mark toggle, mark sexp
+
+Undo, Execute, Fill para, shrink whitespace, WS clean
+Universal, UNegative
+Magit
+
 LEFT HAND
 ---------
 
@@ -11,7 +99,7 @@ g    kill sexp                             magit
 q    fill para           query replace
 w    shrink whitespace   WS clean
 e    upcase
-r    undo                recent mode
+r                        recent mode
 t    mark
 
 z    comment dwim
@@ -47,7 +135,7 @@ n     isearch fwd          isearch-backward
 m     avy-search
 ,     other window         neg arg
 .                          univ
-/
+/     undo
 
 7
 8
