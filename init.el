@@ -336,6 +336,11 @@
   (add-to-list 'eglot-server-programs
                '(odin-mode . ("ols"))))
 
+(add-to-list 'compilation-error-regexp-alist 'odin-error)
+
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
