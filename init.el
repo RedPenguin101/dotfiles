@@ -12,7 +12,7 @@
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
 
-;; File operations
+;; Backups, lockfiles and trash
 (setq create-lockfiles nil)
 (setq make-backup-files nil)
 (setq backup-inhibited t)
@@ -191,9 +191,9 @@
 
 (load "~/.emacs.d/lisp/xah.el")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; None native packages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; non-native packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'package)
 
@@ -205,6 +205,7 @@
 
 (use-package magit)
 (use-package avy)
+(use-package ag)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
@@ -219,33 +220,39 @@
 (add-hook 'text-mode-hook 'modal-mode)
 (add-hook 'conf-mode-hook 'modal-mode)
 
+;; Mostly these are just taking common commands for which the default
+;; keybinds have modifiers, and removing the modifiers.
+
 (define-modal-command-keys
  '(("j" . scroll-up-command)
    ("k" . scroll-down-command)
 
-   ("l" . recenter-top-bottom)
+   ("d" . backward-kill-word)
+   ("f" . kill-word)
 
-   ("x" . execute-extended-command)
-   ("b" . switch-to-buffer)
-   ("/" . undo)
+   ("l" . recenter-top-bottom)      ;; C-l
+
+   ("x" . execute-extended-command) ;; M-x
+   ("b" . switch-to-buffer)         ;; C-x b
+   ("/" . undo)                     ;; C-/
    ("i" . modal-mode--insert-mode-init)
    ("a" . avy-goto-char-2)
-   ("s" . isearch-forward)
-   ("r" . isearch-backward)
+   ("s" . isearch-forward)          ;; C-s
+   ("r" . isearch-backward)         ;; C-r
 
-   ("o" . other-window)
-   ("1" . delete-other-windows)
-   ("2" . split-window-below)
-   ("3" . split-window-right)))
+   ("o" . other-window)             ;; C-x o
+   ("1" . delete-other-windows)     ;; C-x 1
+   ("2" . split-window-below)       ;; C-x 2
+   ("3" . split-window-right)))     ;; C-x 3
 
 (define-modal-leader-keys
  '(("a" . ag-project)
-   ("o" . occur)
-   ("f" . find-file)
-   ("s" . save-buffer)
-   ("d" . dired-jump)
+   ("o" . occur)                    ;; M-s o
+   ("f" . find-file)                ;; C-x C-f
+   ("s" . save-buffer)              ;; C-x C-s
+   ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("g" . magit-status)
+   ("g" . magit-status)             ;; C-x g
    ("w" . whitespace-cleanup)))
 
 ;; globals
