@@ -1,6 +1,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Joe's Emacs init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Things to do
+;; - Look at Prot's `display-buffer-alist' configuration
+;;   https://www.youtube.com/watch?v=1-UIzYPn38s
+;; - Look at having a 'repeat' function for modal leaders, so when
+;;   you SPC-<x> <x> it does the SPC-<x> command twice.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
@@ -43,19 +48,18 @@
 (setq sentence-end-double-space nil)
 (setq tab-width 2)
 
-;; parens
+;; Toggle visualization of matching parens. Matching parenthesis is
+;; highlighted in ‘show-paren-style’ after ‘show-paren-delay’ seconds
+;; of Emacs idle time.
 (show-paren-mode +1)
+;; When enabled, typing an open parenthesis automatically inserts the
+;; corresponding closing parenthesis, and vice versa. (Likewise for
+;; brackets, etc.). If the region is active, the parentheses
+;; (brackets, etc.) are inserted around the region instead.
 (electric-pair-mode)
 
 ;; highlights the currently selected line
 (global-hl-line-mode +1)
-
-;; completions
-(setq completion-ignore-case t)
-(setq completions-detailed t)
-;; TAB first tries to indent the current line, and if the line was
-;; already indented, then try to complete the thing at point.
-(setq tab-always-indent 'complete)
 
 ;; FIDO/Minibuffer
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
@@ -113,9 +117,9 @@
 (require 'dired-x)
 
 ;; omit mode exludes noise like . and ..
-;(setq dired-omit-verbose nil)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+(setq dired-omit-verbose nil)
 
 (use-package wdired
   :ensure nil
@@ -123,20 +127,6 @@
   :config
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t))
-
-;;;;;;;;;;;;;;;;
-;; Mode line
-;;;;;;;;;;;;;;;;
-;; makes modeline a tiny bit thicker and gets rid of border to
-;; get rid of that 90's look
-
-(let ((bg (face-attribute 'mode-line :background)))
-  (set-face-attribute 'mode-line nil
-                      :box (list :line-width 4 :color bg :style nil)))
-
-(let ((bg (face-attribute 'mode-line-inactive :background)))
-  (set-face-attribute 'mode-line-inactive nil
-                      :box (list :line-width 4 :color bg :style nil)))
 
 ;;;;;;;;;;;;;;;;
 ;; recent mode
@@ -224,38 +214,83 @@
 ;; keybinds have modifiers, and removing the modifiers.
 
 (define-modal-command-keys
- '(("j" . scroll-up-command)
-   ("k" . scroll-down-command)
-
-   ("d" . backward-kill-word)
-   ("f" . kill-word)
-
-   ("l" . recenter-top-bottom)      ;; C-l
-
-   ("x" . execute-extended-command) ;; M-x
-   ("b" . switch-to-buffer)         ;; C-x b
-   ("/" . undo)                     ;; C-/
-   ("i" . modal-mode--insert-mode-init)
+ '(;; LEFT HAND
    ("a" . avy-goto-char-2)
    ("s" . isearch-forward)          ;; C-s
+   ("d" . kill-word)                ;; M-d
+   ("f" . forward-char)             ;; C-s
+   ("g" . set-mark-command)         ;; C-SPC
+
+   ;; w t
+   ("w" . delete-other-windows)
+   ("q" . prog-fill-reindent-defun) ;; M-q
+   ("e" . move-end-of-line)         ;; C-e
    ("r" . isearch-backward)         ;; C-r
 
+   ;; z c
+   ("x" . execute-extended-command) ;; M-x
+   ("v" . scroll-up-command)        ;; C-v
+   ("b" . switch-to-buffer)         ;; C-x b
+
+   ;; RIGHT HAND
+   ;; h j ;
+   ("j" . forward-sexp)
+   ("k" . kill-sexp)                ;; C-M-k
+   ("l" . recenter-top-bottom)      ;; C-l
+
+   ("y" . yank)                     ;; C-y
+   ("u" . universal-argument)       ;; C-u
+   ("i" . modal-mode--insert-mode-init)
    ("o" . other-window)             ;; C-x o
-   ("1" . delete-other-windows)     ;; C-x 1
-   ("2" . split-window-below)       ;; C-x 2
-   ("3" . split-window-right)))     ;; C-x 3
+   ("p" . previous-line)            ;; C-p
+
+   ("n" . next-line)                ;; C-n
+   ("m" . back-to-indentation)      ;; M-m
+   ("/" . undo)                     ;; C-/
+   ("," . beginning-of-defun)
+   ("." . end-of-defun)
+
+   ;; NUMBERS
+
+   ("-" . negative-argument)        ;; C--
+   ("1" . digit-argument)
+   ("2" . digit-argument)
+   ("3" . digit-argument)
+   ("4" . digit-argument)
+   ("5" . digit-argument)
+   ("6" . digit-argument)
+   ("7" . digit-argument)
+   ("8" . digit-argument)
+   ("9" . digit-argument)
+
+   ))
+
 
 (define-modal-leader-keys
  '(("a" . ag-project)
+   ("b" . switch-to-buffer)         ;; C-x b
    ("o" . occur)                    ;; M-s o
+   ("q" . query-replace)            ;; M-%
    ("f" . find-file)                ;; C-x C-f
    ("s" . save-buffer)              ;; C-x C-s
+   ("k" . kill-buffer)              ;; C-x k
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
    ("g" . magit-status)             ;; C-x g
-   ("w" . whitespace-cleanup)))
+   ("w" . whitespace-cleanup)
+   ("h" . highlight-phrase)
+
+   ("," . beginning-of-buffer)      ;; M-<
+   ("." . end-of-buffer)            ;; M->
+   ("<backspace>" . kill-whole-line) ;; C-S-<backspace>
+
+   ("1" . delete-other-windows)     ;; C-x 1
+   ("2" . split-window-below)       ;; C-x 2
+   ("3" . split-window-right)       ;; C-x 3
+   ))
 
 ;; globals
+(global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
@@ -268,6 +303,7 @@
 (global-unset-key (kbd "C-x f")) ;; col fill
 (global-unset-key (kbd "C-t")) ;; transpose char
 (global-unset-key (kbd "M-c"))   ;; capitalize
+(global-unset-key (kbd "C-x C-x")) ;; save buffers kill terminal
 
 ;;;;;;;;;;;;;;
 ;; markdown
@@ -281,19 +317,13 @@
 ;; clojure (and elisp)
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-;; other options for sexps to think about using smart-parens
-;; - wrapping / unwrapping
-;; - slurp / barf
-;; - transpose
-;; - kill
-
-(add-hook 'cider-mode-hook
-          (lambda () (local-set-key (kbd "C-c f") 'cider-format-defun)))
+(setq clojure-toplevel-inside-comment-form t)
 
 ;; builtin cider commands:
 ;;   C-c C-p cider-pprint-eval-last-sexp
 ;;   C-c C-e cider-eval-last-sexp
 ;;   C-c C-c cider-eval-defun-at-point (defun = top level)
+;;   C-M-x   cider-eval-defun-at-point
 ;;   C-c C-f cider-pprint-eval-defun-at-point
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -327,14 +357,14 @@
 ;; install with M-x package-vc-install RET https://git.sr.ht/~mgmarlow/odin-mode
 
 (use-package odin-mode
-  :bind (:map odin-mode-map
-              ("C-c C-c" . 'recompile)))
-
-(add-hook 'odin-mode-hook 'subword-mode)
+  :bind (:map odin-mode-map ("C-c C-c" . 'recompile)))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(odin-mode . ("ols"))))
+
+;; These allow you to jump from the compilation error to the
+;; associated line where the error occured.
 
 (add-to-list 'compilation-error-regexp-alist 'odin-error)
 
