@@ -6,6 +6,7 @@
 ;;   https://www.youtube.com/watch?v=1-UIzYPn38s
 ;;   - magit should open fullscreen
 ;;   - cider repl shouldn't take focus
+;;   - help Major should open full screen
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
 
@@ -77,13 +78,17 @@
 (setq save-place-limit 600)
 (save-place-mode 1)
 
-;; desktop save mode reloads all your windows after restart
+;; When Desktop Save mode is enabled, the state of Emacs is saved from
+;; one session to another. To see all the options you can set, browse
+;; the ‘desktop’ customization group.
 (desktop-save-mode 1)
 (setq desktop-save t)
 (setq desktop-load-locked-desktop t)
 (setq desktop-restore-frames t)
 (setq desktop-auto-save-timeout 300)
 (setq desktop-globals-to-save nil)
+(setq desktop-modes-not-to-save
+      '(tags-table-mode special-mode Custom-mode dired-mode))
 
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
