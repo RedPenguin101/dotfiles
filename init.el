@@ -4,6 +4,8 @@
 ;; Things to do
 ;; - Look at Prot's `display-buffer-alist' configuration
 ;;   https://www.youtube.com/watch?v=1-UIzYPn38s
+;;   - magit should open fullscreen
+;;   - cider repl shouldn't take focus
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
 
@@ -191,10 +193,11 @@
 
 (use-package diff-hl
   :config
-  (global-diff-hl-mode))
+  (diff-hl-margin-mode))
 
 (use-package magit)
 (use-package avy)
+
 (use-package ag)
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -221,22 +224,24 @@
    ("f" . forward-char)             ;; C-s
    ("g" . set-mark-command)         ;; C-SPC
 
-   ;; w t
+   ;; t
    ("w" . delete-other-windows)
    ("q" . prog-fill-reindent-defun) ;; M-q
    ("e" . move-end-of-line)         ;; C-e
    ("r" . isearch-backward)         ;; C-r
 
-   ;; z c
+   ;; z
    ("x" . execute-extended-command) ;; M-x
+   ("c" . switch-to-buffer)         ;; (b is taken)
    ("v" . scroll-up-command)        ;; C-v
-   ("b" . switch-to-buffer)         ;; C-x b
+   ("b" . backward-char)            ;; C-x b
 
    ;; RIGHT HAND
-   ;; h j ;
+   ("h" . backward-sexp)
    ("j" . forward-sexp)
    ("k" . kill-sexp)                ;; C-M-k
    ("l" . recenter-top-bottom)      ;; C-l
+   (";" . comment-line)             ;; C-x C-;
 
    ("y" . yank)                     ;; C-y
    ("u" . universal-argument)       ;; C-u
@@ -262,13 +267,13 @@
    ("7" . digit-argument)
    ("8" . digit-argument)
    ("9" . digit-argument)
+   ("0" . digit-argument)
 
    ))
 
 
 (define-modal-leader-keys
  '(("a" . ag-project)
-   ("b" . switch-to-buffer)         ;; C-x b
    ("o" . occur)                    ;; M-s o
    ("q" . query-replace)            ;; M-%
    ("f" . find-file)                ;; C-x C-f
@@ -339,10 +344,8 @@
           (lambda ()
             (progn
               (c-toggle-comment-style -1)
-              (local-set-key (kbd "C-M-h") 'backward-sexp)
               (local-set-key (kbd "C-c C-c") 'recompile)
-              (local-set-key (kbd "C-c f") 'clang-format-buffer)
-              (local-set-key (kbd "C-d") 'delete-other-windows))))
+              (local-set-key (kbd "C-c f") 'clang-format-buffer))))
 
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
