@@ -201,8 +201,6 @@
   (diff-hl-margin-mode))
 
 (use-package magit)
-(use-package avy)
-
 (use-package ag)
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -223,7 +221,7 @@
 
 (define-modal-command-keys
  '(;; LEFT HAND
-   ("a" . avy-goto-char-2)
+   ;; a
    ("s" . isearch-forward)          ;; C-s
    ("d" . kill-word)                ;; M-d
    ("f" . forward-char)             ;; C-s
