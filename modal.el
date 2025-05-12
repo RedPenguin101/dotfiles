@@ -76,6 +76,7 @@
   (modal-mode--map-over-keys modal-mode--command-leader-subkeymap keys-alist))
 
 (define-key modal-mode--insert-keymap (kbd "C-SPC") #'modal-mode--command-mode-init)
+(define-key modal-mode--insert-keymap (kbd "C-G") #'modal-mode--command-mode-init)
 
 (define-modal-command-keys
  '(("SPC" . modal-leader-command)))

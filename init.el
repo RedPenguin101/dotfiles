@@ -14,6 +14,11 @@
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; This is required on older versions of emacs because (according to
+;; magit error messsages) "Due to bad defaults, Emac's package manager
+;; refuses to update ... build-in packages..."
+(setq package-install-upgrade-built-int t)
+
 ;; Remove noise at startup
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
@@ -37,6 +42,18 @@
 
 ;; Windows and splitting
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+(setq display-buffer-alist nil)
+
+;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
+(add-to-list 'display-buffer-alist '("\\*Occur\\*" (display-buffer-reuse-mode-window display-buffer-below-selected)
+                                     (window-height . fit-window-to-buffer) (dedicated . t) (body-function . select-window)))
+
+(add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
+                                     (display-buffer-use-some-window)
+                                     (body-function . delete-other-windows)))
+
+(setq switch-to-buffer-in-dedicated-window 'pop)
 
 ;; Editing preferences
 (setq delete-selection-mode 1)
@@ -299,6 +316,7 @@
 
 ;; globals
 (global-set-key (kbd "C-b") 'switch-to-buffer)
+(global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
