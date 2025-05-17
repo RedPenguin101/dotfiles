@@ -353,14 +353,60 @@
 ;; clojure (and elisp)
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+;; https://www.youtube.com/watch?v=KMWLIgG986I
+;; https://cider.mx
+;; https://www.cognitect.com/blog/2013/06/04/clojure-workflow-reloaded
+
 (setq clojure-toplevel-inside-comment-form t)
 
 ;; builtin cider commands:
-;;   C-c C-p cider-pprint-eval-last-sexp
-;;   C-c C-e cider-eval-last-sexp
-;;   C-c C-c cider-eval-defun-at-point (defun = top level)
-;;   C-M-x   cider-eval-defun-at-point
-;;   C-c C-f cider-pprint-eval-defun-at-point
+;;   C-c C-x j j: cider-jack in
+;;   C-c M-j:     cider-jack in
+;;   C-c C-q:     cider-quit
+;;   C-c C-p:     cider-pprint-eval-last-sexp
+;;   C-c C-e:     cider-eval-last-sexp
+;;   C-c C-c:     cider-eval-defun-at-point (defun = top level)
+;;   C-M-x:       cider-eval-defun-at-point
+;;   C-c C-f:     cider-pprint-eval-defun-at-point
+;;   C-c M-n r:   cider-ns-refresh and reload all modified Clojure files on the classpath.
+
+;; some options
+;; cider-docstring-max-lines (default 20)
+;; enlighten-mode: show local values inline
+
+;; Debugging
+;; https://docs.cider.mx/cider/debugging/debugger.html
+;; cider-eval-defun with prefix arg: instrument for debug
+;; (run ced without prefix arg to remove debug)
+;; or, put `#dbg' in front of the form you want to instument
+;; cider-browse-instrumented-defs to see what's currently instrumented
+;;
+;; Hitting a breakpoint will drop into the cider debugger, which has the following commands
+;; n: step
+;; i: step into
+;; o: step out of (list)
+;; h: step to cursor position
+;; e: eval
+;; p: inspect the current symbol
+;; l: inspect locals
+;; L: toggle locals display
+;; s: show call stack
+;; q: quit
+
+;; conditional breakpoints:
+;; (dotimes [i 10]
+;;   #dbg ^{:break/when (= i 7)}
+;;   (prn i))
+
+;; inspector: cider-inspect, cider-inspect-last-result
+;; n/p: navigate inspector window
+;; RET: drill down
+;; l:   up / pop
+;; g:   refresh
+;; SPC: next page (M-SPC: prv)
+;; v: view toggle :normal, :table, :object
+;; P: toggle pprint
+;; d: def inspector value in repl
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; C
