@@ -249,7 +249,7 @@
 
    ;; z
    ("x" . execute-extended-command)
-   ("c" . switch-to-buffer)
+   ;; c: EVAL LEADER
    ("v" . scroll-up-command)        ;; C-v
    ("b" . backward-word)            ;; M-b
 
@@ -285,6 +285,7 @@
    ("g" . magit-status)             ;; C-x g
    ("w" . whitespace-cleanup)
    ("r" . string-rectangle)         ;; C-x r t
+   ("b" . switch-to-buffer)         ;; C-x b
 
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
@@ -323,6 +324,15 @@
    ("b" . project-switch-to-buffer) ;; C-x p b
    ("s" . save-some-buffers))       ;; C-x s
  )
+
+(define-modal-eval-keys
+ '(("c" . cider-eval-defun-at-point)
+   ("e" . cider-eval-last-sexp)
+   ("r" . cider-ns-refresh)
+   ("j" . cider-jack-in)
+   ("q" . cider-quit)
+   ("b" . cider-eval-buffer)
+   ("p" . cider-pprint-eval-last-sexp)))
 
 ;; globals
 (global-set-key (kbd "C-b") 'switch-to-buffer)
