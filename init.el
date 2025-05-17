@@ -9,7 +9,6 @@
 ;;   - help Major should open full screen
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -228,44 +227,42 @@
 (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
 
 (load "~/.emacs.d/lisp/modal.el")
+(load "~/.emacs.d/lisp/xah.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
 (add-hook 'text-mode-hook 'modal-mode)
 (add-hook 'conf-mode-hook 'modal-mode)
 
-;; Mostly these are just taking common commands for which the default
-;; keybinds have modifiers, and removing the modifiers.
-
 (define-modal-command-keys
  '(;; LEFT HAND
-   ;; a
-   ("s" . isearch-forward)          ;; C-s
-   ("d" . kill-word)                ;; M-d
-   ("f" . forward-char)             ;; C-s
+   ("a" . move-beginning-of-line)   ;; C-a
+   ;; s: SEARCH LEADER
+   ("d" . down-list)                ;; C-M-d
+   ("f" . forward-word)             ;; M-f
    ("g" . set-mark-command)         ;; C-SPC
 
-   ;; t
    ("w" . delete-other-windows)
    ("q" . prog-fill-reindent-defun) ;; M-q
    ("e" . move-end-of-line)         ;; C-e
-   ("r" . isearch-backward)         ;; C-r
+   ("r" . backward-up-list)         ;; C-m-u
+   ("t" . up-list)
 
    ;; z
-   ("x" . execute-extended-command) ;; M-x
-   ("c" . switch-to-buffer)         ;; (b is taken)
+   ("x" . execute-extended-command)
+   ("c" . switch-to-buffer)
    ("v" . scroll-up-command)        ;; C-v
-   ("b" . backward-char)            ;; C-x b
+   ("b" . backward-word)            ;; M-b
 
    ;; RIGHT HAND
-   ("h" . backward-sexp)
-   ("j" . forward-sexp)
-   ("k" . kill-sexp)                ;; C-M-k
+   ("h" . backward-sexp)            ;; C-M-b
+   ("j" . forward-sexp)             ;; C-m-f
+   ;; k: KILL LEADER
    ("l" . recenter-top-bottom)      ;; C-l
    (";" . comment-line)             ;; C-x C-;
 
    ("y" . yank)                     ;; C-y
-   ("u" . universal-argument)       ;; C-u
-   ("i" . modal-mode--insert-mode-init)
+   ;; u: universal-argument
+   ;; i: INSERT MODE
    ("o" . other-window)             ;; C-x o
    ("p" . previous-line)            ;; C-p
 
@@ -274,28 +271,12 @@
    ("/" . undo)                     ;; C-/
    ("," . beginning-of-defun)
    ("." . end-of-defun)
-
-   ;; NUMBERS
-
-   ("-" . negative-argument)        ;; C--
-   ("1" . digit-argument)
-   ("2" . digit-argument)
-   ("3" . digit-argument)
-   ("4" . digit-argument)
-   ("5" . digit-argument)
-   ("6" . digit-argument)
-   ("7" . digit-argument)
-   ("8" . digit-argument)
-   ("9" . digit-argument)
-   ("0" . digit-argument)
-
+   ("<" . beginning-of-buffer)      ;; M-<
+   (">" . end-of-buffer)            ;; M->
    ))
 
-
 (define-modal-leader-keys
- '(("a" . ag-project)
-   ("o" . occur)                    ;; M-s o
-   ("q" . query-replace)            ;; M-%
+ '(("t" . toggle-truncate-lines)    ;; C-x x t
    ("f" . find-file)                ;; C-x C-f
    ("s" . save-buffer)              ;; C-x C-s
    ("k" . kill-buffer)              ;; C-x k
@@ -303,16 +284,45 @@
    ("r" . recentf-open-minibuff)
    ("g" . magit-status)             ;; C-x g
    ("w" . whitespace-cleanup)
-   ("h" . highlight-phrase)
-
-   ("," . beginning-of-buffer)      ;; M-<
-   ("." . end-of-buffer)            ;; M->
-   ("<backspace>" . kill-whole-line) ;; C-S-<backspace>
+   ("r" . string-rectangle)         ;; C-x r t
 
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
    ("3" . split-window-right)       ;; C-x 3
    ))
+
+(define-modal-kill-keys
+ '(("d" . kill-word)                ;; M-d
+   ("<backspace>" . backward-kill-word) ;; C-<backspace>
+   ("j" . kill-sexp)                ;; C-M-k
+   ("h" . backward-kill-sexp)       ;; C-M-<backspace>
+   ("k" . kill-line)                ;; C-k
+   ("l" . kill-whole-line)          ;; C-S-<backspace>
+   ("w" . kill-region)              ;; C-w
+   ("q" . kill-ring-save)           ;; M-w
+   ("6" . delete-indentation)       ;; M-^
+   ("r" . delete-rectangle)         ;; C-x r d
+   ))
+
+(define-modal-search-keys
+ '(("s" . isearch-forward)          ;; C-s
+   ("r" . isearch-backward)         ;; C-r
+   ("a" . ag-project)
+   ("o" . occur)                    ;; M-s o
+   ("q" . query-replace)            ;; M-%
+   ("h" . highlight-phrase)
+   ))
+
+(define-modal-project-keys
+ '(("f" . project-find-file)        ;; C-x p f
+   ("k" . project-kill-buffers)     ;; C-x p k
+   ("c" . project-compile)          ;; C-x p c
+   ("d" . project-dired)            ;; C-x p D
+   ("g" . magit-project-status)     ;; C-x p m
+   ("q" . project-query-replace-regexp) ;; C-x p r
+   ("b" . project-switch-to-buffer) ;; C-x p b
+   ("s" . save-some-buffers))       ;; C-x s
+ )
 
 ;; globals
 (global-set-key (kbd "C-b") 'switch-to-buffer)
