@@ -122,7 +122,7 @@
 (define-key modal-mode--insert-keymap (kbd "C-G") #'modal-mode--command-mode-init)
 
 (define-modal-command-keys
- '(("SPC" . modal-leader-command)
+ '(("v" . modal-leader-command)
    ("s" . modal-search-leader)
    ("k" . modal-kill-leader)
    ("c" . modal-eval-leader)

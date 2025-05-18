@@ -249,7 +249,7 @@
    ;; z
    ("x" . execute-extended-command)
    ;; c: EVAL LEADER
-   ("v" . scroll-up-command)        ;; C-v
+   ;; v: GENERAL LEADER
    ("b" . backward-word)            ;; M-b
 
    ;; RIGHT HAND
@@ -285,6 +285,7 @@
    ("w" . whitespace-cleanup)
    ("r" . string-rectangle)         ;; C-x r t
    ("b" . switch-to-buffer)         ;; C-x b
+   ("v" . switch-to-buffer)         ;; C-x b
 
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
