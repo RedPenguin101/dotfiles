@@ -227,7 +227,6 @@
 (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
 
 (load "~/.emacs.d/lisp/modal.el")
-(load "~/.emacs.d/lisp/xah.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
 (add-hook 'text-mode-hook 'modal-mode)
