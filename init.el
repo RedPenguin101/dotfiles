@@ -391,6 +391,24 @@
 ;; or, put `#dbg' in front of the form you want to instument
 ;; cider-browse-instrumented-defs to see what's currently instrumented
 ;;
+
+(add-hook 'cider--debug-mode-hook (lambda () (modal-mode -1)))
+
+;; This is a (I think) quite hacky way of abusing `advice-add' to add
+;; an interceptor around the symbol for cider--debug-mode.
+
+(defvar cider-debug-mode-exit-hook nil)
+
+(defun cider-debug-toggle-advice-hack (orig-fn &optional arg)
+  (let ((was-on cider--debug-mode))
+    (funcall orig-fn arg)
+    (when (and was-on (not cider--debug-mode))
+      (run-hooks 'cider-debug-mode-exit-hook))))
+
+(advice-add 'cider--debug-mode :around #'cider-debug-toggle-advice-hack)
+
+(add-hook 'cider-debug-mode-exit-hook (lambda () (modal-mode 1)))
+
 ;; Hitting a breakpoint will drop into the cider debugger, which has the following commands
 ;; n: step
 ;; i: step into
