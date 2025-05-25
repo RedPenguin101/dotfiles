@@ -192,6 +192,27 @@
 ;;;;;;;;;;;;;;;;;
 ;; Imenu buffer
 ;;;;;;;;;;;;;;;;;
+;; The Imenu facility offers a way to find the major definitions in a
+;; file by name. In programming-language modes the definitions are
+;; variables and functions, and in text modes, they are chapter,
+;; section, etc.
+
+;; `imenu' command displays the list of matching valid names in the
+;; minibuffer.
+
+;; The index can be hierarchical. if you set `imenu-flatten' to a
+;; non-nil value (prefix, annotation, group) the minibuffer list will
+;; be flattened.
+
+;; When you change the contents of a buffer, if you add or delete
+;; definitions, you can update the buffer’s index based on the new
+;; contents by invoking the ‘*Rescan*’ item in the menu. Rescanning
+;; happens automatically if you set `imenu-auto-rescan' to a non-nil
+;; value. There is no need to rescan because of small changes in the
+;; text.
+
+(setq imenu-auto-rescan 1)
+
 ;; Function to pipe imenu results to a full buffer as opposed to
 ;; displaying them in a mini buffer
 
@@ -206,12 +227,12 @@
     (cl-labels
         ((flatten-imenu (alist)
            (seq-mapcat (lambda (item)
-                         (cond ((and (stringp (car item)) (string-prefix-p "*" (car item)))
-                                nil)
-                               ((imenu--subalist-p item)
-                                (flatten-imenu (cdr item)))
+                         (cond ((and (stringp (car item)) (string-prefix-p "*" (car item))) nil)
+
+                               ((imenu--subalist-p item) (flatten-imenu (cdr item)))
 
                                ((consp item) (list item))
+
                                (t nil)))
                        alist)))
       (let ((items (flatten-imenu index)))
