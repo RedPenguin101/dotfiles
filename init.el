@@ -48,9 +48,15 @@
 (add-to-list 'display-buffer-alist '("\\*Occur\\*" (display-buffer-reuse-mode-window display-buffer-below-selected)
                                      (window-height . fit-window-to-buffer) (dedicated . t) (body-function . select-window)))
 
+(add-to-list 'display-buffer-alist '("\\*compilation\\*" (display-buffer-reuse-mode-window display-buffer-below-selected)
+                                     (dedicated . t) (body-function . select-window)))
+
 (add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
                                      (display-buffer-use-some-window)
                                      (body-function . delete-other-windows)))
+
+(add-to-list 'display-buffer-alist '("\\*Imenu\\*" (display-buffer-use-some-window)
+                                     (dedicated . t) (body-function . select-window)))
 
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
@@ -184,6 +190,52 @@
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
 
 ;;;;;;;;;;;;;;;;;
+;; Imenu buffer
+;;;;;;;;;;;;;;;;;
+;; Function to pipe imenu results to a full buffer as opposed to
+;; displaying them in a mini buffer
+
+(defun my/imenu-to-compilation-buffer ()
+  (interactive)
+
+  (let* ((index (imenu--make-index-alist))
+         (source-buffer (current-buffer))
+         (buf (get-buffer-create "*Imenu*"))
+         (lines '()))
+
+    (cl-labels
+        ((flatten-imenu (alist)
+           (seq-mapcat (lambda (item)
+                         (cond ((and (stringp (car item)) (string-prefix-p "*" (car item)))
+                                nil)
+                               ((imenu--subalist-p item)
+                                (flatten-imenu (cdr item)))
+
+                               ((consp item) (list item))
+                               (t nil)))
+                       alist)))
+      (let ((items (flatten-imenu index)))
+        (dolist (item items)
+          (let ((pos (cdr item)))
+            (when (and (markerp pos) (eq (marker-buffer pos) source-buffer))
+              (let ((line (line-number-at-pos pos)))
+                (push (format "%s:%d: %s"
+                              (buffer-file-name source-buffer)
+                              line
+                              (car item))
+                      lines)))))
+        (with-current-buffer buf
+          (let ((inhibit-read-only t))
+            (erase-buffer)
+            (insert (format "- Imenu index from: %s\n\n" (buffer-name source-buffer)))
+            (insert (mapconcat #'identity (nreverse lines) "\n"))
+            (insert "\n")  )
+          (compilation-mode))))
+
+    (display-buffer buf)
+    (goto-char (point-min))))
+
+;;;;;;;;;;;;;;;;;
 ;; mac
 ;;;;;;;;;;;;;;;;;
 
@@ -283,7 +335,7 @@
    ("r" . recentf-open-minibuff)
    ("g" . magit-status)             ;; C-x g
    ("w" . whitespace-cleanup)
-   ("r" . string-rectangle)         ;; C-x r t
+   ;; ("r" . string-rectangle)         ;; C-x r t
    ("b" . switch-to-buffer)         ;; C-x b
    ("v" . switch-to-buffer)         ;; C-x b
 
@@ -312,6 +364,7 @@
    ("o" . occur)                    ;; M-s o
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
+   ("i" . my/imenu-to-compilation-buffer)
    ))
 
 (define-modal-project-keys
