@@ -357,7 +357,7 @@
    ("r" . recentf-open-minibuff)
    ("v" . magit-status)             ;; C-x g
    ("\\" . whitespace-cleanup)
-   ("r" . string-rectangle)         ;; C-x r t
+   ("t" . string-rectangle)         ;; C-x r t
    ("b" . switch-to-buffer)         ;; C-x b
 
    ("1" . delete-other-windows)     ;; C-x 1
