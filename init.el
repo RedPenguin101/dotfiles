@@ -316,8 +316,8 @@
    ("w" . delete-other-windows)
    ("q" . prog-fill-reindent-defun) ;; M-q
    ("e" . move-end-of-line)         ;; C-e
-   ("r" . backward-up-list)         ;; C-m-u
-   ("t" . up-list)
+   ;; r
+   ;; t
 
    ;; z
    ("x" . execute-extended-command)
@@ -333,7 +333,7 @@
    (";" . comment-line)             ;; C-x C-;
 
    ("y" . yank)                     ;; C-y
-   ;; u: universal-argument
+   ("u" . up-list)
    ;; i: INSERT MODE
    ("o" . other-window)             ;; C-x o
    ("p" . previous-line)            ;; C-p
@@ -345,20 +345,20 @@
    ("." . end-of-defun)
    ("<" . beginning-of-buffer)      ;; M-<
    (">" . end-of-buffer)            ;; M->
+
+   ("\\" . xah/shrink-whitespace)
    ))
 
 (define-modal-leader-keys
- '(("t" . toggle-truncate-lines)    ;; C-x x t
-   ("f" . find-file)                ;; C-x C-f
+ '(("f" . find-file)                ;; C-x C-f
    ("s" . save-buffer)              ;; C-x C-s
    ("k" . kill-buffer)              ;; C-x k
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("g" . magit-status)             ;; C-x g
-   ("w" . whitespace-cleanup)
-   ;; ("r" . string-rectangle)         ;; C-x r t
+   ("v" . magit-status)             ;; C-x g
+   ("\\" . whitespace-cleanup)
+   ("r" . string-rectangle)         ;; C-x r t
    ("b" . switch-to-buffer)         ;; C-x b
-   ("v" . switch-to-buffer)         ;; C-x b
 
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
@@ -366,14 +366,14 @@
    ))
 
 (define-modal-kill-keys
- '(("d" . kill-word)                ;; M-d
-   ("<backspace>" . backward-kill-word) ;; C-<backspace>
+ '(("f" . kill-word)                ;; M-d - maintain fwd/backward
+   ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ("j" . kill-sexp)                ;; C-M-k
    ("h" . backward-kill-sexp)       ;; C-M-<backspace>
    ("k" . kill-line)                ;; C-k
    ("l" . kill-whole-line)          ;; C-S-<backspace>
    ("w" . kill-region)              ;; C-w
-   ("q" . kill-ring-save)           ;; M-w
+   ("s" . kill-ring-save)           ;; M-w
    ("6" . delete-indentation)       ;; M-^
    ("r" . delete-rectangle)         ;; C-x r d
    ))
@@ -393,7 +393,7 @@
    ("k" . project-kill-buffers)     ;; C-x p k
    ("c" . project-compile)          ;; C-x p c
    ("d" . project-dired)            ;; C-x p D
-   ("g" . magit-project-status)     ;; C-x p m
+   ("v" . magit-project-status)     ;; C-x p m
    ("q" . project-query-replace-regexp) ;; C-x p r
    ("b" . project-switch-to-buffer) ;; C-x p b
    ("s" . save-some-buffers))       ;; C-x s
