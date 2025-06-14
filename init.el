@@ -9,6 +9,7 @@
 ;;   - help Major should open full screen
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
+;; - quick ways to do 'end-of-line-and-insert'. Same for beginning of line, newline, newline above
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,6 +321,7 @@
    ;; t
 
    ;; z
+   ("z" . repeat)                   ;; C-x z
    ("x" . execute-extended-command)
    ;; c: EVAL LEADER
    ;; v: GENERAL LEADER

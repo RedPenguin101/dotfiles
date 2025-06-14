@@ -93,7 +93,7 @@
 (dotimes (i 26)
   (define-key modal-mode--command-keymap (char-to-string (+ ?A i)) 'ignore))
 
-(dotimes (i 9)
+(dotimes (i 10)
   (define-key modal-mode--command-keymap (char-to-string (+ ?0 i)) 'digit-argument))
 
 (defun modal-mode--map-over-keys (keymap keys-alist)
