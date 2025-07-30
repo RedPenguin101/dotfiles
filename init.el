@@ -380,7 +380,7 @@
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
-   ("p" . kmacro-call-macro)        ;; none, weirdly
+   ("m" . kmacro-call-macro)        ;; none, weirdly
    ))
 
 (define-modal-kill-keys
