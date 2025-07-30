@@ -349,6 +349,7 @@
    (">" . end-of-buffer)            ;; M->
 
    ("\\" . xah/shrink-whitespace)
+   ("^" . delete-indentation)       ;; M-^
    ))
 
 (define-modal-leader-keys
