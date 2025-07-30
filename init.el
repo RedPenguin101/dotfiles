@@ -399,7 +399,8 @@
    ("o" . occur)                    ;; M-s o
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
-   ("i" . my/imenu-to-compilation-buffer)
+   ("i" . imenu)
+   ("I" . my/imenu-to-compilation-buffer)
    ))
 
 (define-modal-project-keys
