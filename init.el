@@ -377,6 +377,10 @@
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
    ("3" . split-window-right)       ;; C-x 3
+
+   ("[" . kmacro-start-macro)       ;; C-x (
+   ("]" . kmacro-end-macro)         ;; C-x )
+   ("p" . kmacro-call-macro)        ;; none, weirdly
    ))
 
 (define-modal-kill-keys
