@@ -37,8 +37,8 @@
 (setq auto-revert-verbose nil) ;; don't message me
 
 ;; line numbers display
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setq-default display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
 
 ;; Windows and splitting
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -119,6 +119,7 @@
 ;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
+(transient-mark-mode nil) ;; highlighting is for posers
 (global-subword-mode 1)
 
 ;;;;;;;;;;;
@@ -293,6 +294,16 @@
 (use-package magit)
 (use-package ag)
 
+;; Additional cool packages not included, but which I use and like
+;; (excluding language specific ones defined later)
+;;
+;; - aggressive indent (sometimes)
+;; - company
+;; - csv-cmode
+;; - markdown-mode
+;; - math-preview (view TeX)
+;; - visible-mark
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -426,7 +437,6 @@
 (global-unset-key (kbd "C-x f")) ;; col fill
 (global-unset-key (kbd "C-t")) ;; transpose char
 (global-unset-key (kbd "M-c"))   ;; capitalize
-(global-unset-key (kbd "C-x C-x")) ;; save buffers kill terminal
 
 ;;;;;;;;;;;;;;
 ;; markdown
