@@ -20,7 +20,6 @@
 (setq package-install-upgrade-built-int t)
 
 ;; Remove noise at startup
-(setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
@@ -293,6 +292,7 @@
 
 (use-package magit)
 (use-package ag)
+(use-package visible-mark)
 
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
@@ -302,7 +302,6 @@
 ;; - csv-cmode
 ;; - markdown-mode
 ;; - math-preview (view TeX)
-;; - visible-mark
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
@@ -411,6 +410,7 @@
  '(("f" . project-find-file)        ;; C-x p f
    ("k" . project-kill-buffers)     ;; C-x p k
    ("c" . project-compile)          ;; C-x p c
+   ("r" . recompile)
    ("d" . project-dired)            ;; C-x p D
    ("v" . magit-project-status)     ;; C-x p m
    ("q" . project-query-replace-regexp) ;; C-x p r
@@ -428,7 +428,6 @@
    ("p" . cider-pprint-eval-last-sexp)))
 
 ;; globals
-(global-set-key (kbd "C-b") 'switch-to-buffer)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)

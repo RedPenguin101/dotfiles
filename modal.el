@@ -128,7 +128,6 @@
    ("k" . modal-kill-leader)
    ("c" . modal-eval-leader)
    ("i" . modal-mode--insert-mode-init)
-   ("u" . universal-argument)
    ("-" . negative-argument)
 ))
 
