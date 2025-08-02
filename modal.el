@@ -120,7 +120,7 @@
   (modal-mode--map-over-keys modal-mode--command-kill-subkeymap keys-alist))
 
 (define-key modal-mode--insert-keymap (kbd "C-G") #'modal-mode--command-mode-init)
-(define-key modal-mode--insert-keymap (kbd "TAB") #'dabbrev-completion)
+(define-key modal-mode--insert-keymap (kbd "TAB") #'dabbrev-expand)
 
 (define-modal-command-keys
  '(("v" . modal-leader-command)
