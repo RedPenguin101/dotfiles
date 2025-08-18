@@ -103,14 +103,14 @@
 ;; When Desktop Save mode is enabled, the state of Emacs is saved from
 ;; one session to another. To see all the options you can set, browse
 ;; the ‘desktop’ customization group.
-(desktop-save-mode 1)
-(setq desktop-save t)
-(setq desktop-load-locked-desktop t)
-(setq desktop-restore-frames t)
-(setq desktop-auto-save-timeout 300)
-(setq desktop-globals-to-save nil)
-(setq desktop-modes-not-to-save
-      '(tags-table-mode special-mode Custom-mode dired-mode))
+;; (desktop-save-mode 1) ;; This is actually pretty annoying
+;; (setq desktop-save t)
+;; (setq desktop-load-locked-desktop t)
+;; (setq desktop-restore-frames t)
+;; (setq desktop-auto-save-timeout 300)
+;; (setq desktop-globals-to-save nil)
+;; (setq desktop-modes-not-to-save
+      ;; '(tags-table-mode special-mode Custom-mode dired-mode))
 
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
@@ -372,6 +372,9 @@
    ("\\" . whitespace-cleanup)
    ("t" . string-rectangle)         ;; C-x r t
    ("b" . switch-to-buffer)         ;; C-x b
+
+   ("j" . jump-to-register)         ;; C-x r j
+   ("SPC" . point-to-register)      ;; C-x r SPC
 
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
