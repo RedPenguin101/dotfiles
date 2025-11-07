@@ -10,6 +10,8 @@
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
 ;; - quick ways to do 'end-of-line-and-insert'. Same for beginning of line, newline, newline above
+;; - surround next sexp with brackets functions / shortcuts
+;; - better shortcut for indent-region (C-M-\)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,14 +66,35 @@
 (setq delete-selection-mode 1)
 (setq kill-do-not-save-duplicates t) ;; doesn't duplicate things in the kill ring
 
-;; Whitespace, tabs and spaces
+;; Whitespace and spaces
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
 (add-hook 'text-mode-hook 'whitespace-mode)
-(setq-default indent-tabs-mode nil)
 (setq sentence-end-double-space nil)
-(setq tab-width 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TAB: Indentation and Autocomplete ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Indentation can insert tabs if this is non-nil.
+(setq-default indent-tabs-mode t)
+
+;; (setq tab-width 2)
+
+;; Controls the operation of the TAB key. If ‘complete’: indent if not
+;; indented, complete if already indented
+(setq tab-always-indent 'complete)
+
+;; Governs the behavior of TAB completion on the first press of the key.
+;; - nil: complete.
+;; - ‘eol’: only complete if point is at the end of a line.
+;; - ‘word’ ‘word-or-paren’ ‘word-or-paren-or-punct’ complete unless the next character has word syntax
+;;   (according to ‘syntax-after’) / is paren / is punctuation
+;; Typing TAB a second time always results in completion.
+;; has no effect unless ‘tab-always-indent’ is ‘complete’.
+
+(setq tab-first-completion 'word)
 
 ;; Toggle visualization of matching parens. Matching parenthesis is
 ;; highlighted in ‘show-paren-style’ after ‘show-paren-delay’ seconds
@@ -558,8 +581,12 @@
 ;; Mode is here https://git.sr.ht/~mgmarlow/odin-mode
 ;; install with M-x package-vc-install RET https://git.sr.ht/~mgmarlow/odin-mode
 
-(use-package odin-mode
-  :bind (:map odin-mode-map ("C-c C-c" . 'recompile)))
+(load "~/.emacs.d/lisp/odin-mode.el")
+
+(add-hook 'odin-mode-hook
+          (lambda ()
+            (progn
+              (local-set-key (kbd "C-c C-c") 'recompile))))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
