@@ -356,6 +356,34 @@
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
 
+(defun scroll-down-half-page ()
+  "scroll down half a page while keeping the cursor centered"
+  (interactive)
+  (let ((ln (line-number-at-pos (point)))
+    (lmax (line-number-at-pos (point-max))))
+    (cond ((= ln 1) (move-to-window-line nil))
+      ((= ln lmax) (recenter (window-end)))
+      (t (progn
+           (move-to-window-line -1)
+           (recenter))))))
+
+(defun scroll-up-half-page ()
+  "scroll up half a page while keeping the cursor centered"
+  (interactive)
+  (let ((ln (line-number-at-pos (point)))
+    (lmax (line-number-at-pos (point-max))))
+    (cond ((= ln 1) nil)
+      ((= ln lmax) (move-to-window-line nil))
+      (t (progn
+           (move-to-window-line 0)
+           (recenter))))))
+
+;; default scroll-up/downs are a bit much. These are a bit less
+;; jarring
+
+(global-set-key (kbd "C-v") 'scroll-down-half-page) ;; replace scroll-up-command
+(global-set-key (kbd "M-v") 'scroll-up-half-page) ;; replace scroll-down-command
+
 (define-key input-decode-map [?\C-m] [C-m]) ;; RET
 (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
 
