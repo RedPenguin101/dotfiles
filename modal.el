@@ -122,12 +122,30 @@
 (define-key modal-mode--insert-keymap (kbd "C-G") #'modal-mode--command-mode-init)
 (define-key modal-mode--insert-keymap (kbd "C-J") #'modal-mode--command-mode-init)
 
+(defun bol-and-insert ()
+  (interactive)
+  (back-to-indentation)
+  (modal-mode--insert-mode-init))
+
+(defun insert-after ()
+  (interactive)
+  (forward-char)
+  (modal-mode--insert-mode-init))
+
+(defun eol-and-insert ()
+  (interactive)
+  (end-of-line)
+  (modal-mode--insert-mode-init))
+
 (define-modal-command-keys
  '(("v" . modal-leader-command)
    ("s" . modal-search-leader)
    ("k" . modal-kill-leader)
    ("c" . modal-eval-leader)
    ("i" . modal-mode--insert-mode-init)
+   ("I" . insert-after)
+   ("A" . bol-and-insert)
+   ("E" . eol-and-insert)
    ("-" . negative-argument)
 ))
 
