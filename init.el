@@ -450,6 +450,7 @@
    ("6" . delete-indentation)       ;; M-^
    ("r" . delete-rectangle)         ;; C-x r d
    ("i" . kill-inner-word)
+   ("z" . zap-up-to-char)
    ))
 
 (define-modal-search-keys
