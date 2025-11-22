@@ -159,8 +159,8 @@
    ("I" . insert-after)
    ("A" . bol-and-insert)
    ("E" . eol-and-insert)
-   ("C-<return>" . newline-above-and-insert)
-   ("S-<return>" . newline-and-insert)
+   ("S-<return>" . newline-above-and-insert)
+   ("C-<return>" . newline-and-insert)
    ("-" . negative-argument)
 ))
 

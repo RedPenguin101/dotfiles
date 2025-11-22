@@ -357,7 +357,6 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defun scroll-down-half-page ()
-  "scroll down half a page while keeping the cursor centered"
   (interactive)
   (let ((ln (line-number-at-pos (point)))
     (lmax (line-number-at-pos (point-max))))
@@ -368,7 +367,6 @@
            (recenter))))))
 
 (defun scroll-up-half-page ()
-  "scroll up half a page while keeping the cursor centered"
   (interactive)
   (let ((ln (line-number-at-pos (point)))
     (lmax (line-number-at-pos (point-max))))
@@ -500,7 +498,6 @@
    ("c" . project-compile)          ;; C-x p c
    ("r" . recompile)
    ("d" . project-dired)            ;; C-x p D
-   ("v" . magit-project-status)     ;; C-x p m
    ("q" . project-query-replace-regexp) ;; C-x p r
    ("b" . project-switch-to-buffer) ;; C-x p b
    ("s" . save-some-buffers))       ;; C-x s
