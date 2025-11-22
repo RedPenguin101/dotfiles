@@ -137,6 +137,19 @@
   (end-of-line)
   (modal-mode--insert-mode-init))
 
+(defun newline-and-insert ()
+  (interactive)
+  (newline)
+  (indent-for-tab-command)
+  (modal-mode--insert-mode-init))
+
+(defun newline-above-and-insert ()
+  (interactive)
+  (beginning-of-line)
+  (open-line 1)
+  (indent-for-tab-command)
+  (modal-mode--insert-mode-init))
+
 (define-modal-command-keys
  '(("v" . modal-leader-command)
    ("s" . modal-search-leader)
@@ -146,6 +159,8 @@
    ("I" . insert-after)
    ("A" . bol-and-insert)
    ("E" . eol-and-insert)
+   ("C-<return>" . newline-above-and-insert)
+   ("S-<return>" . newline-and-insert)
    ("-" . negative-argument)
 ))
 
