@@ -80,7 +80,7 @@
 ;; Indentation can insert tabs if this is non-nil.
 (setq-default indent-tabs-mode t)
 
-;; (setq tab-width 2)
+(setq-default tab-width 4)
 
 ;; Controls the operation of the TAB key. If ‘complete’: indent if not
 ;; indented, complete if already indented
@@ -326,6 +326,30 @@
 ;; - markdown-mode
 ;; - math-preview (view TeX)
 
+;;;;;;;;;;;;;;;;
+;; Bad Habits ;;
+;;;;;;;;;;;;;;;;
+
+(require 'keyfreq)
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
+
+(setq keyfreq-excluded-commands
+      '(self-insert-command
+		disable-mouse--handle))
+
+(require 'disable-mouse)
+(global-disable-mouse-mode)
+
+(defun shame ()
+  (interactive)
+  (message "Shame!"))
+
+(global-set-key (kbd "<left>") #'shame)
+(global-set-key (kbd "<right>") #'shame)
+(global-set-key (kbd "<up>") #'shame)
+(global-set-key (kbd "<down>") #'shame)
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -353,7 +377,6 @@
    ;; r
    ;; t
 
-   ;; z
    ("z" . repeat)                   ;; C-x z
    ("x" . execute-extended-command)
    ;; c: EVAL LEADER
@@ -408,6 +431,13 @@
    ("m" . kmacro-call-macro)        ;; none, weirdly
    ))
 
+(defun kill-inner-word ()
+  "Kills the entire word your cursor is in. Equivalent to ciw in vim."
+  (interactive)
+  (forward-char 1)
+  (backward-word)
+  (kill-word 1))
+
 (define-modal-kill-keys
  '(("f" . kill-word)                ;; M-d - maintain fwd/backward
    ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
@@ -419,6 +449,7 @@
    ("s" . kill-ring-save)           ;; M-w
    ("6" . delete-indentation)       ;; M-^
    ("r" . delete-rectangle)         ;; C-x r d
+   ("i" . kill-inner-word)
    ))
 
 (define-modal-search-keys
