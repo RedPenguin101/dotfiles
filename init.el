@@ -73,6 +73,8 @@
 (add-hook 'text-mode-hook 'whitespace-mode)
 (setq sentence-end-double-space nil)
 
+(setq-default truncate-lines t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
