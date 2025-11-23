@@ -4,7 +4,7 @@
 ;;
 ;; (add-hook 'prog-mode-hook 'modal-mode)
 ;;
-;; You can drop into the command layer with `C-g'. From the command
+;; You can drop into the command layer with `C-j'. From the command
 ;; layer you can get back into normal mode with `i'.
 ;;
 ;; In command layer the alphanumeric keys will not insert characters,

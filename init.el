@@ -47,18 +47,9 @@
 (setq display-buffer-alist nil)
 
 ;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
-(add-to-list 'display-buffer-alist '("\\*Occur\\*" (display-buffer-reuse-mode-window display-buffer-below-selected)
-                                     (window-height . fit-window-to-buffer) (dedicated . t) (body-function . select-window)))
-
-(add-to-list 'display-buffer-alist '("\\*compilation\\*" (display-buffer-reuse-mode-window display-buffer-below-selected)
-                                     (dedicated . t) (body-function . select-window)))
-
 (add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
                                      (display-buffer-use-some-window)
                                      (body-function . delete-other-windows)))
-
-(add-to-list 'display-buffer-alist '("\\*Imenu\\*" (display-buffer-use-some-window)
-                                     (dedicated . t) (body-function . select-window)))
 
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
@@ -294,14 +285,9 @@
         mac-option-modifier 'none)
   ;;; adding brew llvm path
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
-  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH"))))
+  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
+  (setq ispell-program-name "/opt/homebrew/bin/aspell"))
 
-;;;;;;;;;;;;;;;;;;;;;
-;; Xah's functions ;;
-;;;;;;;;;;;;;;;;;;;;;
-;; https://github.com/xahlee/xah-fly-keys/blob/master/xah-fly-keys.el
-
-(load "~/.emacs.d/lisp/xah.el")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; non-native packages ;;
@@ -352,9 +338,9 @@
 (global-set-key (kbd "<up>") #'shame)
 (global-set-key (kbd "<down>") #'shame)
 
-;;;;;;;;;;;;;;;;;;;;
-;; Modal keybinds ;;
-;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; Custom functions ;;
+;;;;;;;;;;;;;;;;;;;;;;
 
 (defun scroll-down-half-page ()
   (interactive)
@@ -375,6 +361,24 @@
       (t (progn
            (move-to-window-line 0)
            (recenter))))))
+
+(defun kill-inner-word ()
+  "Kills the entire word your cursor is in. Equivalent to ciw in vim."
+  (interactive)
+  (forward-char 1)
+  (backward-word)
+  (kill-word 1))
+
+(defun kill-inner-sexp ()
+  (interactive)
+  (forward-char 1)
+  (backward-sexp)
+  (kill-sexp 1))
+
+;;;;;;;;;;;;;;;;;;;;
+;; Modal keybinds ;;
+;;;;;;;;;;;;;;;;;;;;
+
 
 ;; default scroll-up/downs are a bit much. These are a bit less
 ;; jarring
@@ -402,8 +406,8 @@
    ("w" . delete-other-windows)
    ("q" . prog-fill-reindent-defun) ;; M-q
    ("e" . move-end-of-line)         ;; C-e
-   ;; r
-   ;; t
+   ("r" . scroll-up-half-page)
+   ("t" . scroll-down-half-page)
 
    ("z" . repeat)                   ;; C-x z
    ("x" . execute-extended-command)
@@ -416,7 +420,8 @@
    ("j" . forward-sexp)             ;; C-m-f
    ;; k: KILL LEADER
    ("l" . recenter-top-bottom)      ;; C-l
-   (";" . comment-line)             ;; C-x C-;
+   ("L" . move-to-window-line-top-bottom) ;; M-r
+   (";" . comment-line)
 
    ("y" . yank)                     ;; C-y
    ("u" . up-list)
@@ -432,7 +437,6 @@
    ("<" . beginning-of-buffer)      ;; M-<
    (">" . end-of-buffer)            ;; M->
 
-   ("\\" . xah/shrink-whitespace)
    ("^" . delete-indentation)       ;; M-^
    ))
 
@@ -459,26 +463,13 @@
    ("m" . kmacro-call-macro)        ;; none, weirdly
    ))
 
-(defun kill-inner-word ()
-  "Kills the entire word your cursor is in. Equivalent to ciw in vim."
-  (interactive)
-  (forward-char 1)
-  (backward-word)
-  (kill-word 1))
-
-(defun kill-inner-sexp ()
-  (interactive)
-  (forward-char 1)
-  (backward-sexp)
-  (kill-sexp 1))
-
 (define-modal-kill-keys
  '(("f" . kill-word)                ;; M-d - maintain fwd/backward
    ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ("j" . kill-sexp)                ;; C-M-k
    ("n" . kill-inner-sexp)
    ("h" . backward-kill-sexp)       ;; C-M-<backspace>
-   ("k" . kill-line)                ;; C-k
+   ("e" . kill-line)                ;; C-k
    ("l" . kill-whole-line)          ;; C-S-<backspace>
    ("w" . kill-region)              ;; C-w
    ("s" . kill-ring-save)           ;; M-w
@@ -533,14 +524,6 @@
 (global-unset-key (kbd "C-x f")) ;; col fill
 (global-unset-key (kbd "C-t")) ;; transpose char
 (global-unset-key (kbd "M-c"))   ;; capitalize
-
-;;;;;;;;;;;;;;
-;; markdown
-;;;;;;;;;;;;;;
-
-(setq markdown-fontify-code-blocks-natively t)
-(setq markdown-max-image-size '(1500 . 1500))
-(add-hook 'markdown-mode-hook 'auto-fill-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)

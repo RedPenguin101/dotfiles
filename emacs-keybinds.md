@@ -49,25 +49,32 @@
 - `v-SPC` set register
 - `vj` jump to register
 
+## Mark and Highlight
+
+- `g` set mark (transient)
+- `gg` activate mark (highlight)
+- `C-x C-x` switch mark and point
+- `C-M-SPC` mark sexp
+
+## Programming
+
+- `;` comment line
+- `vpc` project compile
+- `vpr` recompile
+- `q` reindent function
+- `vv` magit
+
 ## Other
 
 - `x` execute command
-- `g` set mark transient
-- `gg` set highlight
-- `;` comment line
-- `y` yank
-- `q` reindent function
 - `M-q` fill para
 - `/` undo
 - `\` shrink whitespace
-- `vv` magit
 - `v\` whitespace cleanup
 - `vt` insert rectangle
 - `v[` macro start
 - `v]` macro end
 - `vm` macro run
-- `vpc` project compile
-- `vpr` recompile
 - `M-/` expand
 - `TAB` indent or expand
 - `C-M-\` indent region
@@ -101,14 +108,15 @@
 - `,` beginning of defun
 - `.` end of defun
 
-## Kills
+## Kills and Copies
 
+- `y` yank
 - `kf` kill word
 - `kb` kill back
 - `kj` kill sexp
 - `kn` kill inner sexp
 - `kh` kill sexp back
-- `kk` kill line
+- `ke` kill line
 - `kl` kill whole line
 - `kw` kill region
 - `C-w` kill region
