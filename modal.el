@@ -119,8 +119,7 @@
 (defun define-modal-kill-keys (keys-alist)
   (modal-mode--map-over-keys modal-mode--command-kill-subkeymap keys-alist))
 
-(define-key modal-mode--insert-keymap (kbd "C-G") #'modal-mode--command-mode-init)
-(define-key modal-mode--insert-keymap (kbd "C-J") #'modal-mode--command-mode-init)
+(define-key modal-mode--insert-keymap (kbd "C-j") #'modal-mode--command-mode-init)
 
 (defun bol-and-insert ()
   (interactive)
@@ -130,6 +129,11 @@
 (defun insert-after ()
   (interactive)
   (forward-char)
+  (modal-mode--insert-mode-init))
+
+(defun insert-overwrite ()
+  (interactive)
+  (overwrite-mode 1)
   (modal-mode--insert-mode-init))
 
 (defun eol-and-insert ()
@@ -157,6 +161,7 @@
    ("c" . modal-eval-leader)
    ("i" . modal-mode--insert-mode-init)
    ("I" . insert-after)
+   ("O" . insert-overwrite)
    ("A" . bol-and-insert)
    ("E" . eol-and-insert)
    ("S-<return>" . newline-above-and-insert)
@@ -183,6 +188,7 @@
 
 (defun modal-mode--command-mode-init ()
   (interactive)
+  (overwrite-mode -1)
   (modal-mode--update-key-map 'command)
   (setq cursor-type 'box))
 

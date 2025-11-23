@@ -466,10 +466,17 @@
   (backward-word)
   (kill-word 1))
 
+(defun kill-inner-sexp ()
+  (interactive)
+  (forward-char 1)
+  (backward-sexp)
+  (kill-sexp 1))
+
 (define-modal-kill-keys
  '(("f" . kill-word)                ;; M-d - maintain fwd/backward
    ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ("j" . kill-sexp)                ;; C-M-k
+   ("n" . kill-inner-sexp)
    ("h" . backward-kill-sexp)       ;; C-M-<backspace>
    ("k" . kill-line)                ;; C-k
    ("l" . kill-whole-line)          ;; C-S-<backspace>

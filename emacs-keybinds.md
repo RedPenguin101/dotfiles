@@ -3,7 +3,8 @@
 ## Modes and leaders
 
 - `i` Insert
-- `I` Insert After
+- `I` Insert after
+- `O` Insert overwrite
 - `A` Insert beginning of line
 - `E` Insert end of line
 - `C-RET` Insert next line
@@ -56,6 +57,7 @@
 - `;` comment line
 - `y` yank
 - `q` reindent function
+- `M-q` fill para
 - `/` undo
 - `\` shrink whitespace
 - `vv` magit
@@ -104,6 +106,7 @@
 - `kf` kill word
 - `kb` kill back
 - `kj` kill sexp
+- `kn` kill inner sexp
 - `kh` kill sexp back
 - `kk` kill line
 - `kl` kill whole line
