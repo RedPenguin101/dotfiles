@@ -1,8 +1,6 @@
 ;; based on
 ;; https://git.sr.ht/~mgmarlow/odin-mode
 
-(require 'js) ; For indentation
-
 (defgroup odin nil
   "Major mode for the Odin programming language."
   :link '(url-link "https://odin-lang.org")
@@ -64,6 +62,34 @@
     ;; Builtins
     (,(regexp-opt odin-builtins 'symbols) . font-lock-builtin-face)))
 
+(defun odin-imenu-create-index-nested ()
+  (let ((enums nil)
+		(structs nil)
+		(full nil)
+        (regexp  "^\\(.*?\\)\s*::\s*?\\(proc\\|enum\\|struct\\).*$"))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward regexp nil t)
+        (let ((type (match-string-no-properties 2))
+			  (name (match-string-no-properties 1))
+              (pos (point-marker)))
+          (push (cons name pos) (cond ((string-equal type "proc") full)
+									  ((string-equal type "enum") enums)
+									  ((string-equal type "struct") structs))))))
+    (push (cons "ENUMS" (nreverse enums)) full)
+    (push (cons "STRUCTS" (nreverse structs)) full)
+	full))
+
+(defun odin-indent-line ()
+  (let ((indent 0)
+		(paren-depth nil))
+	(save-excursion
+	  (back-to-indentation)
+	  (cond ((eq (char-after) ?\n) (setq indent 0))
+			(t (setq indent (car (syntax-ppss)))))
+
+	  (indent-to (* tab-width indent)))))
+
 ;;;###autoload
 (define-derived-mode odin-mode
   prog-mode "Odin"
@@ -78,10 +104,12 @@
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
 
-  (setq-local indent-line-function #'js-indent-line)
+  (setq-local indent-line-function #'odin-indent-line)
 
   (setq-local electric-indent-chars
-              (append "{}():;," electric-indent-chars)))
+              (append "{}():;," electric-indent-chars))
+
+  (setq-local imenu-create-index-function 'odin-imenu-create-index-nested))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
