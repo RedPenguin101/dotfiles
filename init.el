@@ -375,6 +375,12 @@
   (backward-sexp)
   (kill-sexp 1))
 
+
+(defun backward-down-list (&optional arg)
+  (interactive)
+  (or arg (setq arg 1))
+  (down-list (- arg)))
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -400,6 +406,7 @@
    ("a" . move-beginning-of-line)   ;; C-a
    ;; s: SEARCH LEADER
    ("d" . down-list)                ;; C-M-d
+   ("D" . backward-down-list)                ;; C-M-d
    ("f" . forward-word)             ;; M-f
    ("g" . set-mark-command)         ;; C-SPC
 
@@ -425,6 +432,7 @@
 
    ("y" . yank)                     ;; C-y
    ("u" . up-list)
+   ("U" . backward-up-list)
    ;; i: INSERT MODE
    ("o" . other-window)             ;; C-x o
    ("p" . previous-line)            ;; C-p
@@ -488,6 +496,8 @@
    ("h" . highlight-phrase)
    ("i" . imenu)
    ("I" . my/imenu-to-compilation-buffer)
+   ("f" . jump-char-forward-set-mark)
+   ("b" . jump-char-backward-set-mark)
    ))
 
 (define-modal-project-keys
