@@ -62,14 +62,15 @@
     ;; Builtins
     (,(regexp-opt odin-builtins 'symbols) . font-lock-builtin-face)))
 
+(setq odin--proc-enum-or-struct "^\\(.*?\\)\s*::\s*?\\(proc\\|enum\\|struct\\).*$")
+
 (defun odin-imenu-create-index-nested ()
   (let ((enums nil)
 		(structs nil)
-		(full nil)
-        (regexp  "^\\(.*?\\)\s*::\s*?\\(proc\\|enum\\|struct\\).*$"))
+		(full nil))
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward regexp nil t)
+      (while (re-search-forward odin--proc-enum-or-struct nil t)
         (let ((type (match-string-no-properties 2))
 			  (name (match-string-no-properties 1))
               (pos (point-marker)))
@@ -90,6 +91,45 @@
 
 	  (indent-to (* tab-width indent)))))
 
+(defun odin--at-defun-start ()
+  (let ((current-point (point)))
+	(and (= 0 (car (syntax-ppss))) (save-excursion (back-to-indentation) (= current-point (point))))))
+
+(defun odin-beginning-of-defun-function ()
+  (let* ((depth (car (syntax-ppss)))
+		 (current-point (point))
+		 (already-at-start (odin--at-defun-start))
+		 (found nil))
+	(cond ((odin--at-defun-start)
+		   (while (and (> (point) 0) (not found))
+			 (previous-line)
+			 (beginning-of-line)
+			 (when (and (= 0 (car (syntax-ppss))) (looking-at ".*:[:=]?"))
+			   (setq found t))))
+
+		  ((= depth 0) (back-to-indentation))
+
+		  (t (progn (backward-up-list depth)
+					(back-to-indentation)) ))))
+
+(defun odin-end-of-defun-function ()
+  (back-to-indentation)
+
+  (while (eq (char-after) ?\n) (next-line))
+
+  (unless (odin--at-defun-start)
+	(odin-beginning-of-defun-function))
+
+  (if (looking-at odin--proc-enum-or-struct)
+	  (progn
+		(re-search-forward "{")
+		(backward-char)
+		(forward-sexp))
+	(progn
+	  (next-line)
+	  (back-to-indentation)
+	  (while (eq (char-after) ?\n) (next-line)))))
+
 ;;;###autoload
 (define-derived-mode odin-mode
   prog-mode "Odin"
@@ -109,6 +149,8 @@
   (setq-local electric-indent-chars
               (append "{}():;," electric-indent-chars))
 
+  (setq-local beginning-of-defun-function #'odin-beginning-of-defun-function)
+  (setq-local end-of-defun-function #'odin-end-of-defun-function)
   (setq-local imenu-create-index-function 'odin-imenu-create-index-nested))
 
 ;;;###autoload
