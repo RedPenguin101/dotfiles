@@ -392,8 +392,8 @@
 (global-set-key (kbd "C-v") 'scroll-down-half-page) ;; replace scroll-up-command
 (global-set-key (kbd "M-v") 'scroll-up-half-page) ;; replace scroll-down-command
 
-(define-key input-decode-map [?\C-m] [C-m]) ;; RET
-(define-key input-decode-map [?\C-i] [C-i]) ;; TAB
+;; (define-key input-decode-map [?\C-m] [C-m]) ;; RET
+;; (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
 
 (load "~/.emacs.d/lisp/modal.el")
 

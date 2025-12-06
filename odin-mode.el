@@ -82,14 +82,29 @@
 	full))
 
 (defun odin-indent-line ()
-  (let ((indent 0)
-		(paren-depth nil))
+  (interactive)
+  (let* ((indent 0)
+		 (starting-line (line-number-at-pos))
+		 (current-col (current-column)))
 	(save-excursion
 	  (back-to-indentation)
-	  (cond ((eq (char-after) ?\n) (setq indent 0))
-			(t (setq indent (car (syntax-ppss)))))
+	  (let* ((depth (car (syntax-ppss)))
+	   		 (current-indent (current-column)))
 
-	  (indent-to (* tab-width indent)))))
+		(cond ((eq (char-after) ?}) (setq indent (- depth 1)))
+			  (t (setq indent depth)))
+
+		(message "depth: %d, col %d, curr-indent %d, new-indent %d"
+				 depth current-col current-indent (* tab-width indent))
+		(cond ((< current-indent (* tab-width indent)) (indent-to (* tab-width indent)))
+			  ((> current-indent (* tab-width indent)) (progn (delete-indentation) (newline-and-indent)))
+			  )))
+	(when (< (current-column) (* tab-width indent))
+	  (back-to-indentation)))
+
+
+
+  )
 
 (defun odin--at-defun-start ()
   (let ((current-point (point)))
