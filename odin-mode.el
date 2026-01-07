@@ -83,28 +83,30 @@
 
 (defun odin-indent-line ()
   (interactive)
-  (let* ((indent 0)
-		 (starting-line (line-number-at-pos))
-		 (current-col (current-column)))
-	(save-excursion
-	  (back-to-indentation)
-	  (let* ((depth (car (syntax-ppss)))
-	   		 (current-indent (current-column)))
+  (let ((indent 0)
+	(indent-col 0)
+	(changed))
+    (save-excursion
+      (back-to-indentation) ;; establish a starting point at the indendation
+      (let* ((depth (car (syntax-ppss)))
+	     (indent (if (eq (char-after) ?}) (- depth 1) depth)))
 
-		(cond ((eq (char-after) ?}) (setq indent (- depth 1)))
-			  (t (setq indent depth)))
+	;; The indent is just the block depth UNLESS the next
+	;; character is a closing brace `}'. In that case it's the
+	;; depth -1, which will be the same as the opening brace.
 
-		(message "depth: %d, col %d, curr-indent %d, new-indent %d"
-				 depth current-col current-indent (* tab-width indent))
-		(cond ((< current-indent (* tab-width indent)) (indent-to (* tab-width indent)))
-			  ((> current-indent (* tab-width indent)) (progn (delete-indentation) (newline-and-indent)))
-			  )))
-	(when (< (current-column) (* tab-width indent))
-	  (back-to-indentation)))
+	(setq indent-col (* tab-width indent))
 
+	;; delete everything before the current point
+	(unless (= (current-column) indent-col)
+	  (unless (= 0 (current-column)) (kill-line 0))
+	  (indent-to indent-col)
+	  (setq changed t))))
 
-
-  )
+    ;; If we're 'in' the indented region, move FORWARD to the indendation
+    (when (and changed (< (current-column) indent-col))
+      ;; (message "indented: indent %d col %d" indent indent-col)
+      (back-to-indentation))))
 
 (defun odin--at-defun-start ()
   (let ((current-point (point)))

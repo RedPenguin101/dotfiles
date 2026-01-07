@@ -2,23 +2,44 @@
 ;; Joe's Emacs init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Things to do
-;; - Look at Prot's `display-buffer-alist' configuration
-;;   https://www.youtube.com/watch?v=1-UIzYPn38s
-;;   - magit should open fullscreen
-;;   - cider repl shouldn't take focus
-;;   - help Major should open full screen
+;; ============
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
-;; - quick ways to do 'end-of-line-and-insert'. Same for beginning of line, newline, newline above
 ;; - surround next sexp with brackets functions / shortcuts
-;; - better shortcut for indent-region (C-M-\)
+;; - eat terminal? https://codeberg.org/akib/emacs-eat
+;;
+;; Stuff I usually forget
+;; ======================
+;;
+;; Shell
+;; -----
+;; M-n, M-p: cycle command history
+;; M-r: History search
+;;
+;; Ansi Term
+;; ---------
+;; C-cj Buffer mode, C-ck Terminal Mode
+;;
+;; Less frequently used keybinds
+;; -----------------------------
+;; L  - move point around visible buffer
+;; kn - kill inner sexp
+;; ki - kill inner word
+;; kz - zap up to car
+;; sf - jump to char
+;; sb - jump back to char
+;;
+;; Other stuff
+;; -----------
+;; align-regexp RET =    - line up multiline definition
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; This is required on older versions of emacs because (according to
 ;; magit error messsages) "Due to bad defaults, Emac's package manager
-;; refuses to update ... build-in packages..."
+;; refuses to update ... build-in [sic] packages..."
 (setq package-install-upgrade-built-int t)
 
 ;; Remove noise at startup
@@ -41,12 +62,14 @@
 (setq-default display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
 
-;; Windows and splitting
+;; start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; buffer-alist
+;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
 
 (setq display-buffer-alist nil)
 
-;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
 (add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
                                      (display-buffer-use-some-window)
                                      (body-function . delete-other-windows)))
@@ -66,38 +89,12 @@
 
 (setq-default truncate-lines t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TAB: Indentation and Autocomplete ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Indentation can insert tabs if this is non-nil.
-(setq-default indent-tabs-mode t)
-
-(setq-default tab-width 4)
-
-;; Controls the operation of the TAB key. If ‘complete’: indent if not
-;; indented, complete if already indented
-(setq tab-always-indent 'complete)
-
-;; Governs the behavior of TAB completion on the first press of the key.
-;; - nil: complete.
-;; - ‘eol’: only complete if point is at the end of a line.
-;; - ‘word’ ‘word-or-paren’ ‘word-or-paren-or-punct’ complete unless the next character has word syntax
-;;   (according to ‘syntax-after’) / is paren / is punctuation
-;; Typing TAB a second time always results in completion.
-;; has no effect unless ‘tab-always-indent’ is ‘complete’.
-
-(setq tab-first-completion 'word)
-
-;; Toggle visualization of matching parens. Matching parenthesis is
-;; highlighted in ‘show-paren-style’ after ‘show-paren-delay’ seconds
-;; of Emacs idle time.
-(show-paren-mode +1)
-;; When enabled, typing an open parenthesis automatically inserts the
-;; corresponding closing parenthesis, and vice versa. (Likewise for
-;; brackets, etc.). If the region is active, the parentheses
-;; (brackets, etc.) are inserted around the region instead.
-(electric-pair-mode)
+;; This is suggested in the corfu docs. It sounds interesting but I
+;; don't really understand it, so not adding it:
+;;; Hide commands in M-x which do not apply to the current mode. Corfu
+;;; commands are hidden, since they are not used via M-x. This setting
+;;; is useful beyond Corfu. (setq read-extended-command-predicate
+;;; #'command-completion-default-include-p)
 
 ;; highlights the currently selected line
 (global-hl-line-mode +1)
@@ -116,18 +113,6 @@
 (setq save-place-limit 600)
 (save-place-mode 1)
 
-;; When Desktop Save mode is enabled, the state of Emacs is saved from
-;; one session to another. To see all the options you can set, browse
-;; the ‘desktop’ customization group.
-;; (desktop-save-mode 1) ;; This is actually pretty annoying
-;; (setq desktop-save t)
-;; (setq desktop-load-locked-desktop t)
-;; (setq desktop-restore-frames t)
-;; (setq desktop-auto-save-timeout 300)
-;; (setq desktop-globals-to-save nil)
-;; (setq desktop-modes-not-to-save
-      ;; '(tags-table-mode special-mode Custom-mode dired-mode))
-
 ;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
@@ -135,7 +120,21 @@
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
 (transient-mark-mode nil) ;; highlighting is for posers
-(global-subword-mode 1)
+
+;;;;;;;;;;;;;;;;;
+;; mac
+;;;;;;;;;;;;;;;;;
+
+;;; Use command key for meta
+(when (eq system-type 'darwin)
+  (setq mac-option-key-is-meta nil
+        mac-command-key-is-meta t
+        mac-command-modifier 'meta
+        mac-option-modifier 'none)
+  ;;; adding brew llvm path
+  (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
+  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
+  (setq ispell-program-name "/opt/homebrew/bin/aspell"))
 
 ;;;;;;;;;;;
 ;; dired ;;
@@ -191,6 +190,51 @@
   (if (find-file (completing-read "Find recent file: " recentf-list))
       (message "Opening file...")
     (message "Aborting")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; General programming ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Toggle visualization of matching parens. Matching parenthesis is
+;; highlighted in ‘show-paren-style’ after ‘show-paren-delay’ seconds
+;; of Emacs idle time.
+(show-paren-mode +1)
+
+;; When enabled, typing an open parenthesis automatically inserts the
+;; corresponding closing parenthesis, and vice versa. If the region is
+;; active, the parentheses (brackets, etc.) are inserted around the
+;; region instead.
+(electric-pair-mode)
+
+(global-subword-mode 1)
+
+;; which-function-mode shows you which function you're in in the
+;; modeline. Useful when you have massive function, which I do a lot
+;; when game programming.
+(which-function-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TAB: Indentation and Autocomplete ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Indentation can insert tabs if this is non-nil.
+(setq-default indent-tabs-mode t)
+
+(setq-default tab-width 4)
+
+;; Controls the operation of the TAB key. If ‘complete’: indent if not
+;; indented, complete if already indented
+(setq tab-always-indent 'complete)
+
+;; tab-first-completion governs the behavior of TAB completion on the first press of the key.
+;; - nil: complete.
+;; - ‘eol’: only complete if point is at the end of a line.
+;; - ‘word’ ‘word-or-paren’ ‘word-or-paren-or-punct’ complete unless the next character has word syntax
+;;   (according to ‘syntax-after’) / is paren / is punctuation
+;; Typing TAB a second time always results in completion.
+;; has no effect unless ‘tab-always-indent’ is ‘complete’.
+
+(setq tab-first-completion 'word)
 
 ;;;;;;;;;;;;;;;;
 ;; compilation
@@ -273,22 +317,6 @@
     (display-buffer buf)
     (goto-char (point-min))))
 
-;;;;;;;;;;;;;;;;;
-;; mac
-;;;;;;;;;;;;;;;;;
-
-;;; Use command key for meta
-(when (eq system-type 'darwin)
-  (setq mac-option-key-is-meta nil
-        mac-command-key-is-meta t
-        mac-command-modifier 'meta
-        mac-option-modifier 'none)
-  ;;; adding brew llvm path
-  (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
-  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
-  (setq ispell-program-name "/opt/homebrew/bin/aspell"))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; non-native packages ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -305,12 +333,20 @@
 (use-package ag)
 (use-package visible-mark)
 
+(use-package cape
+  ;; "Completion At Point Extensions". out of the box
+  ;; completion-at-point is pretty useless without a tags table or
+  ;; lsp. cape adds the ability to use dabbrev as a
+  ;; completion-at-point function. Also other stuff, but this is fine
+  ;; for me.
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev))
+
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
 ;;
 ;; - aggressive indent (sometimes)
-;; - company
-;; - csv-cmode
+;; - csv-mode
 ;; - markdown-mode
 ;; - math-preview (view TeX)
 
@@ -384,7 +420,6 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
-
 
 ;; default scroll-up/downs are a bit much. These are a bit less
 ;; jarring
@@ -462,6 +497,7 @@
    ("j" . jump-to-register)         ;; C-x r j
    ("SPC" . point-to-register)      ;; C-x r SPC
 
+   ("0" . delete-window)            ;; C-x 0
    ("1" . delete-other-windows)     ;; C-x 1
    ("2" . split-window-below)       ;; C-x 2
    ("3" . split-window-right)       ;; C-x 3
@@ -496,6 +532,7 @@
    ("h" . highlight-phrase)
    ("i" . imenu)
    ("I" . my/imenu-to-compilation-buffer)
+   ;; uncomment if you have jump-char installed
    ("f" . jump-char-forward-set-mark)
    ("b" . jump-char-backward-set-mark)
    ))
@@ -522,8 +559,8 @@
 
 ;; globals
 (global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+;; decrease is increase with negative arg. C-- C-=
 
 ;; Keys I always hit accidentally
 (global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
@@ -532,8 +569,6 @@
 (global-unset-key (kbd "C-z")) ;; suspend
 (global-unset-key (kbd "C-x C-z")) ;; suspend
 (global-unset-key (kbd "C-x f")) ;; col fill
-(global-unset-key (kbd "C-t")) ;; transpose char
-(global-unset-key (kbd "M-c"))   ;; capitalize
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; clojure (and elisp)
@@ -616,17 +651,17 @@
 ;; C
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(load "~/.emacs.d/lisp/simple-c-mode.el")
+
 ;; create a format file with
 ;; clang-format -style=llvm -dump-config > .clang-format
 (setq clang-format-style "file")
 (setq clang-format-fallback-style "llvm")
 
-(add-hook 'c-mode-hook
+(add-hook 'simple-c-mode-hook
           (lambda ()
             (progn
-              (c-toggle-comment-style -1)
-              (local-set-key (kbd "C-c C-c") 'recompile)
-              (local-set-key (kbd "C-c f") 'clang-format-buffer))))
+              (local-set-key (kbd "C-c C-c") 'recompile))))
 
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
@@ -637,8 +672,10 @@
 ;; Odin
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Mode is here https://git.sr.ht/~mgmarlow/odin-mode
-;; install with M-x package-vc-install RET https://git.sr.ht/~mgmarlow/odin-mode
+;; There's a package here https://git.sr.ht/~mgmarlow/odin-mode
+;;; install with M-x package-vc-install RET https://git.sr.ht/~mgmarlow/odin-mode
+;; But it uses a crappy js indenter. Mine is basically the same but
+;; with a much simpler indentation routine.
 
 (load "~/.emacs.d/lisp/odin-mode.el")
 
@@ -646,6 +683,16 @@
           (lambda ()
             (progn
               (local-set-key (kbd "C-c C-c") 'recompile))))
+
+(add-hook 'odin-mode-hook
+          (lambda ()
+            (push '("<=" . ?≤) prettify-symbols-alist)
+            (push '(">=" . ?≥) prettify-symbols-alist)
+			(push '("->" . ?→) prettify-symbols-alist)
+			(push '("!=" . ?≠) prettify-symbols-alist)
+			(push '(":=" . ?≔) prettify-symbols-alist)
+
+			(prettify-symbols-mode 1)))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
