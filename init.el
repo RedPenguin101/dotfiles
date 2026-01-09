@@ -8,6 +8,16 @@
 ;; - surround next sexp with brackets functions / shortcuts
 ;; - eat terminal? https://codeberg.org/akib/emacs-eat
 ;;
+;; Interesting sounding stuff from
+;; https://github.com/jamescherti/minimal-emacs.d/blob/main/init.el
+;; (setq custom-buffer-done-kill t)
+;; (setq uniquify-buffer-name-style 'forward)
+;; (setq comment-multi-line t)
+;; (setq comment-empty-lines t)
+;;
+;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
+;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -29,6 +39,12 @@
 ;; sf - jump to char
 ;; sb - jump back to char
 ;;
+;; dired
+;; -----
+;; - i : include subdir
+;; - F : open all marked
+;; - `find-name-dired' for to pipe searched files to buffer
+;;
 ;; Other stuff
 ;; -----------
 ;; align-regexp RET =    - line up multiline definition
@@ -37,26 +53,32 @@
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(setopt inhibit-splash-screen t)
+
 ;; This is required on older versions of emacs because (according to
 ;; magit error messsages) "Due to bad defaults, Emac's package manager
 ;; refuses to update ... build-in [sic] packages..."
-(setq package-install-upgrade-built-int t)
+(setopt package-install-upgrade-built-int t)
 
 ;; Remove noise at startup
-(setq initial-scratch-message nil)
-(setq ring-bell-function 'ignore)
-(setq visible-bell 1)
+(setopt initial-scratch-message nil)
+;; No beeping or blinking
+(setopt visible-bell nil)
+(setopt ring-bell-function #'ignore)
 
 ;; Backups, lockfiles and trash
-(setq create-lockfiles nil)
-(setq make-backup-files nil)
-(setq backup-inhibited t)
-(setq delete-by-moving-to-trash t)
+(setopt create-lockfiles nil)
+(setopt make-backup-files nil)
+(setopt backup-inhibited t)
+(setopt delete-by-moving-to-trash t)
 
 ;; Autoreverts
+(setopt auto-revert-avoid-polling t)
+(setopt auto-revert-interval 5)
+(setopt auto-revert-check-vc-info t)
+(setopt global-auto-revert-non-file-buffers t) ; for dired
+(setopt auto-revert-verbose nil) ;; don't message me
 (global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t) ; for dired
-(setq auto-revert-verbose nil) ;; don't message me
 
 ;; line numbers display
 (setq-default display-line-numbers-type 'relative)
@@ -76,6 +98,9 @@
 
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
+(setq split-width-threshold 170
+      split-height-threshold nil)
+
 ;; Editing preferences
 (setq delete-selection-mode 1)
 (setq kill-do-not-save-duplicates t) ;; doesn't duplicate things in the kill ring
@@ -86,6 +111,8 @@
 (add-hook 'prog-mode-hook 'whitespace-mode)
 (add-hook 'text-mode-hook 'whitespace-mode)
 (setq sentence-end-double-space nil)
+(setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
+
 
 (setq-default truncate-lines t)
 
@@ -96,12 +123,23 @@
 ;;; is useful beyond Corfu. (setq read-extended-command-predicate
 ;;; #'command-completion-default-include-p)
 
-;; highlights the currently selected line
+;; `hl-line-mode' highlights the currently selected line
+;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
+;; clutter and slightly improving `hl-line-mode' performance.
+(setq hl-line-sticky-flag nil)
+(setq global-hl-line-sticky-flag nil)
 (global-hl-line-mode +1)
 
 ;; FIDO/Minibuffer
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 (fido-vertical-mode)
+
+
+;; Keep the cursor out of the read-only portions of the.minibuffer
+(setq minibuffer-prompt-properties
+      '(read-only t intangible t cursor-intangible t face minibuffer-prompt))
+
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 ;; Savehist
 (setq savehist-additional-variables
@@ -109,6 +147,7 @@
         register-alist                       ; macros
         mark-ring global-mark-ring           ; marks
         search-ring regexp-search-ring))     ; searches
+(savehist-mode)
 (setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
 (setq save-place-limit 600)
 (save-place-mode 1)
@@ -120,6 +159,24 @@
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
 (transient-mark-mode nil) ;; highlighting is for posers
+
+(when (>= emacs-major-version 30)
+  (setopt project-mode-line t))
+
+;; Reduce rendering/line scan work by not rendering cursors or regions in
+;; non-focused windows.
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+(setq-default left-fringe-width  8)
+(setq-default right-fringe-width 8)
+
+;; Disable visual indicators in the fringe for buffer boundaries and empty lines
+(setq-default indicate-buffer-boundaries nil)
+(setq-default indicate-empty-lines nil)
+
+;; Eliminate delay before highlighting search matches
+(setq lazy-highlight-initial-delay 0)
 
 ;;;;;;;;;;;;;;;;;
 ;; mac
@@ -213,9 +270,16 @@
 ;; when game programming.
 (which-function-mode 1)
 
+;; Configure automatic indentation to be triggered exclusively by newline and
+;; DEL (backspace) characters.
+(setq-default electric-indent-chars '(?\n ?\^?))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setopt completion-cycle-threshold 1)                  ; TAB cycles candidates
+(setopt completions-detailed t)
 
 ;; Indentation can insert tabs if this is non-nil.
 (setq-default indent-tabs-mode t)
@@ -236,6 +300,14 @@
 
 (setq tab-first-completion 'word)
 
+;; This stuff is taken from Bedrock
+(setopt completion-auto-help 'always)                  ; Open completion always; `lazy' another option
+(setopt completions-max-height 20)                     ; This is arbitrary
+(setopt completions-format 'one-column)
+(setopt completions-group t)
+(setopt completion-auto-select 'second-tab)            ; Much more eager
+(keymap-set minibuffer-mode-map "TAB" 'minibuffer-complete) ; TAB acts more like how it does in the shell
+
 ;;;;;;;;;;;;;;;;
 ;; compilation
 ;;;;;;;;;;;;;;;;
@@ -244,6 +316,8 @@
 (use-package compile
   :ensure nil
   :custom
+  (compilation-ask-about-save nil)
+  (compilation-scroll-output 'first-error)
   (compilation-always-kill t)
   (compilation-scroll-output t)
   (ansi-color-for-compilation-mode t)
@@ -272,7 +346,7 @@
 ;; value. There is no need to rescan because of small changes in the
 ;; text.
 
-(setq imenu-auto-rescan 1)
+(setopt imenu-auto-rescan t)
 
 ;; Function to pipe imenu results to a full buffer as opposed to
 ;; displaying them in a mini buffer
@@ -442,7 +516,7 @@
    ;; s: SEARCH LEADER
    ("d" . down-list)                ;; C-M-d
    ("D" . backward-down-list)                ;; C-M-d
-   ("f" . forward-word)             ;; M-f
+   ;; ("f" . forward-word)             ;; M-f EXPERIMENTAL: no horizontal move keys
    ("g" . set-mark-command)         ;; C-SPC
 
    ("w" . delete-other-windows)
@@ -455,7 +529,7 @@
    ("x" . execute-extended-command)
    ;; c: EVAL LEADER
    ;; v: GENERAL LEADER
-   ("b" . backward-word)            ;; M-b
+   ;; ("b" . backward-word)            ;; M-b
 
    ;; RIGHT HAND
    ("h" . backward-sexp)            ;; C-M-b
@@ -470,9 +544,9 @@
    ("U" . backward-up-list)
    ;; i: INSERT MODE
    ("o" . other-window)             ;; C-x o
-   ("p" . previous-line)            ;; C-p
+   ;; ("p" . previous-line)            ;; C-p
 
-   ("n" . next-line)                ;; C-n
+   ;; ("n" . next-line)                ;; C-n
    ("m" . back-to-indentation)      ;; M-m
    ("/" . undo)                     ;; C-/
    ("," . beginning-of-defun)
@@ -508,12 +582,13 @@
    ))
 
 (define-modal-kill-keys
- '(("f" . kill-word)                ;; M-d - maintain fwd/backward
-   ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
+ '(
+   ;; ("f" . kill-word)                ;; M-d - maintain fwd/backward
+   ;; ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ("j" . kill-sexp)                ;; C-M-k
    ("n" . kill-inner-sexp)
    ("h" . backward-kill-sexp)       ;; C-M-<backspace>
-   ("e" . kill-line)                ;; C-k
+   ("k" . kill-line)                ;; C-k
    ("l" . kill-whole-line)          ;; C-S-<backspace>
    ("w" . kill-region)              ;; C-w
    ("s" . kill-ring-save)           ;; M-w
@@ -561,6 +636,14 @@
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 ;; decrease is increase with negative arg. C-- C-=
+
+;; experimental: no horizontal move keys
+(global-unset-key (kbd "C-f"))
+(global-unset-key (kbd "C-b"))
+(global-unset-key (kbd "C-n"))
+(global-unset-key (kbd "C-p"))
+(global-unset-key (kbd "M-f"))
+(global-unset-key (kbd "M-b"))
 
 ;; Keys I always hit accidentally
 (global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
