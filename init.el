@@ -434,7 +434,9 @@
 
 (setq keyfreq-excluded-commands
       '(self-insert-command
-		disable-mouse--handle))
+		disable-mouse--handle
+		modal-mode--command-mode-init
+		modal-mode--insert-mode-init))
 
 (require 'disable-mouse)
 (global-disable-mouse-mode)
@@ -485,11 +487,28 @@
   (backward-sexp)
   (kill-sexp 1))
 
-
 (defun backward-down-list (&optional arg)
   (interactive)
   (or arg (setq arg 1))
   (down-list (- arg)))
+
+(defun start-of-sexp ()
+  (interactive)
+  (backward-up-list)
+  (down-list))
+
+(defun my--end-of-sexp ()
+  (interactive)
+  (up-list)
+  (backward-down-list))
+
+(defun next-line-required-arg (&optional arg)
+  (interactive "P")
+  (if (null arg) (message "arg required") (next-line arg)))
+
+(defun previous-line-required-arg (&optional arg)
+  (interactive "P")
+  (if (null arg) (message "arg required") (previous-line arg)))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
@@ -534,19 +553,21 @@
    ;; RIGHT HAND
    ("h" . backward-sexp)            ;; C-M-b
    ("j" . forward-sexp)             ;; C-m-f
+   ("H" . start-of-sexp)
+   ("J" . my--end-of-sexp)
    ;; k: KILL LEADER
    ("l" . recenter-top-bottom)      ;; C-l
    ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
 
    ("y" . yank)                     ;; C-y
-   ("u" . up-list)
-   ("U" . backward-up-list)
+   ("u" . backward-up-list)
+   ("U" . up-list)
    ;; i: INSERT MODE
    ("o" . other-window)             ;; C-x o
-   ;; ("p" . previous-line)            ;; C-p
+   ("p" . previous-line-required-arg)            ;; C-p
 
-   ;; ("n" . next-line)                ;; C-n
+   ("n" . next-line-required-arg)                ;; C-n
    ("m" . back-to-indentation)      ;; M-m
    ("/" . undo)                     ;; C-/
    ("," . beginning-of-defun)
@@ -583,8 +604,8 @@
 
 (define-modal-kill-keys
  '(
-   ;; ("f" . kill-word)                ;; M-d - maintain fwd/backward
-   ;; ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
+   ("f" . kill-word)                ;; M-d - maintain fwd/backward
+   ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ("j" . kill-sexp)                ;; C-M-k
    ("n" . kill-inner-sexp)
    ("h" . backward-kill-sexp)       ;; C-M-<backspace>
@@ -636,14 +657,6 @@
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 ;; decrease is increase with negative arg. C-- C-=
-
-;; experimental: no horizontal move keys
-(global-unset-key (kbd "C-f"))
-(global-unset-key (kbd "C-b"))
-(global-unset-key (kbd "C-n"))
-(global-unset-key (kbd "C-p"))
-(global-unset-key (kbd "M-f"))
-(global-unset-key (kbd "M-b"))
 
 ;; Keys I always hit accidentally
 (global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
