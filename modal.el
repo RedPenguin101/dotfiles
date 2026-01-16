@@ -90,6 +90,9 @@
 (dotimes (i 26)
   (define-key modal-mode--command-keymap (char-to-string (+ ?a i)) 'ignore))
 
+(define-key modal-mode--command-keymap (char-to-string ?>) 'ignore)
+(define-key modal-mode--command-keymap (char-to-string ?<) 'ignore)
+
 (dotimes (i 26)
   (define-key modal-mode--command-keymap (char-to-string (+ ?A i)) 'ignore))
 
@@ -159,11 +162,6 @@
    ("s" . modal-search-leader)
    ("k" . modal-kill-leader)
    ("c" . modal-eval-leader)
-   ("i" . modal-mode--insert-mode-init)
-   ("I" . insert-after)
-   ("O" . insert-overwrite)
-   ("A" . bol-and-insert)
-   ("E" . eol-and-insert)
    ("S-<return>" . newline-above-and-insert)
    ("C-<return>" . newline-and-insert)
    ("-" . negative-argument)

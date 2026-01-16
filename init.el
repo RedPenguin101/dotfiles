@@ -18,6 +18,8 @@
 ;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
 ;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
 ;;
+;; Look into Shift Selection - what is it?
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -113,7 +115,6 @@
 (setq sentence-end-double-space nil)
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
-
 (setq-default truncate-lines t)
 
 ;; This is suggested in the corfu docs. It sounds interesting but I
@@ -158,13 +159,16 @@
 ;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
-(transient-mark-mode nil) ;; highlighting is for posers
+
+;; (transient-mark-mode t)
+;; (setq transient-mark-mode 'lambda)
 
 (when (>= emacs-major-version 30)
   (setopt project-mode-line t))
 
 ;; Reduce rendering/line scan work by not rendering cursors or regions in
 ;; non-focused windows.
+
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
@@ -510,6 +514,22 @@
   (interactive "P")
   (if (null arg) (message "arg required") (previous-line arg)))
 
+(defun surround-sexp ()
+  (interactive)
+  (set-mark (point))
+  (forward-sexp)
+  (insert-char ?\) )
+  (exchange-point-and-mark)
+  (insert-char ?\( ))
+
+(defun kill-in-sexp ()
+  ;; equivalent to ci( in vi
+  (interactive)
+  (start-of-sexp)
+  (set-mark (point))
+  (my--end-of-sexp)
+  (kill-region nil nil t))
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Modal keybinds ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -531,127 +551,138 @@
 
 (define-modal-command-keys
  '(;; LEFT HAND
-   ("a" . move-beginning-of-line)   ;; C-a
+   ;; ("a" . move-beginning-of-line)   ;; C-a
+   ;; ("A" . bol-and-insert)
    ;; s: SEARCH LEADER
-   ("d" . down-list)                ;; C-M-d
-   ("D" . backward-down-list)                ;; C-M-d
-   ;; ("f" . forward-word)             ;; M-f EXPERIMENTAL: no horizontal move keys
-   ("g" . set-mark-command)         ;; C-SPC
+   ;; ("d" . down-list)                ;; C-M-d
+   ;; ("D" . backward-down-list)
+
+   ;; f NOTHING
+
+   ;; ("g" . set-mark-command)         ;; C-SPC
 
    ("w" . delete-other-windows)
-   ("q" . prog-fill-reindent-defun) ;; M-q
-   ("e" . move-end-of-line)         ;; C-e
-   ("r" . scroll-up-half-page)
-   ("t" . scroll-down-half-page)
+   ;; ("q" . prog-fill-reindent-defun) ;; M-q
+   ;; ("e" . move-end-of-line)         ;; C-e
+   ;; ("E" . eol-and-insert)
+   ;; ("r" . scroll-up-half-page)
+   ;; ("t" . scroll-down-half-page)
 
-   ("z" . repeat)                   ;; C-x z
+   ;; ("z" . repeat)                   ;; C-x z
    ("x" . execute-extended-command)
    ;; c: EVAL LEADER
    ;; v: GENERAL LEADER
    ;; ("b" . backward-word)            ;; M-b
 
    ;; RIGHT HAND
-   ("h" . backward-sexp)            ;; C-M-b
-   ("j" . forward-sexp)             ;; C-m-f
-   ("H" . start-of-sexp)
-   ("J" . my--end-of-sexp)
+   ;; ("h" . backward-sexp)            ;; C-M-b
+   ;; ("j" . forward-sexp)             ;; C-m-f
+   ;; ("H" . start-of-sexp)
+   ;; ("J" . my--end-of-sexp)
    ;; k: KILL LEADER
-   ("l" . recenter-top-bottom)      ;; C-l
-   ("L" . move-to-window-line-top-bottom) ;; M-r
+   ;; ("l" . recenter-top-bottom)      ;; C-l
+   ;; ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
 
-   ("y" . yank)                     ;; C-y
-   ("u" . backward-up-list)
-   ("U" . up-list)
-   ;; i: INSERT MODE
-   ("o" . other-window)             ;; C-x o
-   ("p" . previous-line-required-arg)            ;; C-p
+   ;; ("y" . yank)                     ;; C-y
+   ;; ("u" . backward-up-list)
+   ;; ("U" . up-list)
+   ("i" . modal-mode--insert-mode-init)
+   ;; ("I" . insert-after)
+   ;; ("o" . other-window)             ;; C-x o
+   ;; ("O" . insert-overwrite)
+   ;; ("p" . previous-line-required-arg)            ;; C-p
 
-   ("n" . next-line-required-arg)                ;; C-n
-   ("m" . back-to-indentation)      ;; M-m
+   ;; ("n" . next-line-required-arg)                ;; C-n
+   ;; ("m" . back-to-indentation)      ;; M-m
    ("/" . undo)                     ;; C-/
-   ("," . beginning-of-defun)
-   ("." . end-of-defun)
-   ("<" . beginning-of-buffer)      ;; M-<
-   (">" . end-of-buffer)            ;; M->
+   ;; ("," . beginning-of-defun)
+   ;; ("." . end-of-defun)
+   ;; ("<" . beginning-of-buffer)      ;; M-<
+   ;; (">" . end-of-buffer)            ;; M->
 
-   ("^" . delete-indentation)       ;; M-^
+   ;; ("^" . delete-indentation)       ;; M-^
    ))
 
 (define-modal-leader-keys
- '(("f" . find-file)                ;; C-x C-f
-   ("s" . save-buffer)              ;; C-x C-s
-   ("k" . kill-buffer)              ;; C-x k
+ '(
+   ("f" . find-file)                ;; C-x C-f
+   ;; ("s" . save-buffer)              ;; C-x C-s
+   ;; ("k" . kill-buffer)              ;; C-x k
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("v" . magit-status)             ;; C-x g
-   ("\\" . whitespace-cleanup)
-   ("t" . string-rectangle)         ;; C-x r t
-   ("b" . switch-to-buffer)         ;; C-x b
+   ;; ("v" . magit-status)             ;; C-x g
+   ;; ("\\" . whitespace-cleanup)
+   ;; ("t" . string-rectangle)         ;; C-x r t
+   ;; ("b" . switch-to-buffer)         ;; C-x b
 
-   ("j" . jump-to-register)         ;; C-x r j
-   ("SPC" . point-to-register)      ;; C-x r SPC
+   ;; ("j" . jump-to-register)         ;; C-x r j
+   ;; ("SPC" . point-to-register)      ;; C-x r SPC
 
-   ("0" . delete-window)            ;; C-x 0
-   ("1" . delete-other-windows)     ;; C-x 1
-   ("2" . split-window-below)       ;; C-x 2
-   ("3" . split-window-right)       ;; C-x 3
+   ;; ("0" . delete-window)            ;; C-x 0
+   ;; ("1" . delete-other-windows)     ;; C-x 1
+   ;; ("2" . split-window-below)       ;; C-x 2
+   ;; ("3" . split-window-right)       ;; C-x 3
 
-   ("[" . kmacro-start-macro)       ;; C-x (
-   ("]" . kmacro-end-macro)         ;; C-x )
-   ("m" . kmacro-call-macro)        ;; none, weirdly
+   ;; ("[" . kmacro-start-macro)       ;; C-x (
+   ;; ("]" . kmacro-end-macro)         ;; C-x )
+   ;; ("m" . kmacro-call-macro)        ;; none, weirdly
    ))
 
 (define-modal-kill-keys
  '(
-   ("f" . kill-word)                ;; M-d - maintain fwd/backward
-   ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
-   ("j" . kill-sexp)                ;; C-M-k
-   ("n" . kill-inner-sexp)
-   ("h" . backward-kill-sexp)       ;; C-M-<backspace>
-   ("k" . kill-line)                ;; C-k
-   ("l" . kill-whole-line)          ;; C-S-<backspace>
-   ("w" . kill-region)              ;; C-w
-   ("s" . kill-ring-save)           ;; M-w
-   ("6" . delete-indentation)       ;; M-^
-   ("r" . delete-rectangle)         ;; C-x r d
-   ("i" . kill-inner-word)
-   ("z" . zap-up-to-char)
+   ;; ("f" . kill-word)                ;; M-d - maintain fwd/backward
+   ;; ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
+   ;; ("j" . kill-sexp)                ;; C-M-k
+   ;; ("m" . kill-in-sexp)
+   ;; ("n" . kill-inner-sexp)
+   ;; ("h" . backward-kill-sexp)       ;; C-M-<backspace>
+   ;; ("k" . kill-line)                ;; C-k
+   ;; ("l" . kill-whole-line)          ;; C-S-<backspace>
+   ;; ("w" . kill-region)              ;; C-w
+   ;; ("s" . kill-ring-save)           ;; M-w
+   ;; ("6" . delete-indentation)       ;; M-^
+   ;; ("r" . delete-rectangle)         ;; C-x r d
+   ;; ("i" . kill-inner-word)
+   ;; ("z" . zap-up-to-char)
    ))
 
 (define-modal-search-keys
- '(("s" . isearch-forward)          ;; C-s
-   ("r" . isearch-backward)         ;; C-r
-   ("a" . ag-project)
-   ("o" . occur)                    ;; M-s o
-   ("q" . query-replace)            ;; M-%
-   ("h" . highlight-phrase)
-   ("i" . imenu)
-   ("I" . my/imenu-to-compilation-buffer)
-   ;; uncomment if you have jump-char installed
-   ("f" . jump-char-forward-set-mark)
-   ("b" . jump-char-backward-set-mark)
+ '(
+   ;; ("s" . isearch-forward)          ;; C-s
+   ;; ("r" . isearch-backward)         ;; C-r
+   ;; ("a" . ag-project)
+   ;; ("o" . occur)                    ;; M-s o
+   ;; ("q" . query-replace)            ;; M-%
+   ;; ("h" . highlight-phrase)
+   ;; ("i" . imenu)
+   ;; ("I" . my/imenu-to-compilation-buffer)
+   ;; ("f" . jump-char-forward-set-mark)
+   ;; ("b" . jump-char-backward-set-mark)
    ))
 
 (define-modal-project-keys
- '(("f" . project-find-file)        ;; C-x p f
-   ("k" . project-kill-buffers)     ;; C-x p k
-   ("c" . project-compile)          ;; C-x p c
-   ("r" . recompile)
-   ("d" . project-dired)            ;; C-x p D
-   ("q" . project-query-replace-regexp) ;; C-x p r
-   ("b" . project-switch-to-buffer) ;; C-x p b
-   ("s" . save-some-buffers))       ;; C-x s
- )
+ '(
+   ;; ("f" . project-find-file)        ;; C-x p f
+   ;; ("k" . project-kill-buffers)     ;; C-x p k
+   ;; ("c" . project-compile)          ;; C-x p c
+   ;; ("r" . recompile)
+   ;; ("d" . project-dired)            ;; C-x p D
+   ;; ("q" . project-query-replace-regexp) ;; C-x p r
+   ;; ("b" . project-switch-to-buffer) ;; C-x p b
+   ;; ("s" . save-some-buffers)       ;; C-x s
+ ))
 
 (define-modal-eval-keys
- '(("c" . cider-eval-defun-at-point)
-   ("e" . cider-eval-last-sexp)
-   ("r" . cider-ns-refresh)
-   ("j" . cider-jack-in)
-   ("q" . cider-quit)
-   ("b" . cider-eval-buffer)
-   ("p" . cider-pprint-eval-last-sexp)))
+ '(
+   ;; ("c" . cider-eval-defun-at-point)
+   ;; ("e" . cider-eval-last-sexp)
+   ;; ("r" . cider-ns-refresh)
+   ;; ("j" . cider-jack-in)
+   ;; ("q" . cider-quit)
+   ;; ("b" . cider-eval-buffer)
+   ;; ("p" . cider-pprint-eval-last-sexp)
+ ))
 
 ;; globals
 (global-set-key (kbd "M-o") 'other-window)
