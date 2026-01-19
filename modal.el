@@ -122,6 +122,7 @@
 (defun define-modal-kill-keys (keys-alist)
   (modal-mode--map-over-keys modal-mode--command-kill-subkeymap keys-alist))
 
+(global-unset-key (kbd "C-j")) ;; make C-j no-op in command mode
 (define-key modal-mode--insert-keymap (kbd "C-j") #'modal-mode--command-mode-init)
 
 (defun bol-and-insert ()

@@ -160,8 +160,7 @@
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
 
-;; (transient-mark-mode t)
-;; (setq transient-mark-mode 'lambda)
+(transient-mark-mode t)
 
 (when (>= emacs-major-version 30)
   (setopt project-mode-line t))
@@ -265,7 +264,7 @@
 ;; corresponding closing parenthesis, and vice versa. If the region is
 ;; active, the parentheses (brackets, etc.) are inserted around the
 ;; region instead.
-(electric-pair-mode)
+;; (electric-pair-mode)
 
 (global-subword-mode 1)
 
@@ -554,8 +553,8 @@
    ;; ("a" . move-beginning-of-line)   ;; C-a
    ;; ("A" . bol-and-insert)
    ;; s: SEARCH LEADER
-   ;; ("d" . down-list)                ;; C-M-d
-   ;; ("D" . backward-down-list)
+   ("d" . down-list)                ;; C-M-d
+   ("D" . backward-down-list)
 
    ;; f NOTHING
 
@@ -580,17 +579,17 @@
    ;; ("H" . start-of-sexp)
    ;; ("J" . my--end-of-sexp)
    ;; k: KILL LEADER
-   ;; ("l" . recenter-top-bottom)      ;; C-l
-   ;; ("L" . move-to-window-line-top-bottom) ;; M-r
+   ("l" . recenter-top-bottom)      ;; C-l
+   ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
 
-   ;; ("y" . yank)                     ;; C-y
-   ;; ("u" . backward-up-list)
-   ;; ("U" . up-list)
+   ("y" . yank)                     ;; C-y
+   ("u" . backward-up-list)
+   ("U" . up-list)
    ("i" . modal-mode--insert-mode-init)
    ;; ("I" . insert-after)
    ;; ("o" . other-window)             ;; C-x o
-   ;; ("O" . insert-overwrite)
+   ("o" . insert-overwrite)
    ;; ("p" . previous-line-required-arg)            ;; C-p
 
    ;; ("n" . next-line-required-arg)                ;; C-n
@@ -607,14 +606,14 @@
 (define-modal-leader-keys
  '(
    ("f" . find-file)                ;; C-x C-f
-   ;; ("s" . save-buffer)              ;; C-x C-s
+   ("s" . save-buffer)              ;; C-x C-s
    ;; ("k" . kill-buffer)              ;; C-x k
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
    ;; ("v" . magit-status)             ;; C-x g
    ;; ("\\" . whitespace-cleanup)
    ;; ("t" . string-rectangle)         ;; C-x r t
-   ;; ("b" . switch-to-buffer)         ;; C-x b
+   ("b" . switch-to-buffer)         ;; C-x b
 
    ;; ("j" . jump-to-register)         ;; C-x r j
    ;; ("SPC" . point-to-register)      ;; C-x r SPC
@@ -624,9 +623,9 @@
    ;; ("2" . split-window-below)       ;; C-x 2
    ;; ("3" . split-window-right)       ;; C-x 3
 
-   ;; ("[" . kmacro-start-macro)       ;; C-x (
-   ;; ("]" . kmacro-end-macro)         ;; C-x )
-   ;; ("m" . kmacro-call-macro)        ;; none, weirdly
+   ("[" . kmacro-start-macro)       ;; C-x (
+   ("]" . kmacro-end-macro)         ;; C-x )
+   ("m" . kmacro-call-macro)        ;; none, weirdly
    ))
 
 (define-modal-kill-keys
@@ -634,16 +633,16 @@
    ;; ("f" . kill-word)                ;; M-d - maintain fwd/backward
    ;; ("b" . backward-kill-word)       ;; C-<backspace> - maintain fwd/backward
    ;; ("j" . kill-sexp)                ;; C-M-k
-   ;; ("m" . kill-in-sexp)
-   ;; ("n" . kill-inner-sexp)
+   ("m" . kill-in-sexp)
+   ("n" . kill-inner-sexp)
    ;; ("h" . backward-kill-sexp)       ;; C-M-<backspace>
    ;; ("k" . kill-line)                ;; C-k
-   ;; ("l" . kill-whole-line)          ;; C-S-<backspace>
+   ("l" . kill-whole-line)          ;; C-S-<backspace>
    ;; ("w" . kill-region)              ;; C-w
    ;; ("s" . kill-ring-save)           ;; M-w
    ;; ("6" . delete-indentation)       ;; M-^
    ;; ("r" . delete-rectangle)         ;; C-x r d
-   ;; ("i" . kill-inner-word)
+   ("i" . kill-inner-word)
    ;; ("z" . zap-up-to-char)
    ))
 
@@ -651,9 +650,9 @@
  '(
    ;; ("s" . isearch-forward)          ;; C-s
    ;; ("r" . isearch-backward)         ;; C-r
-   ;; ("a" . ag-project)
+   ("a" . ag-project)
    ;; ("o" . occur)                    ;; M-s o
-   ;; ("q" . query-replace)            ;; M-%
+   ("q" . query-replace)            ;; M-%
    ;; ("h" . highlight-phrase)
    ;; ("i" . imenu)
    ;; ("I" . my/imenu-to-compilation-buffer)
