@@ -32,15 +32,6 @@
 ;; ---------
 ;; C-cj Buffer mode, C-ck Terminal Mode
 ;;
-;; Less frequently used keybinds
-;; -----------------------------
-;; L  - move point around visible buffer
-;; kn - kill inner sexp
-;; ki - kill inner word
-;; kz - zap up to car
-;; sf - jump to char
-;; sb - jump back to char
-;;
 ;; dired
 ;; -----
 ;; - i : include subdir
@@ -50,6 +41,12 @@
 ;; Other stuff
 ;; -----------
 ;; align-regexp RET =    - line up multiline definition
+;;
+;; Maybe add back keybinds
+;; =======================
+;; - register set/jump. was on vSPC/vj (C-x r SPC, C-x r j)
+;; - whitespace cleanup
+;; - Occur (M-s o) (maybe, this isn't so bad)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
@@ -553,31 +550,17 @@
    ;; s: SEARCH LEADER
    ("d" . down-list)                ;; C-M-d
    ("D" . backward-down-list)
-
-   ;; f NOTHING
+   ("u" . backward-up-list)
+   ("U" . up-list)
 
    ("w" . delete-other-windows)
-
    ("x" . execute-extended-command)
-   ;; c: EVAL LEADER
-   ;; v: GENERAL LEADER
 
-   ;; RIGHT HAND
-   ;; ("h" . backward-sexp)            ;; C-M-b
-   ;; ("j" . forward-sexp)             ;; C-m-f
-   ;; ("H" . start-of-sexp)
-   ;; ("J" . my--end-of-sexp)
-   ;; k: KILL LEADER
    ("l" . recenter-top-bottom)      ;; C-l
    ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
 
-   ("y" . yank)                     ;; C-y
-   ("u" . backward-up-list)
-   ("U" . up-list)
    ("i" . modal-mode--insert-mode-init)
-   ;; ("I" . insert-after)
-   ;; ("o" . other-window)             ;; C-x o
    ("o" . insert-overwrite)
 
    ("/" . undo)                     ;; C-/
@@ -589,12 +572,7 @@
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ;; ("v" . magit-status)             ;; C-x g
-   ;; ("\\" . whitespace-cleanup)
    ("b" . switch-to-buffer)         ;; C-x b
-
-   ;; ("j" . jump-to-register)         ;; C-x r j
-   ;; ("SPC" . point-to-register)      ;; C-x r SPC
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -607,7 +585,6 @@
    ("n" . kill-inner-sexp)
    ("l" . kill-whole-line)          ;; C-S-<backspace>
    ("i" . kill-inner-word)
-   ;; ("z" . zap-up-to-char)
    ))
 
 (define-modal-search-keys
@@ -615,10 +592,6 @@
    ("a" . ag-project)
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
-   ;; ("i" . imenu)
-   ;; ("I" . my/imenu-to-compilation-buffer)
-   ;; ("f" . jump-char-forward-set-mark)
-   ;; ("b" . jump-char-backward-set-mark)
    ))
 
 (define-modal-project-keys
@@ -627,13 +600,6 @@
 
 (define-modal-eval-keys
  '(
-   ;; ("c" . cider-eval-defun-at-point)
-   ;; ("e" . cider-eval-last-sexp)
-   ;; ("r" . cider-ns-refresh)
-   ;; ("j" . cider-jack-in)
-   ;; ("q" . cider-quit)
-   ;; ("b" . cider-eval-buffer)
-   ;; ("p" . cider-pprint-eval-last-sexp)
  ))
 
 ;; globals
