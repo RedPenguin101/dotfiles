@@ -8,7 +8,7 @@
 
 (defconst odin-keywords
   '("import" "foreign" "package"
-    "where" "when" "if" "else" "for" "switch" "in" "do" "case"
+    "where" "when" "if" "else" "for" "switch" "in" "not_in" "do" "case"
     "break" "continue" "fallthrough" "defer" "return" "proc"
     "struct" "union" "enum" "bit_field" "bit_set" "map" "dynamic"
     "auto_cast" "cast" "transmute" "distinct" "opaque"
