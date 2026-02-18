@@ -391,9 +391,9 @@
     (display-buffer buf)
     (goto-char (point-min))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; non-native packages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; non-native / external packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'package)
 
@@ -415,6 +415,15 @@
   ;; for me.
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev))
+
+(use-package dimmer
+  ;; from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
+  :config
+  (setq dimmer-fraction 0.3)
+  (setq dimmer-adjustment-mode :foreground)
+  (setq dimmer-use-colorspace :rgb)
+
+  (dimmer-mode 1))
 
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
