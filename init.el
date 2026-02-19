@@ -48,6 +48,13 @@
 ;; - whitespace cleanup
 ;; - Occur (M-s o) (maybe, this isn't so bad)
 ;;
+;; In the terminal
+;; ===============
+;; The following keybinds have problems when being used in terminals
+;; C-v (or M-v on Mac) paste
+;; C-/ and M-/
+;; M-BACKSPACE
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,7 +62,7 @@
 (setopt inhibit-splash-screen t)
 
 ;; This is required on older versions of emacs because (according to
-;; magit error messsages) "Due to bad defaults, Emac's package manager
+;; magit error messages) "Due to bad defaults, Emac's package manager
 ;; refuses to update ... build-in [sic] packages..."
 (setopt package-install-upgrade-built-int t)
 
@@ -86,20 +93,6 @@
 ;; start fullscreen
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; buffer-alist
-;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
-
-(setq display-buffer-alist nil)
-
-(add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
-                                     (display-buffer-use-some-window)
-                                     (body-function . delete-other-windows)))
-
-(setq switch-to-buffer-in-dedicated-window 'pop)
-
-(setq split-width-threshold 170
-      split-height-threshold nil)
-
 ;; Editing preferences
 (setq delete-selection-mode 1)
 (setq kill-do-not-save-duplicates t) ;; doesn't duplicate things in the kill ring
@@ -114,13 +107,6 @@
 
 (setq-default truncate-lines t)
 
-;; This is suggested in the corfu docs. It sounds interesting but I
-;; don't really understand it, so not adding it:
-;;; Hide commands in M-x which do not apply to the current mode. Corfu
-;;; commands are hidden, since they are not used via M-x. This setting
-;;; is useful beyond Corfu. (setq read-extended-command-predicate
-;;; #'command-completion-default-include-p)
-
 ;; `hl-line-mode' highlights the currently selected line
 ;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
 ;; clutter and slightly improving `hl-line-mode' performance.
@@ -131,7 +117,6 @@
 ;; FIDO/Minibuffer
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 (fido-vertical-mode)
-
 
 ;; Keep the cursor out of the read-only portions of the.minibuffer
 (setq minibuffer-prompt-properties
@@ -150,15 +135,16 @@
 (setq save-place-limit 600)
 (save-place-mode 1)
 
-;; Stuff I don't have a place for currently
 (setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
 (setq use-short-answers t)
+
 ;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
 
 (transient-mark-mode t)
 
+;; Show current project name and menu in modeline
 (when (>= emacs-major-version 30)
   (setopt project-mode-line t))
 
@@ -263,16 +249,13 @@
 ;; region instead.
 ;; (electric-pair-mode)
 
+;; In subword mode, FooBar, foo_bar, foo-bar, are all 2 words
 (global-subword-mode 1)
 
 ;; which-function-mode shows you which function you're in in the
 ;; modeline. Useful when you have massive function, which I do a lot
 ;; when game programming.
 (which-function-mode 1)
-
-;; Configure automatic indentation to be triggered exclusively by newline and
-;; DEL (backspace) characters.
-(setq-default electric-indent-chars '(?\n ?\^?))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
@@ -289,6 +272,10 @@
 ;; Controls the operation of the TAB key. If ‘complete’: indent if not
 ;; indented, complete if already indented
 (setq tab-always-indent 'complete)
+
+;; Configure automatic indentation to be triggered exclusively by newline and
+;; DEL (backspace) characters.
+(setq-default electric-indent-chars '(?\n ?\^?))
 
 ;; tab-first-completion governs the behavior of TAB completion on the first press of the key.
 ;; - nil: complete.
@@ -417,12 +404,12 @@
   (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
 (use-package dimmer
-  ;; from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
+  ;; dims non-active windows
+  ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
   :config
   (setq dimmer-fraction 0.3)
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
-
   (dimmer-mode 1))
 
 ;; Additional cool packages not included, but which I use and like
@@ -450,10 +437,7 @@
 (require 'disable-mouse)
 (global-disable-mouse-mode)
 
-(defun shame ()
-  (interactive)
-  (message "Shame!"))
-
+(defun shame () (interactive) (message "Shame!"))
 (global-set-key (kbd "<left>") #'shame)
 (global-set-key (kbd "<right>") #'shame)
 (global-set-key (kbd "<up>") #'shame)
@@ -545,9 +529,6 @@
 (global-set-key (kbd "C-v") 'scroll-down-half-page) ;; replace scroll-up-command
 (global-set-key (kbd "M-v") 'scroll-up-half-page) ;; replace scroll-down-command
 
-;; (define-key input-decode-map [?\C-m] [C-m]) ;; RET
-;; (define-key input-decode-map [?\C-i] [C-i]) ;; TAB
-
 (load "~/.emacs.d/lisp/modal.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
@@ -561,6 +542,9 @@
    ("D" . backward-down-list)
    ("u" . backward-up-list)
    ("U" . up-list)
+
+   ("n" . scroll-down-half-page)
+   ("p" . scroll-up-half-page)
 
    ("w" . delete-other-windows)
    ("x" . execute-extended-command)
@@ -603,13 +587,9 @@
    ("h" . highlight-phrase)
    ))
 
-(define-modal-project-keys
- '(
- ))
-
-(define-modal-eval-keys
- '(
- ))
+;; I don't use these any more
+(define-modal-project-keys '()) ;; just use C-x p
+(define-modal-eval-keys '())
 
 ;; globals
 (global-set-key (kbd "M-o") 'other-window)
