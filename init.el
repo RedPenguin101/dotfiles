@@ -257,6 +257,9 @@
 ;; when game programming.
 (which-function-mode 1)
 
+;; requires 30.1
+(global-completion-preview-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -394,15 +397,6 @@
 (use-package ag)
 (use-package visible-mark)
 
-(use-package cape
-  ;; "Completion At Point Extensions". out of the box
-  ;; completion-at-point is pretty useless without a tags table or
-  ;; lsp. cape adds the ability to use dabbrev as a
-  ;; completion-at-point function. Also other stuff, but this is fine
-  ;; for me.
-  :init
-  (add-hook 'completion-at-point-functions #'cape-dabbrev))
-
 (use-package dimmer
   ;; dims non-active windows
   ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
@@ -457,6 +451,7 @@
            (move-to-window-line -1)
            (recenter))))))
 
+;; BUG: doesn't work when you're on the last line of a buffer
 (defun scroll-up-half-page ()
   (interactive)
   (let ((ln (line-number-at-pos (point)))
@@ -545,6 +540,8 @@
 
    ("n" . scroll-down-half-page)
    ("p" . scroll-up-half-page)
+
+   ("y" . yank)
 
    ("w" . delete-other-windows)
    ("x" . execute-extended-command)
