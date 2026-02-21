@@ -38,6 +38,13 @@
 ;; - F : open all marked
 ;; - `find-name-dired' for to pipe searched files to buffer
 ;;
+;; Occur
+;; -----
+;; Don't forget multi-occur-in-matching-buffers
+;; C-c C-f: enable follow mode
+;; e: edit within occur
+;; You can start occur mode from withing isearch: Same shortcut, M-s o
+;;
 ;; Other stuff
 ;; -----------
 ;; align-regexp RET =    - line up multiline definition
@@ -89,9 +96,6 @@
 ;; line numbers display
 (setq-default display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
-
-;; start fullscreen
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; Editing preferences
 (setq delete-selection-mode 1)
@@ -163,6 +167,33 @@
 
 ;; Eliminate delay before highlighting search matches
 (setq lazy-highlight-initial-delay 0)
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; Window Management ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+;; https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
+
+;; Should switch-to-buffer respect the rules for display-buffer-alist?
+(setq switch-to-buffer-obey-display-actions t)
+
+;; If you are in a window that is dedicated to its buffer and try to
+;; `switch-to-buffer' there, tell Emacs to pop a new window instead of
+;; using the current one:
+(setq switch-to-buffer-in-dedicated-window 'pop)
+
+;; start fullscreen
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+(add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
+									 (display-buffer-use-some-window)
+									 (body-function . delete-other-windows)))
+
+(add-to-list 'display-buffer-alist '("\\*Occur\\*"
+									 (display-buffer-reuse-mode-window display-buffer-below-selected)
+									 (dedicated . t)
+									 (window-height . fit-window-to-buffer)))
 
 ;;;;;;;;;;;;;;;;;
 ;; mac
@@ -258,7 +289,9 @@
 (which-function-mode 1)
 
 ;; requires 30.1
-(global-completion-preview-mode 1)
+
+(add-hook 'prog-mode-hook 'completion-preview-mode)
+(add-hook 'conf-mode-hook 'completion-preview-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
@@ -405,6 +438,16 @@
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
   (dimmer-mode 1))
+
+
+(use-package cape
+  ;; "Completion At Point Extensions". out of the box
+  ;; completion-at-point is pretty useless without a tags table or
+  ;; lsp. cape adds the ability to use dabbrev as a
+  ;; completion-at-point function. Also other stuff, but this is fine
+  ;; for me.
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
