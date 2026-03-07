@@ -449,6 +449,18 @@
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
+(defun jl/read-anthropic-key ()
+  (auth-source-pick-first-password
+		:host "api.anthropic.com"
+		:user "apikey"))
+
+(use-package gptel
+  :init
+  (setq
+   gptel-model 'claude-sonnet-4-6
+   gptel-backend (gptel-make-anthropic "Claude"
+                   :stream t :key (jl/read-anthropic-key))))
+
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
 ;;
