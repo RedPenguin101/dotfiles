@@ -492,6 +492,11 @@
 (global-set-key (kbd "<up>") #'shame)
 (global-set-key (kbd "<down>") #'shame)
 
+;; Don't use backspace
+(global-set-key (kbd "<backspace>") #'shame)
+(global-set-key (kbd "M-<backspace>") #'shame)
+(global-set-key (kbd "C-<backspace>") #'shame)
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -644,9 +649,15 @@
 (define-modal-eval-keys '())
 
 ;; globals
+(global-set-key (kbd "M-j") 'duplicate-dwim)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-=") 'text-scale-increase)
 ;; decrease is increase with negative arg. C-- C-=
+
+(global-set-key (kbd "C-d") 'backward-delete-char)
+(global-set-key (kbd "C-S-d") 'delete-char)
+(global-set-key (kbd "M-d") 'backward-kill-word)
+(global-set-key (kbd "M-S-d") 'kill-word)
 
 ;; Keys I always hit accidentally
 (global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
