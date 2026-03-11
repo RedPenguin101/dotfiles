@@ -146,7 +146,7 @@
 ;; (or SPC-. t t t t..)
 (setq set-mark-command-repeat-pop t)
 
-(transient-mark-mode t)
+(transient-mark-mode 1)
 
 ;; Show current project name and menu in modeline
 (when (>= emacs-major-version 30)
@@ -423,16 +423,14 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (use-package diff-hl
+  :if (package-installed-p 'diff-hl)
   :config
   (diff-hl-margin-mode))
-
-(use-package magit)
-(use-package ag)
-(use-package visible-mark)
 
 (use-package dimmer
   ;; dims non-active windows
   ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
+  :if (package-installed-p 'dimmer)
   :config
   (setq dimmer-fraction 0.3)
   (setq dimmer-adjustment-mode :foreground)
@@ -446,6 +444,7 @@
   ;; lsp. cape adds the ability to use dabbrev as a
   ;; completion-at-point function. Also other stuff, but this is fine
   ;; for me.
+  :if (package-installed-p 'cape)
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
@@ -455,11 +454,28 @@
 		:user "apikey"))
 
 (use-package gptel
+  :if (package-installed-p 'gptel)
   :init
   (setq
    gptel-model 'claude-sonnet-4-6
    gptel-backend (gptel-make-anthropic "Claude"
                    :stream t :key (jl/read-anthropic-key))))
+
+(use-package keyfreq
+  :if (package-installed-p 'keyfreq)
+  :init
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1)
+  (setq keyfreq-excluded-commands
+      '(self-insert-command
+		disable-mouse--handle
+		modal-mode--command-mode-init
+		modal-mode--insert-mode-init)))
+
+(use-package disable-mouse
+  :if (package-installed-p 'disable-mouse)
+  :init
+  (global-disable-mouse-mode))
 
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
@@ -472,19 +488,6 @@
 ;;;;;;;;;;;;;;;;
 ;; Bad Habits ;;
 ;;;;;;;;;;;;;;;;
-
-(require 'keyfreq)
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
-
-(setq keyfreq-excluded-commands
-      '(self-insert-command
-		disable-mouse--handle
-		modal-mode--command-mode-init
-		modal-mode--insert-mode-init))
-
-(require 'disable-mouse)
-(global-disable-mouse-mode)
 
 (defun shame () (interactive) (message "Shame!"))
 (global-set-key (kbd "<left>") #'shame)
@@ -748,17 +751,17 @@
 ;; C
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "~/.emacs.d/lisp/simple-c-mode.el")
-
 ;; create a format file with
 ;; clang-format -style=llvm -dump-config > .clang-format
 (setq clang-format-style "file")
 (setq clang-format-fallback-style "llvm")
 
-(add-hook 'simple-c-mode-hook
-          (lambda ()
-            (progn
-              (local-set-key (kbd "C-c C-c") 'recompile))))
+(when (file-exists-p "~/.emacs.d/lisp/simple-c-mode.el")
+  (load "~/.emacs.d/lisp/simple-c-mode.el")
+  (add-hook 'simple-c-mode-hook
+			(lambda ()
+              (progn
+				(local-set-key (kbd "C-c C-c") 'recompile)))))
 
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
@@ -774,34 +777,35 @@
 ;; But it uses a crappy js indenter. Mine is basically the same but
 ;; with a much simpler indentation routine.
 
-(load "~/.emacs.d/lisp/odin-mode.el")
+(when (file-exists-p "~/.emacs.d/lisp/odin-mode.el")
+  (load "~/.emacs.d/lisp/odin-mode.el")
 
-(add-hook 'odin-mode-hook
-          (lambda ()
-            (progn
-              (local-set-key (kbd "C-c C-c") 'recompile))))
+  (add-hook 'odin-mode-hook
+			(lambda ()
+              (progn
+				(local-set-key (kbd "C-c C-c") 'recompile))))
 
-(add-hook 'odin-mode-hook
-          (lambda ()
-            (push '("<=" . ?≤) prettify-symbols-alist)
-            (push '(">=" . ?≥) prettify-symbols-alist)
-			(push '("->" . ?→) prettify-symbols-alist)
-			(push '("!=" . ?≠) prettify-symbols-alist)
-			(push '(":=" . ?≔) prettify-symbols-alist)
+  (add-hook 'odin-mode-hook
+			(lambda ()
+              (push '("<=" . ?≤) prettify-symbols-alist)
+              (push '(">=" . ?≥) prettify-symbols-alist)
+			  (push '("->" . ?→) prettify-symbols-alist)
+			  (push '("!=" . ?≠) prettify-symbols-alist)
+			  (push '(":=" . ?≔) prettify-symbols-alist)
 
-			(prettify-symbols-mode 1)))
+			  (prettify-symbols-mode 1)))
 
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-               '(odin-mode . ("ols"))))
+  (with-eval-after-load 'eglot
+	(add-to-list 'eglot-server-programs
+				 '(odin-mode . ("ols"))))
 
-;; These allow you to jump from the compilation error to the
-;; associated line where the error occured.
+  ;; These allow you to jump from the compilation error to the
+  ;; associated line where the error occured.
 
-(add-to-list 'compilation-error-regexp-alist 'odin-error)
+  (add-to-list 'compilation-error-regexp-alist 'odin-error)
 
-(add-to-list 'compilation-error-regexp-alist-alist
-             '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3))
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
