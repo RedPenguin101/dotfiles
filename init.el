@@ -71,7 +71,7 @@
 ;; This is required on older versions of emacs because (according to
 ;; magit error messages) "Due to bad defaults, Emac's package manager
 ;; refuses to update ... build-in [sic] packages..."
-(setopt package-install-upgrade-built-int t)
+(setopt package-install-upgrade-built-in t)
 
 ;; Remove noise at startup
 (setopt initial-scratch-message nil)
@@ -162,7 +162,6 @@
 (setq-default right-fringe-width 8)
 
 ;; Disable visual indicators in the fringe for buffer boundaries and empty lines
-(setq-default indicate-buffer-boundaries nil)
 (setq-default indicate-empty-lines nil)
 
 ;; Eliminate delay before highlighting search matches
@@ -252,8 +251,8 @@
 ;;;;;;;;;;;;;;;;
 
 (recentf-mode 1)
-(setq recentf-max-menu-items 300)
-(setq recentf-max-saved-items 15)
+(setq recentf-max-menu-items 15)
+(setq recentf-max-saved-items 300)
 ;; I used to have this as a separate buffer which opened. But now I
 ;; just use a mini-buffer with FIDO, per here:
 ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
@@ -342,7 +341,6 @@
   (compilation-ask-about-save nil)
   (compilation-scroll-output 'first-error)
   (compilation-always-kill t)
-  (compilation-scroll-output t)
   (ansi-color-for-compilation-mode t)
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
@@ -461,6 +459,9 @@
    gptel-backend (gptel-make-anthropic "Claude"
                    :stream t :key (jl/read-anthropic-key))))
 
+(use-package agent-shell
+  :if (package-installed-p 'agent-shell))
+
 (use-package keyfreq
   :if (package-installed-p 'keyfreq)
   :init
@@ -547,14 +548,6 @@
   (interactive)
   (up-list)
   (backward-down-list))
-
-(defun next-line-required-arg (&optional arg)
-  (interactive "P")
-  (if (null arg) (message "arg required") (next-line arg)))
-
-(defun previous-line-required-arg (&optional arg)
-  (interactive "P")
-  (if (null arg) (message "arg required") (previous-line arg)))
 
 (defun surround-sexp ()
   (interactive)
@@ -800,6 +793,37 @@
 
   (add-to-list 'compilation-error-regexp-alist-alist
                '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3)))
+
+;;;;;;;;;;;;;
+;; OrgMode ;;
+;;;;;;;;;;;;;
+
+(define-skeleton org-insert-src-block
+  "Insert an org source block"
+  "Language: "
+  "#+BEGIN_SRC " str "\n"
+  _"\n"
+  "#+END_SRC")
+
+(use-package org
+  :bind
+  (:map org-mode-map
+		("M-h" . backward-kill-word))
+  :hook (org-mode . abbrev-mode)
+  :config
+  (setq org-hide-emphasis-markers t
+        ;; org-startup-indented t
+        org-hide-leading-stars t
+        ;; org-startup-with-inline-images t
+        org-image-actual-width '(400))
+  (define-abbrev org-mode-abbrev-table "ssrc"
+	"" 'org-insert-src-block)
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.15 :weight semi-bold))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.05))))
+   '(org-document-title ((t (:height 1.8 :weight bold :underline nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically generated config
