@@ -818,6 +818,19 @@
         org-image-actual-width '(400))
   (define-abbrev org-mode-abbrev-table "ssrc"
 	"" 'org-insert-src-block)
+  (define-abbrev org-mode-abbrev-table
+	"lequ"
+	"\\begin{equation}\n\n\\end{equation}"
+	(lambda () (forward-line -1)))
+  (define-abbrev org-mode-abbrev-table
+	"linl"
+	"\\(\\)"
+	(lambda () (forward-char -2)))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)))
+  (setq org-latex-create-formula-image-program 'dvisvgm)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.7))
   (custom-set-faces
    '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
    '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
