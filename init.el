@@ -795,6 +795,24 @@
                '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3)))
 
 ;;;;;;;;;;;;;
+;; Python  ;;
+;;;;;;;;;;;;;
+
+(use-package python-mode
+  :bind
+  (:map python-mode-map
+		("C-c C-c" . recompile)))
+
+;;;;;;;;;;;;;;;;;
+;; Common Lisp ;;
+;;;;;;;;;;;;;;;;;
+
+(use-package sly
+  :if (package-installed-p 'sly)
+  :config
+  (setq inferior-lisp-program "sbcl"))
+
+;;;;;;;;;;;;;
 ;; OrgMode ;;
 ;;;;;;;;;;;;;
 
@@ -828,9 +846,12 @@
 	(lambda () (forward-char -2)))
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((python . t)))
+   '((python . t)
+	 (lisp . t) ;; common-lisp
+	 ))
+  (setq org-babel-lisp-eval-fn #'sly-eval)
   (setq org-latex-create-formula-image-program 'dvisvgm)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.7))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1))
   (custom-set-faces
    '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
    '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
