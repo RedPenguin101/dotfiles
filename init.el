@@ -477,6 +477,7 @@
   (keyfreq-autosave-mode 1)
   (setq keyfreq-excluded-commands
       '(self-insert-command
+		org-self-insert-command
 		disable-mouse--handle
 		modal-mode--command-mode-init
 		modal-mode--insert-mode-init)))
