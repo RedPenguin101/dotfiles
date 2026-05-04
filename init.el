@@ -74,6 +74,8 @@
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(add-to-list 'exec-path "/home/joe/.local/bin")
+
 (setopt inhibit-splash-screen t)
 
 ;; This is required on older versions of emacs because (according to
@@ -468,7 +470,12 @@
                    :stream t :key (jl/read-anthropic-key))))
 
 (use-package agent-shell
-  :if (package-installed-p 'agent-shell))
+  ;;; https://www.youtube.com/watch?v=R2Ucr3amgGg
+  ;; agent-shell-prompt-compose to open viewport
+  :if (package-installed-p 'agent-shell)
+  :init
+  (setq agent-shell-prefer-viewport-interaction t)
+  (setq agent-shell-header-style 'graphical))
 
 (use-package keyfreq
   :if (package-installed-p 'keyfreq)
