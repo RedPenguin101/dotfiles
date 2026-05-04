@@ -20,6 +20,14 @@
 ;;
 ;; Look into Shift Selection - what is it?
 ;;
+;; https://lobste.rs/s/sz3gab/what_are_your_favorite_emacs_packages
+;; python-pytest, python-coverage
+;; uniquify (built in)
+;; idle-highlight-mode
+;; uniline-mode
+;; expreg
+;; org-modern
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -500,26 +508,28 @@
 ;; Custom functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(defun scroll-down-half-page ()
-  (interactive)
-  (let ((ln (line-number-at-pos (point)))
-    (lmax (line-number-at-pos (point-max))))
-    (cond ((= ln 1) (move-to-window-line nil))
-      ((= ln lmax) (recenter (window-end)))
-      (t (progn
-           (move-to-window-line -1)
-           (recenter))))))
+(defun scroll-down-half-page (&optional arg)
+  (interactive "^P")
+  (if arg (next-line (prefix-numeric-value arg))
+	(let ((ln (line-number-at-pos (point)))
+		  (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) (move-to-window-line nil))
+			((= ln lmax) (recenter (window-end)))
+			(t (progn
+				 (move-to-window-line -1)
+				 (recenter)))))))
 
 ;; BUG: doesn't work when you're on the last line of a buffer
-(defun scroll-up-half-page ()
-  (interactive)
-  (let ((ln (line-number-at-pos (point)))
-    (lmax (line-number-at-pos (point-max))))
-    (cond ((= ln 1) nil)
-      ((= ln lmax) (move-to-window-line nil))
-      (t (progn
-           (move-to-window-line 0)
-           (recenter))))))
+(defun scroll-up-half-page (&optional arg)
+  (interactive "^P")
+  (if arg (previous-line (prefix-numeric-value arg))
+	(let ((ln (line-number-at-pos (point)))
+		  (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) nil)
+			((= ln lmax) (move-to-window-line nil))
+			(t (progn
+				 (move-to-window-line 0)
+				 (recenter)))))))
 
 (defun kill-inner-word ()
   "Kills the entire word your cursor is in. Equivalent to ciw in vim."
@@ -604,6 +614,7 @@
    ("i" . modal-mode--insert-mode-init)
    ("o" . insert-overwrite)
 
+   ("b" . switch-to-buffer)
    ("/" . undo)                     ;; C-/
    ))
 
@@ -613,7 +624,6 @@
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("b" . switch-to-buffer)         ;; C-x b
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
