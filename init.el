@@ -494,12 +494,28 @@
   :init
   (global-disable-mouse-mode))
 
+(use-package markdown-mode
+  :if (package-installed-p 'markdown-mode)
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  (markdown-hide-markup t)
+  (markdown-list-indent-width 2))
+
+(use-package visual-fill-column
+  :if (and (package-installed-p 'markdown-mode) (package-installed-p 'visual-fill-column-mode))
+  :hook
+  (markdown-mode . (lambda ()
+    (visual-line-mode 1)
+    (visual-fill-column-mode 1)))
+  :custom
+  (visual-fill-column-width fill-column)
+  (visual-fill-column-center-text t))
+
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
 ;;
 ;; - aggressive indent (sometimes)
 ;; - csv-mode
-;; - markdown-mode
 ;; - math-preview (view TeX)
 
 ;;;;;;;;;;;;;;;;
