@@ -617,37 +617,44 @@
 
 (define-modal-command-keys
  '(;; LEFT HAND
+   ;; q
+   ("w" . delete-other-windows)
+   ("e" . move-end-of-line)
+   ;; r t
+   ("a" . move-beginning-of-line)
    ;; s: SEARCH LEADER
    ("d" . down-list)                ;; C-M-d
    ("D" . backward-down-list)
+   ;; f g
+   ;; z
+   ("x" . execute-extended-command)
+   ;; c v
+   ("b" . switch-to-buffer)
+
+   ;; RIGHT HAND
+   ("y" . yank)
    ("u" . backward-up-list)
    ("U" . up-list)
-
-   ("n" . scroll-down-half-page)
+   ("i" . modal-mode--insert-mode-init)
+   ("o" . insert-overwrite)
    ("p" . scroll-up-half-page)
-
-   ("y" . yank)
-
-   ("w" . delete-other-windows)
-   ("x" . execute-extended-command)
-
+   ;; j k
    ("l" . recenter-top-bottom)      ;; C-l
    ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
-
-   ("i" . modal-mode--insert-mode-init)
-   ("o" . insert-overwrite)
-
-   ("b" . switch-to-buffer)
+   ("n" . scroll-down-half-page)
+   ("m" . back-to-indentation)
+   ;; , .
    ("/" . undo)                     ;; C-/
    ))
 
 (define-modal-leader-keys
- '(
-   ("f" . find-file)                ;; C-x C-f
+ '(("f" . find-file)                ;; C-x C-f
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
+
+   ("a" . agent-shell)
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -655,16 +662,15 @@
    ))
 
 (define-modal-kill-keys
- '(
-   ("m" . kill-in-sexp)
+ '(("m" . kill-in-sexp)
    ("n" . kill-inner-sexp)
-   ("l" . kill-whole-line)          ;; C-S-<backspace>
+   ("l" . kill-whole-line)    ;; C-S-<backspace>
+   ("k" . kill-line)          ;; C-k
    ("i" . kill-inner-word)
    ))
 
 (define-modal-search-keys
- '(
-   ("a" . ag-project)
+ '(("a" . ag-project)
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
    ))
