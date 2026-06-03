@@ -19,6 +19,7 @@
 ;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
 ;;
 ;; Look into Shift Selection - what is it?
+;; follow-mode
 ;;
 ;; https://lobste.rs/s/sz3gab/what_are_your_favorite_emacs_packages
 ;; python-pytest, python-coverage
@@ -27,6 +28,8 @@
 ;; uniline-mode
 ;; expreg
 ;; org-modern
+;;
+;; https://github.com/Martinsos/dotfiles/blob/master/vanilla-emacs.d/Emacs.org
 ;;
 ;; Stuff I usually forget
 ;; ======================
@@ -473,6 +476,9 @@
   ;;; https://www.youtube.com/watch?v=R2Ucr3amgGg
   ;; agent-shell-prompt-compose to open viewport
   :if (package-installed-p 'agent-shell)
+  :hook
+  (agent-shell-viewport-mode . visual-line-mode)
+  (agent-shell-viewport-mode . (lambda () (whitespace-mode -1)))
   :init
   (setq agent-shell-prefer-viewport-interaction t)
   (setq agent-shell-header-style 'graphical))
@@ -673,6 +679,7 @@
  '(("a" . ag-project)
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
+   ("o" . occur)
    ))
 
 ;; I don't use these any more
