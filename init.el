@@ -643,12 +643,12 @@
    ("U" . up-list)
    ("i" . modal-mode--insert-mode-init)
    ("o" . insert-overwrite)
-   ("p" . scroll-up-half-page)
+   ("p" . previous-line)
    ;; j k
    ("l" . recenter-top-bottom)      ;; C-l
    ("L" . move-to-window-line-top-bottom) ;; M-r
    (";" . comment-line)
-   ("n" . scroll-down-half-page)
+   ("n" . next-line)
    ("m" . back-to-indentation)
    ;; , .
    ("/" . undo)                     ;; C-/
@@ -694,6 +694,7 @@
 
 (global-set-key (kbd "C-h") 'backward-delete-char) ;; replaces help :(. But C-h is the unix standard for delete
 (global-set-key (kbd "M-h") 'backward-kill-word) ;; replaces mark paragraph
+(global-set-key (kbd "C-w") 'backward-kill-word) ;; like the command line
 (global-set-key (kbd "C-x h") 'help-command)
 
 ;; Keys I always hit accidentally
