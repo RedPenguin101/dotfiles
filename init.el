@@ -118,7 +118,6 @@
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs empty trailing lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
-(add-hook 'text-mode-hook 'whitespace-mode)
 (setq sentence-end-double-space nil)
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
@@ -438,6 +437,12 @@
   :config
   (diff-hl-margin-mode))
 
+(use-package browse-kill-ring
+  :if (package-installed-p 'browse-kill-ring)
+  :config
+  (global-set-key (kbd "M-y") 'browse-kill-ring))
+
+
 (use-package dimmer
   ;; dims non-active windows
   ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
@@ -477,8 +482,7 @@
   ;; agent-shell-prompt-compose to open viewport
   :if (package-installed-p 'agent-shell)
   :hook
-  (agent-shell-viewport-mode . visual-line-mode)
-  (agent-shell-viewport-mode . (lambda () (whitespace-mode -1)))
+  (agent-shell-viewport-mode-hook . visual-line-mode)
   :init
   (setq agent-shell-prefer-viewport-interaction t)
   (setq agent-shell-header-style 'graphical))
@@ -508,14 +512,12 @@
   (markdown-list-indent-width 2))
 
 (use-package visual-fill-column
-  :if (and (package-installed-p 'markdown-mode) (package-installed-p 'visual-fill-column-mode))
+  :if (and (package-installed-p 'markdown-mode) (package-installed-p 'visual-fill-column))
   :hook
-  (markdown-mode . (lambda ()
+  (markdown-mode-hook . (lambda ()
     (visual-line-mode 1)
     (visual-fill-column-mode 1)))
-  :custom
-  (visual-fill-column-width fill-column)
-  (visual-fill-column-center-text t))
+  )
 
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
@@ -652,6 +654,8 @@
    ("m" . back-to-indentation)
    ;; , .
    ("/" . undo)                     ;; C-/
+
+   ("SPC" . set-mark-command)
    ))
 
 (define-modal-leader-keys
@@ -673,6 +677,7 @@
    ("l" . kill-whole-line)    ;; C-S-<backspace>
    ("k" . kill-line)          ;; C-k
    ("i" . kill-inner-word)
+   ("r" . kill-region)
    ))
 
 (define-modal-search-keys
@@ -849,6 +854,15 @@
 (use-package python-mode
   :bind
   (:map python-mode-map
+		("C-c C-c" . recompile)))
+
+;;;;;;;;
+;; GO ;;
+;;;;;;;;
+
+(use-package go-mode
+  :bind
+  (:map go-mode-map
 		("C-c C-c" . recompile)))
 
 ;;;;;;;;;;;;;;;;;
