@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Joe's Emacs init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,6 +88,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; fix crazy performance defaults
+(setq gc-cons-threshold (* 50 1024 1024)) ;; Set runtime GC to 50MB
+(setq read-process-output-max (* 1024 1024)) ;; 1MB buffer instead of 4KB
+;; Silently log native compilation warnings without popping up the buffer window
+(setq native-comp-async-report-warnings-errors 'silent)
+;; Set the absolute minimum log display level to errors only (ignores stylistic warnings)
+(setq warning-minimum-level :error)
 
 (add-to-list 'exec-path "/home/joe/.local/bin")
 
@@ -235,9 +245,30 @@
 (when (eq system-type 'darwin)
   (setq my/command-is-meta t)
   (my/set-mac-modifiers my/command-is-meta) ;; start switched for laptop
+
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
-  (setq ispell-program-name "/opt/homebrew/bin/aspell"))
+  (setq ispell-program-name "/opt/homebrew/bin/aspell")
+
+  ;; Disable file name handlers during startup to stop macOS from scanning paths greedily
+  (setq file-name-handler-alist nil)
+
+  ;; Prevent the mini-buffer from freezing during heavy window switching
+  (setq window-combination-resize t)
+
+  ;; Improve scrolling smoothness on high-refresh-rate Mac screens (ProMotion)
+  (setq redisplay-dont-pause t
+        scroll-margin 0
+        scroll-conservatively 10000
+        scroll-step 1)
+
+  (setq mac-allow-anti-aliasing t)
+  (setq inhibit-compacting-font-caches t)
+  (setq ls-lisp-use-insert-directory-program nil)
+  (require 'ls-lisp)
+  (setq fast-but-imprecise-scrolling t)
+  (setq redisplay-skip-initial-frame t)
+)
 
 ;;;;;;;;;;;
 ;; dired ;;
@@ -333,9 +364,8 @@
 ;; Minibuffer
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 ;; From minibuffer, if there are <= 3 candidates, tab cycles them. If there are more than that, open a completions window.
-;; Don't immediately switch to completion window, only on second-tab (t = first-tab)
-;; (fido-vertical-mode)
-(fido-mode)
+;; Auto-select on second tab: Don't immediately switch to completion window when you hit tab, only on second-tab (t = first-tab)
+(fido-mode) ;; or vertical-mode as preferred
 (setopt completion-cycle-threshold 3)
 (setopt completion-auto-select 'second-tab)
 
@@ -344,7 +374,7 @@
 (add-hook 'prog-mode-hook 'completion-preview-mode)
 (add-hook 'conf-mode-hook 'completion-preview-mode)
 
-;; This is kind of crap
+;; This is kind of a crap way of getting dabbrev-capf onto the capfs
 (defun standard-capf ()
   (setq-local completion-at-point-functions
 			  (delete-dups
