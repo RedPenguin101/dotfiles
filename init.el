@@ -75,7 +75,6 @@
 ;; =======================
 ;; - register set/jump. was on vSPC/vj (C-x r SPC, C-x r j)
 ;; - whitespace cleanup
-;; - Occur (M-s o) (maybe, this isn't so bad)
 ;;
 ;; In the terminal
 ;; ===============
@@ -656,6 +655,11 @@
 (global-set-key (kbd "C-v") 'scroll-down-half-page) ;; replace scroll-up-command
 (global-set-key (kbd "M-v") 'scroll-up-half-page) ;; replace scroll-down-command
 
+;; Replace up/down/cap case commands with dwim versions
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
+
 (load "~/.emacs.d/lisp/modal.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
@@ -693,6 +697,9 @@
    ("m" . back-to-indentation)
    ;; , .
    ("/" . undo)                     ;; C-/
+
+   ("." . scroll-up-command)
+   ("," . scroll-down-command)
 
    ("SPC" . set-mark-command)
    ))
