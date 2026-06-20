@@ -212,13 +212,30 @@
 ;; mac
 ;;;;;;;;;;;;;;;;;
 
-;;; Use command key for meta
+(defvar my/command-is-meta nil)
+
+(defun my/set-mac-modifiers (switched)
+  "Configure macOS modifier keys depending on whether Ergodox is active."
+  (if switched
+    (setq mac-option-key-is-meta nil
+          mac-command-key-is-meta t
+          mac-command-modifier 'meta
+          mac-option-modifier 'none)
+	(setq mac-option-key-is-meta t
+            mac-command-key-is-meta nil
+            mac-command-modifier 'none
+            mac-option-modifier 'meta)))
+
+(defun my/mac-meta-switch ()
+  (interactive)
+  (setq my/command-is-meta (not my/command-is-meta))
+  (my/set-mac-modifiers my/command-is-meta)
+  (message "Command is Meta: %s" my/command-is-meta))
+
+;; Use command key for meta on laptop keyboard - skip for ergodox
 (when (eq system-type 'darwin)
-  (setq mac-option-key-is-meta nil
-        mac-command-key-is-meta t
-        mac-command-modifier 'meta
-        mac-option-modifier 'none)
-  ;;; adding brew llvm path
+  (setq my/command-is-meta t)
+  (my/set-mac-modifiers my/command-is-meta) ;; start switched for laptop
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
   (setq ispell-program-name "/opt/homebrew/bin/aspell"))
