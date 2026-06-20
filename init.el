@@ -31,6 +31,17 @@
 ;;
 ;; https://github.com/Martinsos/dotfiles/blob/master/vanilla-emacs.d/Emacs.org
 ;;
+;; Karthink's Batteries Included series
+;; https://karthinks.com/software/batteries-included-with-emacs/
+;; follow-mode : like columns in a newspaper?
+;; view-mode : read only, easily navigate around.
+;; cycle-spacing : delete whitespace around cursor (or neg, delete empty lines around cursor)
+;;
+;; emacs 31 : https://rahuljuliato.com/posts/emacs-31-around-the-corner
+;; filter-as-you-write completions window?
+;; (completion-eager-update t)               ;; EMACS-31
+;; (completion-eager-display 'auto)          ;; EMACS-31
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -121,7 +132,8 @@
 (setq sentence-end-double-space nil)
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
-(setq-default truncate-lines t)
+(setq-default truncate-lines t) ;; line truncate, don't wrap (unless visual line mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
 
 ;; `hl-line-mode' highlights the currently selected line
 ;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
@@ -129,16 +141,6 @@
 (setq hl-line-sticky-flag nil)
 (setq global-hl-line-sticky-flag nil)
 (global-hl-line-mode +1)
-
-;; FIDO/Minibuffer
-;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
-(fido-vertical-mode)
-
-;; Keep the cursor out of the read-only portions of the.minibuffer
-(setq minibuffer-prompt-properties
-      '(read-only t intangible t cursor-intangible t face minibuffer-prompt))
-
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 ;; Savehist
 (setq savehist-additional-variables
@@ -299,26 +301,59 @@
 ;; when game programming.
 (which-function-mode 1)
 
-;; requires 30.1
+;;;;;;;;;;;;;;;;
+;; Completion ;;
+;;;;;;;;;;;;;;;;
 
+;; How completion candidates are found
+(setq completion-styles '(basic partial-completion))
+
+;; Completions window formatting
+(setopt completions-detailed t)        ;; show metadata in some cases
+(setopt completions-max-height 20)
+(setopt completions-format 'vertical)  ;; multiple columns, vertically sorted. Other options are horizontal, one-column
+(setopt completions-group t)
+
+;; Minibuffer
+;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
+;; From minibuffer, if there are <= 3 candidates, tab cycles them. If there are more than that, open a completions window.
+;; Don't immediately switch to completion window, only on second-tab (t = first-tab)
+;; (fido-vertical-mode)
+(fido-mode)
+(setopt completion-cycle-threshold 3)
+(setopt completion-auto-select 'second-tab)
+
+;; Completion in buffer - requires 30.1
+;; Still not really sure about this
 (add-hook 'prog-mode-hook 'completion-preview-mode)
 (add-hook 'conf-mode-hook 'completion-preview-mode)
+
+;; This is kind of crap
+(defun standard-capf ()
+  (setq-local completion-at-point-functions
+			  (delete-dups
+			   (append '(tags-completion-at-point-function
+						 dabbrev-capf)
+					   completion-at-point-functions))))
+
+;;;;;;;;;;;;;;;;
+;; Minibuffer ;;
+;;;;;;;;;;;;;;;;
+
+;; Keep the cursor out of the read-only portions of the minibuffer
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TAB: Indentation and Autocomplete ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setopt completion-cycle-threshold 1)                  ; TAB cycles candidates
-(setopt completions-detailed t)
-
 ;; Indentation can insert tabs if this is non-nil.
 (setq-default indent-tabs-mode t)
 
 (setq-default tab-width 4)
-
-;; Controls the operation of the TAB key. If ‘complete’: indent if not
-;; indented, complete if already indented
-(setq tab-always-indent 'complete)
 
 ;; Configure automatic indentation to be triggered exclusively by newline and
 ;; DEL (backspace) characters.
@@ -334,12 +369,10 @@
 
 (setq tab-first-completion 'word)
 
-;; This stuff is taken from Bedrock
-(setopt completion-auto-help 'always)                  ; Open completion always; `lazy' another option
-(setopt completions-max-height 20)                     ; This is arbitrary
-(setopt completions-format 'one-column)
-(setopt completions-group t)
-(setopt completion-auto-select 'second-tab)            ; Much more eager
+;; Controls the operation of the TAB key. If ‘complete’: indent if not
+;; indented, complete if already indented
+(setq tab-always-indent 'complete)
+
 (keymap-set minibuffer-mode-map "TAB" 'minibuffer-complete) ; TAB acts more like how it does in the shell
 
 ;;;;;;;;;;;;;;;;
@@ -452,17 +485,6 @@
   (setq dimmer-adjustment-mode :foreground)
   (setq dimmer-use-colorspace :rgb)
   (dimmer-mode 1))
-
-
-(use-package cape
-  ;; "Completion At Point Extensions". out of the box
-  ;; completion-at-point is pretty useless without a tags table or
-  ;; lsp. cape adds the ability to use dabbrev as a
-  ;; completion-at-point function. Also other stuff, but this is fine
-  ;; for me.
-  :if (package-installed-p 'cape)
-  :init
-  (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
@@ -861,6 +883,8 @@
 ;;;;;;;;
 
 (use-package go-mode
+  :config
+  (add-hook 'go-mode-hook #'standard-capf)
   :bind
   (:map go-mode-map
 		("C-c C-c" . recompile)))
