@@ -741,8 +741,7 @@
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-
-   ("a" . agent-shell)
+   ("g" . magit-status)
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
