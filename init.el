@@ -758,7 +758,7 @@
    ))
 
 (define-modal-search-keys
- '(("a" . ag-project)
+ '(("a" . project-find-regexp)
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
    ("o" . occur)
