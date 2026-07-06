@@ -5,10 +5,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Things to do
 ;; ============
+;; - kill-region-or-backwards-word: region if there's a region highlighted, otherwise word
 ;; - Look at having a 'repeat' function for modal leaders, so when
 ;;   you SPC-<x> <x> it does the SPC-<x> command twice.
 ;; - surround next sexp with brackets functions / shortcuts
 ;; - eat terminal? https://codeberg.org/akib/emacs-eat
+;; - https://github.com/manzaltu/claude-code-ide.el
 ;;
 ;; Interesting sounding stuff from
 ;; https://github.com/jamescherti/minimal-emacs.d/blob/main/init.el
@@ -289,6 +291,11 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 (setq dired-kill-when-opening-new-dired-buffer t)
+
+;; If ‘dwim’, Isearch matches file names when initial point position
+;; is on a file name.
+
+(setq dired-isearch-filenames 'dwim)
 
 ;; if the option dired-dwim-target is non-nil, and if there is another
 ;; Dired buffer displayed in some window, that other buffer’s
@@ -615,7 +622,7 @@
   (if arg (next-line (prefix-numeric-value arg))
 	(let ((ln (line-number-at-pos (point)))
 		  (lmax (line-number-at-pos (point-max))))
-      (cond ((= ln 1) (move-to-window-line nil))
+	  (cond ((= ln 1) (move-to-window-line nil))
 			((= ln lmax) (recenter (window-end)))
 			(t (progn
 				 (move-to-window-line -1)
@@ -627,7 +634,7 @@
   (if arg (previous-line (prefix-numeric-value arg))
 	(let ((ln (line-number-at-pos (point)))
 		  (lmax (line-number-at-pos (point-max))))
-      (cond ((= ln 1) nil)
+	  (cond ((= ln 1) nil)
 			((= ln lmax) (move-to-window-line nil))
 			(t (progn
 				 (move-to-window-line 0)
@@ -761,6 +768,7 @@
  '(("a" . project-find-regexp)
    ("q" . query-replace)            ;; M-%
    ("h" . highlight-phrase)
+   ("H" . unhighlight-regexp)
    ("o" . occur)
    ))
 
