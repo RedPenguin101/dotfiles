@@ -214,10 +214,10 @@
 									 (display-buffer-use-some-window)
 									 (body-function . delete-other-windows)))
 
-(add-to-list 'display-buffer-alist '("\\*Occur\\*"
-									 (display-buffer-reuse-mode-window display-buffer-below-selected)
-									 (dedicated . t)
-									 (window-height . fit-window-to-buffer)))
+;; (add-to-list 'display-buffer-alist '("\\*Occur\\*"
+									 ;; (display-buffer-reuse-mode-window display-buffer-below-selected)
+									 ;; (dedicated . t)
+									 ;; (window-height . fit-window-to-buffer)))
 
 ;;;;;;;;;;;;;;;;;
 ;; mac
@@ -748,11 +748,14 @@
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("g" . magit-status)
+   ("g" . magit-status)             ;; C-x g
+   ("k" . kill-buffer)              ;; C-x k
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
    ("m" . kmacro-call-macro)        ;; none, weirdly
+
+   ("q" . read-only-mode)           ;; C-x C-q - useful for reviewing clanker output
    ))
 
 (define-modal-kill-keys
