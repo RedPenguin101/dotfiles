@@ -590,14 +590,6 @@
   (markdown-hide-markup t)
   (markdown-list-indent-width 2))
 
-(use-package visual-fill-column
-  :if (and (package-installed-p 'markdown-mode) (package-installed-p 'visual-fill-column))
-  :hook
-  (markdown-mode-hook . (lambda ()
-    (visual-line-mode 1)
-    (visual-fill-column-mode 1)))
-  )
-
 ;; Additional cool packages not included, but which I use and like
 ;; (excluding language specific ones defined later)
 ;;
