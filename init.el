@@ -99,8 +99,6 @@
 ;; Set the absolute minimum log display level to errors only (ignores stylistic warnings)
 (setq warning-minimum-level :error)
 
-(add-to-list 'exec-path "/home/joe/.local/bin")
-
 (setopt inhibit-splash-screen t)
 
 ;; This is required on older versions of emacs because (according to
@@ -248,8 +246,12 @@
   (setq my/command-is-meta t)
   (my/set-mac-modifiers my/command-is-meta) ;; start switched for laptop
 
-  (add-to-list 'exec-path "/opt/homebrew/bin")
+  (add-to-list 'exec-path "/usr/local/bin/")
+  (setenv "PATH" (format "%s:%s" "/usr/local/bin/" (getenv "PATH")))
+
+    (add-to-list 'exec-path "/opt/homebrew/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/bin" (getenv "PATH")))
+
   (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
   (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
   (setq ispell-program-name "/opt/homebrew/bin/aspell")
