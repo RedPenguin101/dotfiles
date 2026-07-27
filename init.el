@@ -376,7 +376,7 @@
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 ;; From minibuffer, if there are <= 3 candidates, tab cycles them. If there are more than that, open a completions window.
 ;; Auto-select on second tab: Don't immediately switch to completion window when you hit tab, only on second-tab (t = first-tab)
-(fido-mode) ;; or vertical-mode as preferred
+(fido-vertical-mode) ;; or vertical-mode as preferred
 (setopt completion-cycle-threshold 3)
 (setopt completion-auto-select 'second-tab)
 
