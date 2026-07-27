@@ -4,4 +4,5 @@ etags --language=none \
 	  --regex='/[ \t]*\([a-zA-Z0-9_]+\)[ \t]*::[ \t]*proc/\1/' \
 	  --regex='/[ \t]*\([a-zA-Z0-9_]+\)[ \t]*::[ \t]*struct/\1/' \
 	  --regex='/[ \t]*\([a-zA-Z0-9_]+\)[ \t]*::[ \t]*enum/\1/' \
+	  --regex='/[ \t]*\([A-Z0-9_]+\)[ \t]*::/\1/' \
 	 $(find . -name '*.odin')
