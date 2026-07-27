@@ -752,12 +752,16 @@
    ("r" . recentf-open-minibuff)
    ("g" . magit-status)             ;; C-x g
    ("k" . kill-buffer)              ;; C-x k
+   ("o" . other-window)				;; C-x o
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
    ("m" . kmacro-call-macro)        ;; none, weirdly
 
    ("q" . read-only-mode)           ;; C-x C-q - useful for reviewing clanker output
+
+   ("2" . split-window-below)
+   ("3" . split-window-right)
    ))
 
 (define-modal-kill-keys
@@ -777,8 +781,14 @@
    ("o" . occur)
    ))
 
-;; I don't use these any more
-(define-modal-project-keys '()) ;; just use C-x p
+(define-modal-project-keys
+ '(("k" . project-kill-buffers)			;; C-x p k
+   ("f" . project-find-file)			;; C-x p f
+   ("q" . project-query-replace-regexp)	;; C-x p r
+   ("p" . project-switch-project)		;; C-x p p
+   ("c" . project-compile)				;; C-x p c
+   ))
+
 (define-modal-eval-keys '())
 
 ;; globals
