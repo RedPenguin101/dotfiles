@@ -19,9 +19,6 @@
 ;; (setq comment-multi-line t)
 ;; (setq comment-empty-lines t)
 ;;
-;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
-;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
-;;
 ;; Look into Shift Selection - what is it?
 ;; follow-mode
 ;;
@@ -42,9 +39,12 @@
 ;; cycle-spacing : delete whitespace around cursor (or neg, delete empty lines around cursor)
 ;;
 ;; emacs 31 : https://rahuljuliato.com/posts/emacs-31-around-the-corner
-;; filter-as-you-write completions window?
-;; (completion-eager-update t)               ;; EMACS-31
-;; (completion-eager-display 'auto)          ;; EMACS-31
+;; filter-as-you-write completions window, replaces fido
+;; editable xref buffers
+;; side speedbar
+;; native markdown-ts-mode
+;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
+;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
 ;;
 ;; Stuff I usually forget
 ;; ======================
@@ -360,25 +360,80 @@
 (which-function-mode 1)
 
 ;;;;;;;;;;;;;;;;
-;; Completion ;;
+;; Minibuffer ;;
 ;;;;;;;;;;;;;;;;
 
-;; How completion candidates are found
-(setq completion-styles '(basic partial-completion))
+(use-package minibuffer
+  :ensure nil
+  :hook ((minibuffer-setup . cursor-intangible-mode))
+  ;; emacs 31 thing?
+  ;; :bind (:map minibuffer-visible-completions-up-down-map
+			  ;; ("C-n" . minibuffer-next-completion)
+			  ;; ("C-p" . minibuffer-previous-completion))
+  :custom
+  ;; If the value is t, the *Completions* buffer is displayed whenever
+  ;; completion is requested but cannot be done.
+  (completion-auto-help t)
+  ;; Auto-select on second tab: Don't immediately switch to completion
+  ;; window when you hit tab, only on second-tab (t = first-tab)
+  ;; (NB: Probably change this to true in 31 with eager options, see below)
+  (completion-auto-select second-tab)
+  ;; How completions match on candidates
+  (completion-styles '(basic substring initials flex))
+  (completion-category-overrides '((file . ((styles partial-completion)))))
+  ;; Hide noise in completions window and (inline) minibuffer
+  (completion-show-help nil)
+  (completion-show-inline-help nil)
+  ;; show detailed entries where available. Paired with single column
+  ;; to give enought space
+  (completions-detailed t)
+  (completions-format 'one-column)
+  (completions-max-height 12)
+  (completions-sort 'historical)
+  ;; When non-nil, if the *Completions* buffer is displayed in a
+  ;; window, you can use the arrow keys in the minibuffer to move the
+  ;; cursor
+  (minibuffer-visible-completions t)
 
-;; Completions window formatting
-(setopt completions-detailed t)        ;; show metadata in some cases
-(setopt completions-max-height 20)
-(setopt completions-format 'vertical)  ;; multiple columns, vertically sorted. Other options are horizontal, one-column
-(setopt completions-group t)
+  ;; Other options
+  ;; https://rahuljuliato.com/posts/completions-buffer-is-now-enough
+  ;; https://protesilaos.com/codelog/2026-07-29-emacs-default-minibuffer-completion-overview/
+  ;; completion-ignore-case
+  ;; read-buffer-completion-ignore-case
+  ;; read-file-name-completion-ignore-case
+  ;; minibuffer-depth-indicate-mode
+  ;; minibuffer-electric-default-mode
+  ;; enable-recursive-minibuffers
 
-;; Minibuffer
+  ;;;;;;;;;;;;
+  ;; EMACS 31
+  ;;;;;;;;;;;;
+  ;; completion-eager-display decides whether *Completions* shows up on its own.
+  ;; completion-eager-update decides whether it refreshes as you type.
+  ;; Set both to t and you stop summoning the buffer with TAB. It's
+  ;; already open.
+  (completion-eager-display t)
+  (completion-eager-update t)
+  )
+
+;; Superceded, but good to know
+
+;; Keep the cursor out of the read-only portions of the minibuffer
+;; Unecessary I think, with the hook?
+;; (setq minibuffer-prompt-properties
+      ;; '(read-only t cursor-intangible t face minibuffer-prompt))
+
+;; (F)ido-mode and minibuffer cycling without completions buffer
 ;; https://www.masteringemacs.org/article/understanding-minibuffer-completion
 ;; From minibuffer, if there are <= 3 candidates, tab cycles them. If there are more than that, open a completions window.
-;; Auto-select on second tab: Don't immediately switch to completion window when you hit tab, only on second-tab (t = first-tab)
-(fido-vertical-mode) ;; or vertical-mode as preferred
-(setopt completion-cycle-threshold 3)
-(setopt completion-auto-select 'second-tab)
+;; (fido-vertical-mode) ;; or vertical-mode as preferred
+;; (setopt completion-cycle-threshold 3)
+;; (setopt completion-auto-select 'second-tab)
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; Buffer Completion ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; Completion in buffer - requires 30.1
 ;; Still not really sure about this
@@ -393,19 +448,9 @@
 						 dabbrev-capf)
 					   completion-at-point-functions))))
 
-;;;;;;;;;;;;;;;;
-;; Minibuffer ;;
-;;;;;;;;;;;;;;;;
-
-;; Keep the cursor out of the read-only portions of the minibuffer
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TAB: Indentation and Autocomplete ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TAB: Indentation and Completion ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Indentation can insert tabs if this is non-nil.
 (setq-default indent-tabs-mode t)
@@ -583,6 +628,7 @@
   :init
   (global-disable-mouse-mode))
 
+;; Emacs31: replace with native markdown-ts-mode ?
 (use-package markdown-mode
   :if (package-installed-p 'markdown-mode)
   :custom
