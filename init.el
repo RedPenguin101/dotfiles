@@ -19,7 +19,6 @@
 ;; (setq comment-multi-line t)
 ;; (setq comment-empty-lines t)
 ;;
-;; Look into Shift Selection - what is it?
 ;; follow-mode
 ;;
 ;; https://lobste.rs/s/sz3gab/what_are_your_favorite_emacs_packages
@@ -66,8 +65,8 @@
 ;;
 ;; Occur
 ;; -----
-;; Don't forget multi-occur-in-matching-buffers
-;; C-c C-f: enable follow mode
+;; Don't forget multi-occur-in-matching-buffers for multi-file search
+;; C-c C-f: enable follow mode (what does this actually do?)
 ;; e: edit within occur
 ;; You can start occur mode from withing isearch: Same shortcut, M-s o
 ;;
@@ -87,9 +86,9 @@
 ;; C-/ and M-/
 ;; M-BACKSPACE
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Basic editor functionality ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Basic editor functionality ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; fix crazy performance defaults
 (setq gc-cons-threshold (* 50 1024 1024)) ;; Set runtime GC to 50MB
@@ -190,9 +189,9 @@
 ;; Eliminate delay before highlighting search matches
 (setq lazy-highlight-initial-delay 0)
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;; Window Management ;;
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Window Management ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; https://www.masteringemacs.org/article/demystifying-emacs-window-manager
 ;; https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/
@@ -209,17 +208,17 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
-									 (display-buffer-use-some-window)
-									 (body-function . delete-other-windows)))
+                                     (display-buffer-use-some-window)
+                                     (body-function . delete-other-windows)))
 
 ;; (add-to-list 'display-buffer-alist '("\\*Occur\\*"
-									 ;; (display-buffer-reuse-mode-window display-buffer-below-selected)
-									 ;; (dedicated . t)
-									 ;; (window-height . fit-window-to-buffer)))
+                                     ;; (display-buffer-reuse-mode-window display-buffer-below-selected)
+                                     ;; (dedicated . t)
+                                     ;; (window-height . fit-window-to-buffer)))
 
-;;;;;;;;;;;;;;;;;
-;; mac
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;; SEC: MAC ;;
+;;;;;;;;;;;;;;
 
 (defvar my/command-is-meta nil)
 
@@ -230,7 +229,7 @@
           mac-command-key-is-meta t
           mac-command-modifier 'meta
           mac-option-modifier 'none)
-	(setq mac-option-key-is-meta t
+    (setq mac-option-key-is-meta t
             mac-command-key-is-meta nil
             mac-command-modifier 'none
             mac-option-modifier 'meta)))
@@ -276,9 +275,9 @@
   (setq redisplay-skip-initial-frame t)
 )
 
-;;;;;;;;;;;
-;; dired ;;
-;;;;;;;;;;;
+;;;;;;;;;;;;;;;;
+;; SEC: dired ;;
+;;;;;;;;;;;;;;;;
 ;; How to actually use dired to manage files
 ;; - use wdired to rename stuff (including rect mode)
 ;; - for mass delete, copy, open use marks
@@ -318,9 +317,9 @@
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t))
 
-;;;;;;;;;;;;;;;;
-;; recent mode
-;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: recent mode ;;
+;;;;;;;;;;;;;;;;;;;;;;
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 15)
@@ -336,9 +335,9 @@
       (message "Opening file...")
     (message "Aborting")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; General programming ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: General programming ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Toggle visualization of matching parens. Matching parenthesis is
 ;; highlighted in ‘show-paren-style’ after ‘show-paren-delay’ seconds
@@ -359,17 +358,17 @@
 ;; when game programming.
 (which-function-mode 1)
 
-;;;;;;;;;;;;;;;;
-;; Minibuffer ;;
-;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Minibuffer ;;
+;;;;;;;;;;;;;;;;;;;;;
 
 (use-package minibuffer
   :ensure nil
   :hook ((minibuffer-setup . cursor-intangible-mode))
   ;; emacs 31 thing?
   ;; :bind (:map minibuffer-visible-completions-up-down-map
-			  ;; ("C-n" . minibuffer-next-completion)
-			  ;; ("C-p" . minibuffer-previous-completion))
+              ;; ("C-n" . minibuffer-next-completion)
+              ;; ("C-p" . minibuffer-previous-completion))
   :custom
   ;; If the value is t, the *Completions* buffer is displayed whenever
   ;; completion is requested but cannot be done.
@@ -430,9 +429,9 @@
 ;; (setopt completion-cycle-threshold 3)
 ;; (setopt completion-auto-select 'second-tab)
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;; Buffer Completion ;;
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Buffer Completion ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; Completion in buffer - requires 30.1
@@ -443,14 +442,14 @@
 ;; This is kind of a crap way of getting dabbrev-capf onto the capfs
 (defun standard-capf ()
   (setq-local completion-at-point-functions
-			  (delete-dups
-			   (append '(tags-completion-at-point-function
-						 dabbrev-capf)
-					   completion-at-point-functions))))
+              (delete-dups
+               (append '(tags-completion-at-point-function
+                         dabbrev-capf)
+                       completion-at-point-functions))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TAB: Indentation and Completion ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: TAB: Indentation and Completion ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Indentation can insert tabs if this is non-nil.
 (setq-default indent-tabs-mode t)
@@ -477,9 +476,9 @@
 
 (keymap-set minibuffer-mode-map "TAB" 'minibuffer-complete) ; TAB acts more like how it does in the shell
 
-;;;;;;;;;;;;;;;;
-;; compilation
-;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;; SEC: compilation
+;;;;;;;;;;;;;;;;;;;;;
 ;; Taken from emacs-solo
 
 (use-package compile
@@ -492,9 +491,9 @@
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
 
-;;;;;;;;;;;;;;;;;
-;; Imenu buffer
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Imenu buffer
+;;;;;;;;;;;;;;;;;;;;;;
 ;; The Imenu facility offers a way to find the major definitions in a
 ;; file by name. In programming-language modes the definitions are
 ;; variables and functions, and in text modes, they are chapter,
@@ -559,9 +558,9 @@
     (display-buffer buf)
     (goto-char (point-min))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; non-native / external packages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: external packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'package)
 
@@ -577,7 +576,6 @@
   :config
   (global-set-key (kbd "M-y") 'browse-kill-ring))
 
-
 (use-package dimmer
   ;; dims non-active windows
   ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
@@ -590,8 +588,8 @@
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
-		:host "api.anthropic.com"
-		:user "apikey"))
+        :host "api.anthropic.com"
+        :user "apikey"))
 
 (use-package gptel
   :if (package-installed-p 'gptel)
@@ -618,10 +616,10 @@
   (keyfreq-autosave-mode 1)
   (setq keyfreq-excluded-commands
       '(self-insert-command
-		org-self-insert-command
-		disable-mouse--handle
-		modal-mode--command-mode-init
-		modal-mode--insert-mode-init)))
+        org-self-insert-command
+        disable-mouse--handle
+        modal-mode--command-mode-init
+        modal-mode--insert-mode-init)))
 
 (use-package disable-mouse
   :if (package-installed-p 'disable-mouse)
@@ -643,9 +641,9 @@
 ;; - csv-mode
 ;; - math-preview (view TeX)
 
-;;;;;;;;;;;;;;;;
-;; Bad Habits ;;
-;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Bad Habits ;;
+;;;;;;;;;;;;;;;;;;;;;
 
 (defun shame () (interactive) (message "Shame!"))
 (global-set-key (kbd "<left>") #'shame)
@@ -653,32 +651,32 @@
 (global-set-key (kbd "<up>") #'shame)
 (global-set-key (kbd "<down>") #'shame)
 
-;;;;;;;;;;;;;;;;;;;;;;
-;; Custom functions ;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Custom functions ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun scroll-down-half-page (&optional arg)
   (interactive "^P")
   (if arg (next-line (prefix-numeric-value arg))
-	(let ((ln (line-number-at-pos (point)))
-		  (lmax (line-number-at-pos (point-max))))
-	  (cond ((= ln 1) (move-to-window-line nil))
-			((= ln lmax) (recenter (window-end)))
-			(t (progn
-				 (move-to-window-line -1)
-				 (recenter)))))))
+    (let ((ln (line-number-at-pos (point)))
+          (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) (move-to-window-line nil))
+            ((= ln lmax) (recenter (window-end)))
+            (t (progn
+                 (move-to-window-line -1)
+                 (recenter)))))))
 
 ;; BUG: doesn't work when you're on the last line of a buffer
 (defun scroll-up-half-page (&optional arg)
   (interactive "^P")
   (if arg (previous-line (prefix-numeric-value arg))
-	(let ((ln (line-number-at-pos (point)))
-		  (lmax (line-number-at-pos (point-max))))
-	  (cond ((= ln 1) nil)
-			((= ln lmax) (move-to-window-line nil))
-			(t (progn
-				 (move-to-window-line 0)
-				 (recenter)))))))
+    (let ((ln (line-number-at-pos (point)))
+          (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) nil)
+            ((= ln lmax) (move-to-window-line nil))
+            (t (progn
+                 (move-to-window-line 0)
+                 (recenter)))))))
 
 (defun kill-inner-word ()
   "Kills the entire word your cursor is in. Equivalent to ciw in vim."
@@ -724,9 +722,9 @@
   (my--end-of-sexp)
   (kill-region nil nil t))
 
-;;;;;;;;;;;;;;;;;;;;
-;; Modal keybinds ;;
-;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Modal keybinds ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; default scroll-up/downs are a bit much. These are a bit less
 ;; jarring
@@ -790,7 +788,7 @@
    ("r" . recentf-open-minibuff)
    ("g" . magit-status)             ;; C-x g
    ("k" . kill-buffer)              ;; C-x k
-   ("o" . other-window)				;; C-x o
+   ("o" . other-window)             ;; C-x o
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -820,11 +818,11 @@
    ))
 
 (define-modal-project-keys
- '(("k" . project-kill-buffers)			;; C-x p k
-   ("f" . project-find-file)			;; C-x p f
-   ("q" . project-query-replace-regexp)	;; C-x p r
-   ("p" . project-switch-project)		;; C-x p p
-   ("c" . project-compile)				;; C-x p c
+ '(("k" . project-kill-buffers)         ;; C-x p k
+   ("f" . project-find-file)            ;; C-x p f
+   ("q" . project-query-replace-regexp) ;; C-x p r
+   ("p" . project-switch-project)       ;; C-x p p
+   ("c" . project-compile)              ;; C-x p c
    ))
 
 (define-modal-eval-keys '())
@@ -848,9 +846,9 @@
 (global-unset-key (kbd "C-x C-z")) ;; suspend
 (global-unset-key (kbd "C-x f")) ;; col fill
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;; clojure (and elisp)
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: clojure (and elisp)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; https://www.youtube.com/watch?v=KMWLIgG986I
 ;; https://cider.mx
@@ -926,7 +924,7 @@
 ;; d: def inspector value in repl
 
 ;;;;;;;;;;;;;;;;;;;;;;;
-;; C
+;; SEC: Clang
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; create a format file with
@@ -937,9 +935,9 @@
 (when (file-exists-p "~/.emacs.d/lisp/simple-c-mode.el")
   (load "~/.emacs.d/lisp/simple-c-mode.el")
   (add-hook 'simple-c-mode-hook
-			(lambda ()
+            (lambda ()
               (progn
-				(local-set-key (kbd "C-c C-c") 'recompile)))))
+                (local-set-key (kbd "C-c C-c") 'recompile)))))
 
 ; best way to hook LSP up properly is to use bear
 ; (https://github.com/rizsotto/Bear) to generate a
@@ -947,7 +945,7 @@
 ; pick up on that automatically then just `eglot` to launch the lsp
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
-;; Odin
+;; SEC: Odin
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; There's a package here https://git.sr.ht/~mgmarlow/odin-mode
@@ -959,23 +957,23 @@
   (load "~/.emacs.d/lisp/odin-mode.el")
 
   (add-hook 'odin-mode-hook
-			(lambda ()
+            (lambda ()
               (progn
-				(local-set-key (kbd "C-c C-c") 'recompile))))
+                (local-set-key (kbd "C-c C-c") 'recompile))))
 
   (add-hook 'odin-mode-hook
-			(lambda ()
+            (lambda ()
               (push '("<=" . ?≤) prettify-symbols-alist)
               (push '(">=" . ?≥) prettify-symbols-alist)
-			  (push '("->" . ?→) prettify-symbols-alist)
-			  (push '("!=" . ?≠) prettify-symbols-alist)
-			  (push '(":=" . ?≔) prettify-symbols-alist)
+              (push '("->" . ?→) prettify-symbols-alist)
+              (push '("!=" . ?≠) prettify-symbols-alist)
+              (push '(":=" . ?≔) prettify-symbols-alist)
 
-			  (prettify-symbols-mode 1)))
+              (prettify-symbols-mode 1)))
 
   (with-eval-after-load 'eglot
-	(add-to-list 'eglot-server-programs
-				 '(odin-mode . ("ols"))))
+    (add-to-list 'eglot-server-programs
+                 '(odin-mode . ("ols"))))
 
   ;; These allow you to jump from the compilation error to the
   ;; associated line where the error occured.
@@ -985,38 +983,38 @@
   (add-to-list 'compilation-error-regexp-alist-alist
                '(odin-error "^\\(/.*\\.odin\\)(\\([0-9]+\\):\\([0-9]+\\))" 1 2 3)))
 
-;;;;;;;;;;;;;
-;; Python  ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;
+;; SEC: Python  ;;
+;;;;;;;;;;;;;;;;;;
 
 (use-package python-mode
   :bind
   (:map python-mode-map
-		("C-c C-c" . recompile)))
+        ("C-c C-c" . recompile)))
 
-;;;;;;;;
-;; GO ;;
-;;;;;;;;
+;;;;;;;;;;;;;
+;; SEC: GO ;;
+;;;;;;;;;;;;;
 
 (use-package go-mode
   :config
   (add-hook 'go-mode-hook #'standard-capf)
   :bind
   (:map go-mode-map
-		("C-c C-c" . recompile)))
+        ("C-c C-c" . recompile)))
 
-;;;;;;;;;;;;;;;;;
-;; Common Lisp ;;
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Common Lisp ;;
+;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package sly
   :if (package-installed-p 'sly)
   :config
   (setq inferior-lisp-program "sbcl"))
 
-;;;;;;;;;;;;;
-;; OrgMode ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;
+;; SEC: OrgMode ;;
+;;;;;;;;;;;;;;;;;;
 
 (define-skeleton org-insert-src-block
   "Insert an org source block"
@@ -1028,7 +1026,7 @@
 (use-package org
   :bind
   (:map org-mode-map
-		("M-h" . backward-kill-word))
+        ("M-h" . backward-kill-word))
   :hook (org-mode . abbrev-mode)
   :config
   (setq org-hide-emphasis-markers t
@@ -1037,20 +1035,20 @@
         ;; org-startup-with-inline-images t
         org-image-actual-width '(400))
   (define-abbrev org-mode-abbrev-table "ssrc"
-	"" 'org-insert-src-block)
+    "" 'org-insert-src-block)
   (define-abbrev org-mode-abbrev-table
-	"lequ"
-	"\\begin{equation}\n\n\\end{equation}"
-	(lambda () (forward-line -1)))
+    "lequ"
+    "\\begin{equation}\n\n\\end{equation}"
+    (lambda () (forward-line -1)))
   (define-abbrev org-mode-abbrev-table
-	"linl"
-	"\\(\\)"
-	(lambda () (forward-char -2)))
+    "linl"
+    "\\(\\)"
+    (lambda () (forward-char -2)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
-	 (lisp . t) ;; common-lisp
-	 ))
+     (lisp . t) ;; common-lisp
+     ))
   (setq org-babel-lisp-eval-fn #'sly-eval)
   (setq org-latex-create-formula-image-program 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1))
