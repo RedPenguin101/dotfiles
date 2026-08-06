@@ -558,89 +558,6 @@
     (display-buffer buf)
     (goto-char (point-min))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SEC: external packages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'package)
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-(use-package diff-hl
-  :if (package-installed-p 'diff-hl)
-  :config
-  (diff-hl-margin-mode))
-
-(use-package browse-kill-ring
-  :if (package-installed-p 'browse-kill-ring)
-  :config
-  (global-set-key (kbd "M-y") 'browse-kill-ring))
-
-(use-package dimmer
-  ;; dims non-active windows
-  ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
-  :if (package-installed-p 'dimmer)
-  :config
-  (setq dimmer-fraction 0.3)
-  (setq dimmer-adjustment-mode :foreground)
-  (setq dimmer-use-colorspace :rgb)
-  (dimmer-mode 1))
-
-(defun jl/read-anthropic-key ()
-  (auth-source-pick-first-password
-        :host "api.anthropic.com"
-        :user "apikey"))
-
-(use-package gptel
-  :if (package-installed-p 'gptel)
-  :init
-  (setq
-   gptel-model 'claude-sonnet-4-6
-   gptel-backend (gptel-make-anthropic "Claude"
-                   :stream t :key (jl/read-anthropic-key))))
-
-(use-package agent-shell
-  ;;; https://www.youtube.com/watch?v=R2Ucr3amgGg
-  ;; agent-shell-prompt-compose to open viewport
-  :if (package-installed-p 'agent-shell)
-  :hook
-  (agent-shell-viewport-mode-hook . visual-line-mode)
-  :init
-  (setq agent-shell-prefer-viewport-interaction t)
-  (setq agent-shell-header-style 'graphical))
-
-(use-package keyfreq
-  :if (package-installed-p 'keyfreq)
-  :init
-  (keyfreq-mode 1)
-  (keyfreq-autosave-mode 1)
-  (setq keyfreq-excluded-commands
-      '(self-insert-command
-        org-self-insert-command
-        disable-mouse--handle
-        modal-mode--command-mode-init
-        modal-mode--insert-mode-init)))
-
-(use-package disable-mouse
-  :if (package-installed-p 'disable-mouse)
-  :init
-  (global-disable-mouse-mode))
-
-;; Emacs31: replace with native markdown-ts-mode ?
-(use-package markdown-mode
-  :if (package-installed-p 'markdown-mode)
-  :custom
-  (markdown-fontify-code-blocks-natively t)
-  (markdown-hide-markup t)
-  (markdown-list-indent-width 2))
-
-;; Additional cool packages not included, but which I use and like
-;; (excluding language specific ones defined later)
-;;
-;; - aggressive indent (sometimes)
-;; - csv-mode
-;; - math-preview (view TeX)
-
 ;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Bad Habits ;;
 ;;;;;;;;;;;;;;;;;;;;;
@@ -845,6 +762,95 @@
 (global-unset-key (kbd "C-z")) ;; suspend
 (global-unset-key (kbd "C-x C-z")) ;; suspend
 (global-unset-key (kbd "C-x f")) ;; col fill
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: external packages ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'package)
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+(use-package diff-hl
+  :if (package-installed-p 'diff-hl)
+  :config
+  (diff-hl-margin-mode))
+
+(use-package browse-kill-ring
+  :if (package-installed-p 'browse-kill-ring)
+  :config
+  (global-set-key (kbd "M-y") 'browse-kill-ring))
+
+(use-package dimmer
+  ;; dims non-active windows
+  ;; config is from https://www.gnu.org/software/emacs/manual/html_node/modus-themes/Note-on-dimmerel.html
+  :if (package-installed-p 'dimmer)
+  :config
+  (setq dimmer-fraction 0.3)
+  (setq dimmer-adjustment-mode :foreground)
+  (setq dimmer-use-colorspace :rgb)
+  (dimmer-mode 1))
+
+(use-package multiple-cursors
+  :if (package-installed-p 'multiple-cursors)
+  :config
+  (define-modal-leader-keys
+   '(("c" . mc/edit-lines))))
+
+(defun jl/read-anthropic-key ()
+  (auth-source-pick-first-password
+        :host "api.anthropic.com"
+        :user "apikey"))
+
+(use-package gptel
+  :if (package-installed-p 'gptel)
+  :init
+  (setq
+   gptel-model 'claude-sonnet-4-6
+   gptel-backend (gptel-make-anthropic "Claude"
+                   :stream t :key (jl/read-anthropic-key))))
+
+(use-package agent-shell
+  ;;; https://www.youtube.com/watch?v=R2Ucr3amgGg
+  ;; agent-shell-prompt-compose to open viewport
+  :if (package-installed-p 'agent-shell)
+  :hook
+  (agent-shell-viewport-mode-hook . visual-line-mode)
+  :init
+  (setq agent-shell-prefer-viewport-interaction t)
+  (setq agent-shell-header-style 'graphical))
+
+(use-package keyfreq
+  :if (package-installed-p 'keyfreq)
+  :init
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1)
+  (setq keyfreq-excluded-commands
+      '(self-insert-command
+        org-self-insert-command
+        disable-mouse--handle
+        modal-mode--command-mode-init
+        modal-mode--insert-mode-init)))
+
+(use-package disable-mouse
+  :if (package-installed-p 'disable-mouse)
+  :init
+  (global-disable-mouse-mode))
+
+;; Emacs31: replace with native markdown-ts-mode ?
+(use-package markdown-mode
+  :if (package-installed-p 'markdown-mode)
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  (markdown-hide-markup t)
+  (markdown-list-indent-width 2))
+
+;; Additional cool packages not included, but which I use and like
+;; (excluding language specific ones defined later)
+;;
+;; - aggressive indent (sometimes)
+;; - csv-mode
+;; - math-preview (view TeX)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: clojure (and elisp)
