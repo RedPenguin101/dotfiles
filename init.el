@@ -356,7 +356,7 @@
 ;; which-function-mode shows you which function you're in in the
 ;; modeline. Useful when you have massive function, which I do a lot
 ;; when game programming.
-(which-function-mode 1)
+;; (which-function-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Minibuffer ;;
@@ -703,9 +703,11 @@
    ("s" . save-buffer)              ;; C-x C-s
    ("d" . dired-jump)               ;; C-x C-d (sort of)
    ("r" . recentf-open-minibuff)
-   ("g" . magit-status)             ;; C-x g
    ("k" . kill-buffer)              ;; C-x k
    ("o" . other-window)             ;; C-x o
+   ;; also from internal packages below:
+   ;; - vc for multiple cursors
+   ;; - vg for magit status
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -796,6 +798,16 @@
   :config
   (define-modal-leader-keys
    '(("c" . mc/edit-lines))))
+
+(use-package magit
+  :if (package-installed-p 'magit)
+  :config
+  (define-modal-leader-keys
+   '(("g" . magit-status))))
+
+(use-package doom-modeline
+  :if (package-installed-p 'doom-modeline)
+  :init :init (doom-modeline-mode 1))
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
