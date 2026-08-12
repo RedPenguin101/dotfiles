@@ -45,6 +45,8 @@
 ;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
 ;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
 ;;
+;; diff-hl-set-reference-rev - Type RET on a type label to view its full documentation (what?)
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -376,7 +378,7 @@
   ;; Auto-select on second tab: Don't immediately switch to completion
   ;; window when you hit tab, only on second-tab (t = first-tab)
   ;; (NB: Probably change this to true in 31 with eager options, see below)
-  (completion-auto-select second-tab)
+  (completion-auto-select 'second-tab)
   ;; How completions match on candidates
   (completion-styles '(basic substring initials flex))
   (completion-category-overrides '((file . ((styles partial-completion)))))
@@ -558,6 +560,19 @@
     (display-buffer buf)
     (goto-char (point-min))))
 
+;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Misc Config ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
+;; Mostly for link following from elfeed
+;; Try eww, and manage exlusions.
+(setq browse-url-handlers
+      '(("youtube\\.com" . browse-url-default-browser)
+        ("github\\.com" . browse-url-default-browser)
+        ("reddit\\.com" . browse-url-default-browser)
+        ("mastodon\\.social" . browse-url-default-browser)
+        ("." . eww-browse-url)))
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Bad Habits ;;
 ;;;;;;;;;;;;;;;;;;;;;
@@ -726,6 +741,7 @@
    ("k" . kill-line)          ;; C-k
    ("i" . kill-inner-word)
    ("r" . kill-region)
+   ("w" . backward-kill-word) ;; C-w (in my config)
    ))
 
 (define-modal-search-keys
@@ -807,7 +823,7 @@
 
 (use-package doom-modeline
   :if (package-installed-p 'doom-modeline)
-  :init :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1))
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
@@ -863,6 +879,7 @@
 ;; - aggressive indent (sometimes)
 ;; - csv-mode
 ;; - math-preview (view TeX)
+;; - ghostel - the best terminal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: clojure (and elisp)

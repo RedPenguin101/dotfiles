@@ -26,7 +26,8 @@ vc-mode doesn't have the git-specific concept of 'staging'. You can include only
 
 `v` next action - register, commit
 `m` mark file (allows you to commit only the selection)
-`M` mark all files with this status
+`M` mark all f
+iles with this status
 `u/U` unmark (all)
 `l` vc-print-log (over header or file)
 
@@ -177,3 +178,24 @@ Turn on `fido-mode` to see it in action.
 Completion in buffers never really got much more sophisticated than the completion window approach, mainly because LSPs took over the role of giving you options of how to complete your code fragments.
 
 
+
+## Ghostel
+
+5 Input modes which determine which keypresses get forwarded to the terminal, split into 3 input modes and 2 copy modes
+
+- `C-c C-j` Semi-char (default): forward most. Exceptions are `M-x`, `C-c` - standard prefix stuff
+- `C-c M-d` Char mode: Forward ALL except `M-RET` to exit. Can be used in TUI apps that are greedy with keybinds
+- `C-c C-l` Line mode: like shell, don't forward anything until the use `RET`s, then forward the whole line
+- `C-c C-e` Emacs mode: Read only, use like a normal emacs buffer
+- `C-c C-t` Copy mode: Emacs mode but freezes the buffer too.
+
+You can change them manually, but the pattern is to stay in semi-char and let the terminal choose the mode from context. For example, from semi-char the `mark-sexp` command (`C-M-SPC`) will put you in copy mode while highlighting the next expression. Then `M-w` (`kill-ring-save`) will put you back into input mode.
+
+### Semi-char
+
+`C-c C-c` Interrupt
+`C-c C-z` Suspend
+`C-c C-d` EOF
+`C-c C-\` Quit
+`C-y` Yank
+`M-y` Yank-pop
