@@ -1,3 +1,5 @@
+;;; modal.el --- A minimalist modal editing layer -*- lexical-binding: t; -*-
+
 ;; 'modal-mode' is a minimalist emacs minor-mode which provides a
 ;; 'command-layer' on top of the standard emacs. In any mode where
 ;; modal-mode is a hook - for example with.
@@ -200,7 +202,7 @@ colors the active theme gives the mode line."
   :type 'string
   :group 'modal-mode)
 
-(defcustom modal-mode-insert-indicator " ins "
+(defcustom modal-mode-insert-indicator " INS "
   "String shown in the mode line while in insert mode."
   :type 'string
   :group 'modal-mode)
@@ -215,18 +217,61 @@ colors the active theme gives the mode line."
 (defvar modal-mode-line-indicator '(:eval (modal-mode--mode-line-segment))
   "Mode-line construct showing the current modal state.")
 
-(defun modal-mode--install-mode-line ()
-  "Add the modal indicator to the front of the default mode line.
+(defun modal-mode--indicator-added (format &optional after-first)
+  "Return FORMAT with the modal indicator spliced in, or nil if not needed.
+With AFTER-FIRST, insert after FORMAT's first element instead of
+at the very front.
+
 Note that this splices in the construct itself rather than the
 symbol naming it: a `mode-line-format' list whose car is a bare
 symbol is read as a (SYMBOL THEN ELSE) conditional, which would
 swallow the rest of the mode line."
-  (let ((format (default-value 'mode-line-format)))
-    (unless (member modal-mode-line-indicator format)
-      (setq-default mode-line-format
-                    (cons modal-mode-line-indicator format)))))
+  (cond
+   ((or (null format) (member modal-mode-line-indicator format)) nil)
+   (after-first (cons (car format) (cons modal-mode-line-indicator (cdr format))))
+   (t (cons modal-mode-line-indicator format))))
+
+(defun modal-mode--install-mode-line ()
+  "Add the modal indicator to the front of the default mode line."
+  (let ((new (modal-mode--indicator-added (default-value 'mode-line-format))))
+    (when new (setq-default mode-line-format new))))
 
 (modal-mode--install-mode-line)
+
+;; doom-modeline sets `mode-line-format' buffer-locally, so the
+;; default-value install above never reaches buffers it manages. It
+;; rebuilds the format as ("%e" MODELINE) every time a modeline is
+;; applied, and every variant (main, minimal, project, ...) goes
+;; through one function, so advise that rather than trying to
+;; redefine each of its modeline definitions. Its right-hand side is
+;; pinned with `:align-to', so an extra segment on the left doesn't
+;; disturb the layout.
+
+(defun modal-mode--install-doom-mode-line (&optional _key default)
+  "Add the modal indicator to a modeline doom-modeline just applied."
+  ;; doom-modeline builds ("%e" MODELINE), and "%e" is conventionally
+  ;; first, so slot the indicator in just after it.
+  (let* ((format (if default (default-value 'mode-line-format) mode-line-format))
+         (new (modal-mode--indicator-added format t)))
+    (when new
+      (setf (if default (default-value 'mode-line-format) mode-line-format) new))))
+
+(defun modal-mode--restore-mode-line (&rest _)
+  "Reinstall the indicator after doom-modeline tears its modeline down.
+Disabling `doom-modeline-mode' resets `mode-line-format' to a
+saved original, both globally and in every live buffer."
+  (unless (bound-and-true-p doom-modeline-mode)
+    (modal-mode--install-mode-line)
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (local-variable-p 'mode-line-format)
+          (let ((new (modal-mode--indicator-added mode-line-format)))
+            (when new (setq mode-line-format new))))))))
+
+(with-eval-after-load 'doom-modeline
+  (advice-add 'doom-modeline-set-modeline
+              :after #'modal-mode--install-doom-mode-line)
+  (advice-add 'doom-modeline-mode :after #'modal-mode--restore-mode-line))
 
 ;; Activation and mode-switching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
