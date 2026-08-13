@@ -171,6 +171,63 @@
 (define-modal-leader-keys
  '(("p" . modal-project-leader)))
 
+;; Mode-line indicator
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; The current mode is shown as a segment at the very front of the
+;; mode line, rather than in the minor-mode lighter. This is more
+;; durable than `cursor-type', which is buffer-local but freely
+;; clobbered by other modes, and which on a terminal is a single
+;; frame-wide setting that can't reflect per-buffer state at all.
+
+(defvar-local modal-mode--state nil
+  "Current modal state: `command', `insert', or nil if `modal-mode' is off.")
+
+(defface modal-mode-command-indicator
+  '((t :inherit mode-line :inverse-video t :weight bold))
+  "Face for the command-mode mode-line indicator.
+Inverse video reads clearly on a terminal and inherits whatever
+colors the active theme gives the mode line."
+  :group 'modal-mode)
+
+(defface modal-mode-insert-indicator
+  '((t :inherit mode-line :weight bold))
+  "Face for the insert-mode mode-line indicator."
+  :group 'modal-mode)
+
+(defcustom modal-mode-command-indicator " CMD "
+  "String shown in the mode line while in the command layer."
+  :type 'string
+  :group 'modal-mode)
+
+(defcustom modal-mode-insert-indicator " ins "
+  "String shown in the mode line while in insert mode."
+  :type 'string
+  :group 'modal-mode)
+
+(defun modal-mode--mode-line-segment ()
+  (pcase modal-mode--state
+    ('command (propertize modal-mode-command-indicator
+                          'face 'modal-mode-command-indicator))
+    ('insert  (propertize modal-mode-insert-indicator
+                          'face 'modal-mode-insert-indicator))))
+
+(defvar modal-mode-line-indicator '(:eval (modal-mode--mode-line-segment))
+  "Mode-line construct showing the current modal state.")
+
+(defun modal-mode--install-mode-line ()
+  "Add the modal indicator to the front of the default mode line.
+Note that this splices in the construct itself rather than the
+symbol naming it: a `mode-line-format' list whose car is a bare
+symbol is read as a (SYMBOL THEN ELSE) conditional, which would
+swallow the rest of the mode line."
+  (let ((format (default-value 'mode-line-format)))
+    (unless (member modal-mode-line-indicator format)
+      (setq-default mode-line-format
+                    (cons modal-mode-line-indicator format)))))
+
+(modal-mode--install-mode-line)
+
 ;; Activation and mode-switching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -189,18 +246,25 @@
   (interactive)
   (overwrite-mode -1)
   (modal-mode--update-key-map 'command)
-  (setq cursor-type 'box))
+  (setq modal-mode--state 'command)
+  (setq cursor-type 'box)
+  (force-mode-line-update))
 
 (defun modal-mode--insert-mode-init ()
   (interactive)
   (modal-mode--update-key-map 'insert)
-  (setq cursor-type 'bar))
+  (setq modal-mode--state 'insert)
+  (setq cursor-type 'bar)
+  (force-mode-line-update))
 
 (define-minor-mode modal-mode
   "Modal mode"
   :lighter " Modal"
   :keymap modal-mode--main-keymap
-  (if modal-mode (modal-mode--command-mode-init)))
+  (if modal-mode
+      (modal-mode--command-mode-init)
+    (setq modal-mode--state nil)
+    (force-mode-line-update)))
 
 (provide 'modal-mode)
 
