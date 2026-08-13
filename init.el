@@ -833,7 +833,17 @@
   ;; here (it would not be in early-init.el, or under --daemon).
   :init
   (setq doom-modeline-icon (display-graphic-p))
-  (doom-modeline-mode 1))
+  (doom-modeline-mode 1)
+  :config
+  ;; The bar segment is a PBM image sized in pixels to
+  ;; (max doom-modeline-height (doom-modeline--font-height)) and drawn
+  ;; with :ascent center. When the mode line ends up taller than that
+  ;; image it sits short at top and bottom, which reads as a step next
+  ;; to the full-height modal indicator. Drop it. Note this also gives
+  ;; up `doom-modeline-height', which is only enforced via this image.
+  (doom-modeline-def-segment bar
+    "Disabled - see init.el."
+    ""))
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
