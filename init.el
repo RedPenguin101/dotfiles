@@ -227,14 +227,10 @@
 (defun my/set-mac-modifiers (switched)
   "Configure macOS modifier keys depending on whether Ergodox is active."
   (if switched
-    (setq mac-option-key-is-meta nil
-          mac-command-key-is-meta t
-          mac-command-modifier 'meta
-          mac-option-modifier 'none)
-    (setq mac-option-key-is-meta t
-            mac-command-key-is-meta nil
-            mac-command-modifier 'none
-            mac-option-modifier 'meta)))
+      (setq mac-command-modifier 'meta
+            mac-option-modifier 'none)
+    (setq mac-command-modifier 'none
+          mac-option-modifier 'meta)))
 
 (defun my/mac-meta-switch ()
   (interactive)
@@ -821,9 +817,23 @@
   (define-modal-leader-keys
    '(("g" . magit-status))))
 
+(use-package ghostel
+  :if (package-installed-p 'ghostel)
+  :hook (ghostel-mode . modal-mode)
+  :config
+  (define-modal-leader-keys
+   '(("t" . ghostel))))
+
 (use-package doom-modeline
   :if (package-installed-p 'doom-modeline)
-  :init (doom-modeline-mode 1))
+  ;; `doom-modeline-icon-displayable-p' only checks that nerd-icons is
+  ;; loaded, not that the frame can actually render the glyphs, so in a
+  ;; TTY the icons come out as tofu. Decide it ourselves instead. The
+  ;; GUI frame is created before init.el is loaded, so this is accurate
+  ;; here (it would not be in early-init.el, or under --daemon).
+  :init
+  (setq doom-modeline-icon (display-graphic-p))
+  (doom-modeline-mode 1))
 
 (defun jl/read-anthropic-key ()
   (auth-source-pick-first-password
@@ -879,7 +889,6 @@
 ;; - aggressive indent (sometimes)
 ;; - csv-mode
 ;; - math-preview (view TeX)
-;; - ghostel - the best terminal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: clojure (and elisp)
