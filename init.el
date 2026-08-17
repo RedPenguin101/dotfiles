@@ -819,10 +819,16 @@
 
 (use-package ghostel
   :if (package-installed-p 'ghostel)
-  :hook (ghostel-mode . modal-mode)
-  :config
+  ;; The keybind has to go in :init, not :config. `:hook' implies
+  ;; `:defer t', which wraps :config in (eval-after-load 'ghostel ...),
+  ;; and the only thing that would load ghostel is the `ghostel' command
+  ;; this very keybind invokes - so :config would never run. `ghostel'
+  ;; is autoloaded, so binding the bare symbol here is enough to pull
+  ;; the package in on first use.
+  :init
   (define-modal-leader-keys
-   '(("t" . ghostel))))
+   '(("t" . ghostel)))
+  :hook (ghostel-mode . modal-mode))
 
 (use-package doom-modeline
   :if (package-installed-p 'doom-modeline)
