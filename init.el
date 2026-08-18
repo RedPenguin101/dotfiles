@@ -191,6 +191,11 @@
 ;; Eliminate delay before highlighting search matches
 (setq lazy-highlight-initial-delay 0)
 
+(require 'server)
+
+(unless (server-running-p)
+  (server-start))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Window Management ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -773,6 +778,7 @@
 (global-unset-key (kbd "C-<wheel-up>")) ;; stop zooming by mistake
 (global-unset-key (kbd "C-<wheel-down>"))
 
+(global-unset-key (kbd "C-x C-c")) ;; quit
 (global-unset-key (kbd "C-z")) ;; suspend
 (global-unset-key (kbd "C-x C-z")) ;; suspend
 (global-unset-key (kbd "C-x f")) ;; col fill
