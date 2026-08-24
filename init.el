@@ -47,6 +47,10 @@
 ;;
 ;; diff-hl-set-reference-rev - Type RET on a type label to view its full documentation (what?)
 ;;
+;; Surround region: interactive command which allows you to input
+;; paired characters: (->) etc. Includes (or defaults to) self-pair
+;; **->** for markdown bold.
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -670,6 +674,10 @@
 (global-set-key (kbd "M-l") 'downcase-dwim)
 (global-set-key (kbd "M-c") 'capitalize-dwim)
 
+;; Tempo preservation
+(global-set-key (kbd "M-p") 'previous-line)
+(global-set-key (kbd "M-n") 'next-line)
+
 (load "~/.emacs.d/lisp/modal.el")
 
 (add-hook 'prog-mode-hook 'modal-mode)
@@ -834,7 +842,9 @@
   :init
   (define-modal-leader-keys
    '(("t" . ghostel)))
-  :hook (ghostel-mode . modal-mode))
+  :hook
+  (ghostel-mode . modal-mode)
+  (ghostel-mode . (lambda () (display-line-numbers-mode -1))))
 
 (use-package doom-modeline
   :if (package-installed-p 'doom-modeline)
