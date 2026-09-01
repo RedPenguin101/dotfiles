@@ -141,13 +141,38 @@
 
 ;; Whitespace and spaces
 (setq whitespace-line-column 120)
-(setq whitespace-style '(face tabs empty trailing lines-tail))
+(setq whitespace-style '(face empty trailing lines-tail)) ;; tabs not in this
 (add-hook 'prog-mode-hook 'whitespace-mode)
 (setq sentence-end-double-space nil)
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
 (setq-default truncate-lines t) ;; line truncate, don't wrap (unless visual line mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
+
+;; Syntax Highlighting
+
+(defun my/font-lock-overrides (&rest _)
+  ;; somewhat following https://tonsky.me/blog/syntax-highlighting/
+  ;; Comments are very distinct
+  (set-face-attribute 'font-lock-comment-face nil
+					  :inherit 'font-lock-warning-face
+                      :foreground 'unspecified
+                      :slant 'normal)
+  (set-face-attribute 'font-lock-comment-delimiter-face nil
+                      :inherit 'font-lock-comment-face
+					  :foreground 'unspecified)
+
+  ;; No highlights on this stuff
+  (set-face-attribute 'font-lock-keyword-face nil
+                       :inherit 'default :foreground 'unspecified :weight 'normal)
+  (set-face-attribute 'font-lock-builtin-face nil
+                       :inherit 'default :foreground 'unspecified :weight 'normal)
+  (set-face-attribute 'font-lock-constant-face nil
+                      :inherit 'default :foreground 'unspecified :weight 'normal)
+  ;; highlighting remaining: function definitions, types, strings
+  )
+
+(add-hook 'enable-theme-functions #'my/font-lock-overrides)
 
 ;; `hl-line-mode' highlights the currently selected line
 ;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
@@ -808,7 +833,10 @@
 (use-package diff-hl
   :if (package-installed-p 'diff-hl)
   :config
-  (diff-hl-margin-mode))
+  (global-diff-hl-mode)
+  (define-modal-leader-keys
+   '(("h" . diff-hl-diff-goto-hunk)))
+  )
 
 (use-package browse-kill-ring
   :if (package-installed-p 'browse-kill-ring)
