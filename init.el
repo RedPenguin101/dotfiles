@@ -372,18 +372,11 @@
 (use-package minibuffer
   :ensure nil
   :hook ((minibuffer-setup . cursor-intangible-mode))
-  ;; emacs 31 thing?
-  ;; :bind (:map minibuffer-visible-completions-up-down-map
-              ;; ("C-n" . minibuffer-next-completion)
-              ;; ("C-p" . minibuffer-previous-completion))
   :custom
   ;; If the value is t, the *Completions* buffer is displayed whenever
   ;; completion is requested but cannot be done.
   (completion-auto-help t)
-  ;; Auto-select on second tab: Don't immediately switch to completion
-  ;; window when you hit tab, only on second-tab (t = first-tab)
-  ;; (NB: Probably change this to true in 31 with eager options, see below)
-  (completion-auto-select 'second-tab)
+  (completion-auto-select t)
   ;; How completions match on candidates
   (completion-styles '(basic substring initials flex))
   (completion-category-overrides '((file . ((styles partial-completion)))))
@@ -420,6 +413,19 @@
   ;; already open.
   (completion-eager-display t)
   (completion-eager-update t)
+
+  :config
+  ;; C-n/C-p mirror the <down>/<up> bindings that `minibuffer-visible-completions'
+  ;; installs. The map composed into the minibuffer depends on that variable's
+  ;; value: `minibuffer-visible-completions-map' for t, and the -up-down-map only
+  ;; for the symbol `up-down'. Bindings go through
+  ;; `minibuffer-visible-completions--bind' so they are live only while a
+  ;; *Completions* window is showing, and otherwise fall through to
+  ;; next/previous-line-or-history-element.
+  (keymap-set minibuffer-visible-completions-map "C-n"
+              (minibuffer-visible-completions--bind #'minibuffer-next-line-completion))
+  (keymap-set minibuffer-visible-completions-map "C-p"
+              (minibuffer-visible-completions--bind #'minibuffer-previous-line-completion))
   )
 
 ;; Superceded, but good to know
