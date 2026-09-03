@@ -834,8 +834,14 @@
   :if (package-installed-p 'diff-hl)
   :config
   (global-diff-hl-mode)
+  (defun my/diff-hl-next-hunk ()
+	"Go to the next hunk and center it in the window."
+	(interactive)
+	(diff-hl-next-hunk)
+	(recenter))
   (define-modal-leader-keys
-   '(("h" . diff-hl-diff-goto-hunk)))
+   '(("h" . diff-hl-diff-goto-hunk)
+	 ("n" . my/diff-hl-next-hunk)))
   )
 
 (use-package browse-kill-ring
