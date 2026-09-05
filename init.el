@@ -277,15 +277,13 @@
   (setq my/command-is-meta t)
   (my/set-mac-modifiers my/command-is-meta) ;; start switched for laptop
 
-  (add-to-list 'exec-path "/usr/local/bin/")
-  (setenv "PATH" (format "%s:%s" "/usr/local/bin/" (getenv "PATH")))
+  ;; GUI Emacs is started by launchd, not a shell, so it inherits a bare PATH.
+  ;; Ask a login shell for the real one instead of listing directories here.
+  (let ((path (shell-command-to-string "$SHELL -lc 'printf %s \"$PATH\"'")))
+    (setenv "PATH" path)
+    (setq exec-path (append (split-string path ":") (list exec-directory))))
 
-    (add-to-list 'exec-path "/opt/homebrew/bin")
-  (setenv "PATH" (format "%s:%s" "/opt/homebrew/bin" (getenv "PATH")))
-
-  (add-to-list 'exec-path "/opt/homebrew/opt/llvm/bin")
-  (setenv "PATH" (format "%s:%s" "/opt/homebrew/opt/llvm/bin" (getenv "PATH")))
-  (setq ispell-program-name "/opt/homebrew/bin/aspell")
+  (setq ispell-program-name "aspell")
 
   ;; Disable file name handlers during startup to stop macOS from scanning paths greedily
   (setq file-name-handler-alist nil)
