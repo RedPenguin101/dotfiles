@@ -6,15 +6,21 @@ This page is a reference for me on how emacs works, focusing on stuff I tend to 
 
 Simple, fast, and consistent.
 
-vc-mode doesn't have the git-specific concept of 'staging'. You can include only a certain set of files in a commit using marks.
+vc-mode doesn't have the git-specific concept of 'staging'. You can
+include only a certain set of files in a commit using marks.
 
 `C-x v d` vc-dir
 `C-x p v` project-vc-dir
 
-`C-x v =` see diff to last commit
-`C-x v v` commit file
+`C-x v h` help
 
-### VC Mode
+`C-x v =` diff
+`C-x v v` commit file (really DWIM)
+`C-x v L` show root log
+
+`C-x v P` Push
+
+### VC mode (from vc-dir)
 
 `P` push
 `+` pull
@@ -24,12 +30,21 @@ vc-mode doesn't have the git-specific concept of 'staging'. You can include only
 `b s` branch switch
 (oddly there is no command for listing branches)
 
+`=` see file diff (works with mark)
+`D` see all diff (root diff)
+
 `v` next action - register, commit
 `m` mark file (allows you to commit only the selection)
-`M` mark all f
-iles with this status
+`M` mark all files with this status
 `u/U` unmark (all)
 `l` vc-print-log (over header or file)
+
+`@` revert change (kill, in magit terms)
+
+### Log Buffer
+
+`d` show diff for commit at point (or region)
+`e` reword commit
 
 ### Commit mode
 
@@ -40,7 +55,10 @@ iles with this status
 
 ### Partial commits
 
-You can _technically_ do partial commits, but it's a bit inelegant and limited. Use `C-x v =` to see the diff. `k`ill any hunk you don't want to commit (`C-c C-s` to split a hunk), the `C-x v v` from the diff buffer to commit any unkilled hunks.
+You can _technically_ do partial commits, but it's a bit inelegant and
+limited. Use `C-x v =` to see the diff. `k`ill any hunk you don't want to
+commit (`C-c C-s` to split a hunk), the `C-x v v` from the diff buffer to
+commit any unkilled hunks.
 
 ### Conflict resolution
 

@@ -760,7 +760,8 @@
    ("o" . other-window)             ;; C-x o
    ;; also from internal packages below:
    ;; - vc for multiple cursors
-   ;; - vg for magit status
+   ("g" . vc-dir)
+   ("n" . vc-diff)
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -838,8 +839,7 @@
 	(diff-hl-next-hunk)
 	(recenter))
   (define-modal-leader-keys
-   '(("h" . diff-hl-diff-goto-hunk)
-	 ("n" . my/diff-hl-next-hunk)))
+   '(("n" . my/diff-hl-next-hunk)))
   )
 
 (use-package browse-kill-ring
@@ -862,12 +862,6 @@
   :config
   (define-modal-leader-keys
    '(("c" . mc/edit-lines))))
-
-(use-package magit
-  :if (package-installed-p 'magit)
-  :config
-  (define-modal-leader-keys
-   '(("g" . magit-status))))
 
 (use-package ghostel
   :if (package-installed-p 'ghostel)
