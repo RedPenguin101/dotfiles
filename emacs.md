@@ -41,6 +41,8 @@ include only a certain set of files in a commit using marks.
 
 `@` revert change (kill, in magit terms)
 
+`x` hide up to date
+
 ### Log Buffer
 
 `d` show diff for commit at point (or region)

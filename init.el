@@ -51,6 +51,9 @@
 ;; paired characters: (->) etc. Includes (or defaults to) self-pair
 ;; **->** for markdown bold.
 ;;
+;; Check out tips on scrolling
+;; https://www.jamescherti.com/emacs-scrolling-better-performance-usability/
+;;
 ;; Stuff I usually forget
 ;; ======================
 ;;
@@ -387,6 +390,38 @@
 ;; modeline. Useful when you have massive function, which I do a lot
 ;; when game programming.
 ;; (which-function-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SEC: Version Control ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; See also diff-hl in external packages
+;; Most of this is lifted from https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-emacs-modules/prot-emacs-git.el
+
+;; when vc-dir refresh, offer to save relevant buffers
+(setq vc-dir-save-some-buffers-on-revert t) ; Emacs 31
+
+;; Commit messages in vc mode
+;; (setq log-edit-keep-buffer nil) ;; (is this non-nil by default? I never noticed)
+
+;; adds it if not there
+(setq log-edit-require-final-newline t)
+(setq vc-git-log-edit-summary-target-len 50)
+(setq vc-git-log-edit-summary-max-len 70)
+
+;; vc-diff
+(setq vc-git-diff-switches '("--patch-with-stat" "--histogram"))
+(setq vc-git-log-switches '("--stat"))
+
+;; Ediff
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;; don't split the control window in different frame
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; If this is true (the default), the diff windows don't get killed when you quit ediff mode
+(setq ediff-keep-variants nil)
+
+;; TODO: look at smerge, can't remember how it works
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Minibuffer ;;
@@ -760,8 +795,8 @@
    ("o" . other-window)             ;; C-x o
    ;; also from internal packages below:
    ;; - vc for multiple cursors
-   ("g" . vc-dir)
-   ("n" . vc-diff)
+   ("g" . project-vc-dir)
+   ("=" . vc-diff)
 
    ("[" . kmacro-start-macro)       ;; C-x (
    ("]" . kmacro-end-macro)         ;; C-x )
@@ -833,6 +868,12 @@
   :if (package-installed-p 'diff-hl)
   :config
   (global-diff-hl-mode)
+
+  ;; get rid of those weird lines around the fringe indicators
+  (setq diff-hl-draw-borders nil)
+  ;; requires 31+
+  (setq diff-hl-update-async t)
+
   (defun my/diff-hl-next-hunk ()
 	"Go to the next hunk and center it in the window."
 	(interactive)
