@@ -2,7 +2,7 @@
 
 This page is a reference for me on how emacs works, focusing on stuff I tend to forget.
 
-## VC
+## Version Control Mode
 
 Simple, fast, and consistent.
 
@@ -197,8 +197,6 @@ Turn on `fido-mode` to see it in action.
 
 Completion in buffers never really got much more sophisticated than the completion window approach, mainly because LSPs took over the role of giving you options of how to complete your code fragments.
 
-
-
 ## Ghostel
 
 5 Input modes which determine which keypresses get forwarded to the terminal, split into 3 input modes and 2 copy modes
@@ -219,3 +217,101 @@ You can change them manually, but the pattern is to stay in semi-char and let th
 `C-c C-\` Quit
 `C-y` Yank
 `M-y` Yank-pop
+
+## Extract of the big comment block
+
+```
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Joe's Emacs init.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Things to do
+;; ============
+;; - kill-region-or-backwards-word: region if there's a region highlighted, otherwise word
+;; - Look at having a 'repeat' function for modal leaders, so when
+;;   you SPC-<x> <x> it does the SPC-<x> command twice.
+;; - surround next sexp with brackets functions / shortcuts
+;; - eat terminal? https://codeberg.org/akib/emacs-eat
+;; - https://github.com/manzaltu/claude-code-ide.el
+;;
+;; Interesting sounding stuff from
+;; https://github.com/jamescherti/minimal-emacs.d/blob/main/init.el
+;; (setq custom-buffer-done-kill t)
+;; (setq uniquify-buffer-name-style 'forward)
+;; (setq comment-multi-line t)
+;; (setq comment-empty-lines t)
+;;
+;; follow-mode
+;;
+;; https://lobste.rs/s/sz3gab/what_are_your_favorite_emacs_packages
+;; python-pytest, python-coverage
+;; uniquify (built in)
+;; idle-highlight-mode
+;; uniline-mode
+;; expreg
+;; org-modern
+;;
+;; https://github.com/Martinsos/dotfiles/blob/master/vanilla-emacs.d/Emacs.org
+;;
+;; Karthink's Batteries Included series
+;; https://karthinks.com/software/batteries-included-with-emacs/
+;; follow-mode : like columns in a newspaper?
+;; view-mode : read only, easily navigate around.
+;; cycle-spacing : delete whitespace around cursor (or neg, delete empty lines around cursor)
+;;
+;; emacs 31 : https://rahuljuliato.com/posts/emacs-31-around-the-corner
+;; editable xref buffers
+;; side speedbar
+;; mode-line-collapse-minor-modes coming in emacs 31 will allow you to hide lighters for particular minor modes
+;; https://www.reddit.com/r/emacs/comments/1k7zxjv/fyi_modelinecollapseminormodes/
+;;
+;; diff-hl-set-reference-rev - Type RET on a type label to view its full documentation (what?)
+;;
+;; Surround region: interactive command which allows you to input
+;; paired characters: (->) etc. Includes (or defaults to) self-pair
+;; **->** for markdown bold.
+;;
+;; Check out tips on scrolling
+;; https://www.jamescherti.com/emacs-scrolling-better-performance-usability/
+;;
+;; Stuff I usually forget
+;; ======================
+;;
+;; Shell
+;; -----
+;; M-n, M-p: cycle command history
+;; M-r: History search
+;;
+;; Ansi Term
+;; ---------
+;; C-cj Buffer mode, C-ck Terminal Mode
+;;
+;; dired
+;; -----
+;; - i : include subdir
+;; - F : open all marked
+;; - `find-name-dired' for to pipe searched files to buffer
+;;
+;; Occur
+;; -----
+;; Don't forget multi-occur-in-matching-buffers for multi-file search
+;; C-c C-f: enable follow mode (what does this actually do?)
+;; e: edit within occur
+;; You can start occur mode from withing isearch: Same shortcut, M-s o
+;;
+;; Other stuff
+;; -----------
+;; align-regexp RET =    - line up multiline definition
+;;
+;; Maybe add back keybinds
+;; =======================
+;; - register set/jump. was on vSPC/vj (C-x r SPC, C-x r j)
+;; - whitespace cleanup
+;;
+;; In the terminal
+;; ===============
+;; The following keybinds have problems when being used in terminals
+;; C-v (or M-v on Mac) paste
+;; C-/ and M-/
+;; M-BACKSPACE
+;;
+```
