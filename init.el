@@ -4,23 +4,11 @@
 ;; SEC: Basic editor functionality ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; fix crazy performance defaults
-(setq gc-cons-threshold (* 50 1024 1024)) ;; Set runtime GC to 50MB
-(setq read-process-output-max (* 1024 1024)) ;; 1MB buffer instead of 4KB
-;; Silently log native compilation warnings without popping up the buffer window
-(setq native-comp-async-report-warnings-errors 'silent)
-;; Set the absolute minimum log display level to errors only (ignores stylistic warnings)
-(setq warning-minimum-level :error)
-
-(setopt inhibit-splash-screen t)
-
 ;; This is required on older versions of emacs because (according to
 ;; magit error messages) "Due to bad defaults, Emac's package manager
 ;; refuses to update ... build-in [sic] packages..."
 (setopt package-install-upgrade-built-in t)
 
-;; Remove noise at startup
-(setopt initial-scratch-message nil)
 ;; No beeping or blinking
 (setopt visible-bell nil)
 (setopt ring-bell-function #'ignore)
@@ -147,9 +135,6 @@
 ;; `switch-to-buffer' there, tell Emacs to pop a new window instead of
 ;; using the current one:
 (setq switch-to-buffer-in-dedicated-window 'pop)
-
-;; start fullscreen
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (add-to-list 'display-buffer-alist '((derived-mode . magit-status-mode)
                                      (display-buffer-use-some-window)
