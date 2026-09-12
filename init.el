@@ -9,10 +9,6 @@
 ;; refuses to update ... build-in [sic] packages..."
 (setopt package-install-upgrade-built-in t)
 
-;; No beeping or blinking
-(setopt visible-bell nil)
-(setopt ring-bell-function #'ignore)
-
 ;; Backups, lockfiles and trash
 (setopt create-lockfiles nil)
 (setopt make-backup-files nil)
@@ -27,13 +23,56 @@
 (setopt auto-revert-verbose nil) ;; don't message me
 (global-auto-revert-mode 1)
 
-;; line numbers display
-(setq-default display-line-numbers-type 'relative)
-(global-display-line-numbers-mode 1)
-
 ;; Editing preferences
 (setq delete-selection-mode 1)
 (setq kill-do-not-save-duplicates t) ;; doesn't duplicate things in the kill ring
+
+;; Savehist
+(setq savehist-additional-variables
+      '(kill-ring                            ; clipboard
+        register-alist                       ; macros
+        mark-ring global-mark-ring           ; marks
+        search-ring regexp-search-ring))     ; searches
+(savehist-mode)
+(setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
+(setq save-place-limit 600)
+(save-place-mode 1)
+
+(setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
+(setq use-short-answers t)
+
+;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
+;; (or SPC-. t t t t..)
+(setq set-mark-command-repeat-pop t)
+
+(transient-mark-mode 1)
+
+;; Show current project name and menu in modeline
+(when (>= emacs-major-version 30)
+  (setopt project-mode-line t))
+
+(require 'server)
+
+(unless (server-running-p)
+  (server-start))
+
+;; Only support left-to-right languages
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+
+;;;;;;;;;;;;;;;;;;
+;; SEC: Visuals ;;
+;;;;;;;;;;;;;;;;;;
+
+;; No beeping or blinking
+(setopt visible-bell nil)
+(setopt ring-bell-function #'ignore)
+(blink-cursor-mode -1)
+(pixel-scroll-precision-mode)
+
+;; line numbers display
+(setq-default display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
 
 ;; Whitespace and spaces
 (setq whitespace-line-column 120)
@@ -77,30 +116,6 @@
 (setq global-hl-line-sticky-flag nil)
 (global-hl-line-mode +1)
 
-;; Savehist
-(setq savehist-additional-variables
-      '(kill-ring                            ; clipboard
-        register-alist                       ; macros
-        mark-ring global-mark-ring           ; marks
-        search-ring regexp-search-ring))     ; searches
-(savehist-mode)
-(setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
-(setq save-place-limit 600)
-(save-place-mode 1)
-
-(setq read-answer-short t) ;; always accepts 'y' instead of 'yes'
-(setq use-short-answers t)
-
-;; Can use C-u C-SPC C-SPC C-SPC... instead of C-u C-SPC C-u C-SPC...
-;; (or SPC-. t t t t..)
-(setq set-mark-command-repeat-pop t)
-
-(transient-mark-mode 1)
-
-;; Show current project name and menu in modeline
-(when (>= emacs-major-version 30)
-  (setopt project-mode-line t))
-
 ;; Reduce rendering/line scan work by not rendering cursors or regions in
 ;; non-focused windows.
 
@@ -115,11 +130,6 @@
 
 ;; Eliminate delay before highlighting search matches
 (setq lazy-highlight-initial-delay 0)
-
-(require 'server)
-
-(unless (server-running-p)
-  (server-start))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Window Management ;;
