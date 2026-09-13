@@ -23,7 +23,9 @@
 ;; Entry points:
 ;;
 ;;   M-x git-status          open the buffer for the current repository
-;;   m / u / U / t           mark, unmark, unmark all, toggle marks
+;;   m / u                   mark, unmark the file at point
+;;   M / U                   mark, unmark the whole section (C-u: whole buffer)
+;;   t                       toggle marks
 ;;   s / r                   stage (git add), unstage (git restore --staged)
 ;;   k                       discard working tree changes (asks first)
 ;;   =                       diff the marked files, or the file at point
@@ -360,6 +362,46 @@ Each element is (SECTION . ENTRY)."
       (while (not (eobp))
         (when (get-text-property (line-beginning-position) 'git-status-entry)
           (subst-char-in-region (line-beginning-position) (1+ (line-beginning-position)) ?* ?\s))
+        (forward-line 1)))))
+
+(defun git-status-mark-all-in-section (&optional whole-buffer)
+  "Mark every file in the section the file at point belongs to.
+With a prefix argument WHOLE-BUFFER, mark every file in the buffer."
+  (interactive "P")
+  (let ((section (unless whole-buffer
+                   (or (get-text-property (line-beginning-position) 'git-status-section)
+                       (user-error "No file on this line"))))
+        (inhibit-read-only t))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when (and (get-text-property (line-beginning-position) 'git-status-entry)
+                   (or whole-buffer
+                       (eq section (get-text-property (line-beginning-position)
+                                                      'git-status-section))))
+          (subst-char-in-region (line-beginning-position)
+                                (1+ (line-beginning-position)) ?\s ?*)
+          (put-text-property (line-beginning-position) (1+ (line-beginning-position))
+                             'face 'git-status-mark))
+        (forward-line 1)))))
+
+(defun git-status-unmark-all-in-section (&optional whole-buffer)
+  "Unmark every file in the section the file at point belongs to.
+With a prefix argument WHOLE-BUFFER, unmark every file in the buffer."
+  (interactive "P")
+  (let ((section (unless whole-buffer
+                   (or (get-text-property (line-beginning-position) 'git-status-section)
+                       (user-error "No file on this line"))))
+        (inhibit-read-only t))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when (and (get-text-property (line-beginning-position) 'git-status-entry)
+                   (or whole-buffer
+                       (eq section (get-text-property (line-beginning-position)
+                                                      'git-status-section))))
+          (subst-char-in-region (line-beginning-position)
+                                (1+ (line-beginning-position)) ?* ?\s))
         (forward-line 1)))))
 
 (defun git-status-toggle-marks ()
@@ -746,7 +788,8 @@ amended, so that editing it in place is the common case."
   "p"   #'git-status-previous-file
   "m"   #'git-status-mark
   "u"   #'git-status-unmark
-  "U"   #'git-status-unmark-all
+  "U"   #'git-status-unmark-all-in-section
+  "M"   #'git-status-mark-all-in-section
   "t"   #'git-status-toggle-marks
   "s"   #'git-status-stage
   "r"   #'git-status-unstage
