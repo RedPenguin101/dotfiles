@@ -29,6 +29,7 @@
 ;;   =                       diff the marked files, or the file at point
 ;;   + / -  (in the diff)     stage / unstage just the hunk at point
 ;;   c                       commit the staged changes
+;;   P / +                   push / pull, in the background
 ;;   RET                     visit the file
 ;;   g                       refresh
 
@@ -585,6 +586,76 @@ on the hunk that took the applied one's place."
     (find-file (expand-file-name (git-status-entry-path entry) git-status--root))))
 
 
+;;; Talking to the remote
+
+(defun git-status--run-git-asynchronously (arguments)
+  "Run git with ARGUMENTS in the background, collecting output in a buffer.
+Push and pull reach the network: run synchronously they would block Emacs
+for as long as the remote takes, and hang outright on a credential
+prompt.  Refreshes the status buffer when the command finishes, so that
+the ahead/behind counts in the header catch up."
+  (let* ((root git-status--root)
+         (status-buffer (current-buffer))
+         (buffer (get-buffer-create (format "*git-status %s*" (car arguments)))))
+    (with-current-buffer buffer
+      (special-mode)
+      (setq default-directory root)
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (format "cd %s\ngit %s\n\n" root (string-join arguments " ")))))
+    (display-buffer buffer)
+    (let ((process (let ((default-directory root)
+                         ;; A pipe rather than a pty: over a pty git decides it
+                         ;; is talking to a terminal and writes progress bars
+                         ;; full of carriage returns, and a credential prompt
+                         ;; would hang on input nobody can type.  Over a pipe it
+                         ;; prints only the result, and fails fast instead.
+                         (process-connection-type nil))
+                     (apply #'start-file-process (format "git-%s" (car arguments))
+                            buffer "git" arguments))))
+      (set-process-query-on-exit-flag process t)
+      ;; `special-mode' left the buffer read-only, so the filter has to
+      ;; lift that itself; the default filter would just fail.
+      (set-process-filter
+       process
+       (lambda (process output)
+         (when (buffer-live-p (process-buffer process))
+           (with-current-buffer (process-buffer process)
+             (let ((inhibit-read-only t))
+               (goto-char (point-max))
+               (insert output))))))
+      (set-process-sentinel
+       process
+       (lambda (process event)
+         (when (memq (process-status process) '(exit signal))
+           (when (buffer-live-p (process-buffer process))
+             (with-current-buffer (process-buffer process)
+               (let ((inhibit-read-only t))
+                 (goto-char (point-max))
+                 (insert (format "\ngit %s %s" (car arguments) (string-trim event))))))
+           (if (eq (process-exit-status process) 0)
+               (message "git %s finished" (car arguments))
+             (message "git %s failed, see %s"
+                      (car arguments) (buffer-name (process-buffer process))))
+           (when (buffer-live-p status-buffer)
+             (with-current-buffer status-buffer
+               (git-status-refresh)))))))))
+
+(defun git-status-push (&optional edit)
+  "Push the current branch, in the background.
+With a prefix argument EDIT, edit the git command line before running it."
+  (interactive "P")
+  (git-status--run-git-asynchronously
+   (if edit (split-string-and-unquote (read-string "git " "push ")) '("push"))))
+
+(defun git-status-pull (&optional edit)
+  "Pull the current branch, in the background.
+With a prefix argument EDIT, edit the git command line before running it."
+  (interactive "P")
+  (git-status--run-git-asynchronously
+   (if edit (split-string-and-unquote (read-string "git " "pull ")) '("pull"))))
+
+
 ;;; Committing
 
 (defun git-status-commit ()
@@ -655,6 +726,8 @@ amended, so that editing it in place is the common case."
   "k"   #'git-status-discard
   "="   #'git-status-diff
   "c"   #'git-status-commit
+  "P"   #'git-status-push
+  "+"   #'git-status-pull
   "RET" #'git-status-visit-file
   "f"   #'git-status-visit-file)
 

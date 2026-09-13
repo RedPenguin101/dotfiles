@@ -644,7 +644,7 @@
    ("o" . other-window)             ;; C-x o
    ;; also from internal packages below:
    ;; - vc for multiple cursors
-   ("g" . project-vc-dir)
+   ("g" . git-status)
    ("=" . vc-diff)
 
    ("[" . kmacro-start-macro)       ;; C-x (
