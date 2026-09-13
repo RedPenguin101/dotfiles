@@ -214,7 +214,26 @@ no process, so it can be tested against a captured string."
     (user-error "Not in a git-status buffer"))
   (let* ((marked-paths (mapcar (lambda (marked) (git-status-entry-path (cdr marked)))
                                (git-status--marked-entries)))
-         (previous-line (line-number-at-pos))
+         ;; Where point should end up.  Recorded before the redraw, because
+         ;; it is expressed in terms of the section the file at point was in
+         ;; and that file's neighbours within it.
+         (section-at-point (get-text-property (line-beginning-position) 'git-status-section))
+         (path-at-point (let ((entry (get-text-property (line-beginning-position)
+                                                        'git-status-entry)))
+                          (and entry (git-status-entry-path entry))))
+         (paths-that-were-in-section
+          (let ((paths '()))
+            (save-excursion
+              (goto-char (point-min))
+              (while (not (eobp))
+                (let ((entry (get-text-property (line-beginning-position) 'git-status-entry)))
+                  (when (and entry
+                             (eq section-at-point
+                                 (get-text-property (line-beginning-position)
+                                                    'git-status-section)))
+                    (push (git-status-entry-path entry) paths)))
+                (forward-line 1)))
+            (nreverse paths)))
          (parsed (git-status--parse-porcelain-v2
                   (git-status--run-git "status" "--porcelain=v2" "-z"
                                        "--branch" "--untracked-files=all")))
@@ -296,7 +315,7 @@ no process, so it can be tested against a captured string."
     (unless entries
       (insert "\nnothing to commit, working tree clean\n"))
 
-    ;; Restore the marks that survived, then put point back where it was
+    ;; Restore the marks that survived
     (goto-char (point-min))
     (while (not (eobp))
       (let ((entry (get-text-property (line-beginning-position) 'git-status-entry)))
@@ -305,9 +324,39 @@ no process, so it can be tested against a captured string."
           (put-text-property (line-beginning-position) (1+ (line-beginning-position))
                              'face 'git-status-mark)))
       (forward-line 1))
-    (goto-char (point-min))
-    (forward-line (1- previous-line))
-    (when (eobp) (git-status-previous-file))
+    ;; Point: stay on the file it was on.  When that file has changed status
+    ;; it is no longer in the section it was in, so take the next file that
+    ;; still has the old status, or the previous one when nothing follows.
+    (let ((positions-in-section '())
+          (positions-anywhere '())
+          (after (cdr (member path-at-point paths-that-were-in-section)))
+          (before (reverse (seq-take-while (lambda (path) (not (equal path path-at-point)))
+                                           paths-that-were-in-section))))
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (let ((entry (get-text-property (line-beginning-position) 'git-status-entry)))
+            (when entry
+              (push (cons (git-status-entry-path entry) (line-beginning-position))
+                    positions-anywhere)
+              (when (eq section-at-point
+                        (get-text-property (line-beginning-position) 'git-status-section))
+                (push (cons (git-status-entry-path entry) (line-beginning-position))
+                      positions-in-section))))
+          (forward-line 1)))
+      (goto-char (or (alist-get path-at-point positions-in-section nil nil #'equal)
+                     (seq-some (lambda (path)
+                                 (alist-get path positions-in-section nil nil #'equal))
+                               after)
+                     (seq-some (lambda (path)
+                                 (alist-get path positions-in-section nil nil #'equal))
+                               before)
+                     ;; Nothing left with the old status at all: follow the
+                     ;; file itself to whichever section it moved to.
+                     (alist-get path-at-point positions-anywhere nil nil #'equal)
+                     (point-min)))
+      (unless (get-text-property (line-beginning-position) 'git-status-entry)
+        (git-status-next-file)))
     (set-buffer-modified-p nil)))
 
 
