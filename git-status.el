@@ -29,6 +29,7 @@
 ;;   =                       diff the marked files, or the file at point
 ;;   + / -  (in the diff)     stage / unstage just the hunk at point
 ;;   c                       commit the staged changes
+;;   L                       vc-print-root-log for the whole tree
 ;;   P / +                   push / pull, in the background
 ;;   RET                     visit the file
 ;;   g                       refresh
@@ -726,6 +727,7 @@ amended, so that editing it in place is the common case."
   "k"   #'git-status-discard
   "="   #'git-status-diff
   "c"   #'git-status-commit
+  "L"   #'vc-print-root-log
   "P"   #'git-status-push
   "+"   #'git-status-pull
   "RET" #'git-status-visit-file
@@ -739,6 +741,14 @@ amended, so that editing it in place is the common case."
   (setq-local revert-buffer-function (lambda (&rest _) (git-status-refresh)))
   (setq-local truncate-lines t)
   (hl-line-mode 1))
+
+;; `vc-deduce-backend' only falls back to `default-directory' for modes on
+;; this list; without it `vc-print-root-log' cannot tell which backend it is
+;; looking at and prompts for the directory every time.  Registering the mode
+;; makes every vc command that works on a tree usable from this buffer.
+(defvar vc-deduce-backend-nonvc-modes)  ; declared, not required: vc loads itself via `L'
+(with-eval-after-load 'vc
+  (add-to-list 'vc-deduce-backend-nonvc-modes 'git-status-mode))
 
 ;;;###autoload
 (defun git-status ()
