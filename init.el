@@ -323,6 +323,11 @@
 
 ;; TODO: look at smerge, can't remember how it works
 
+;; A dired-like buffer over `git status', for the staging that vc-dir
+;; structurally can't show. `M-x git-status'.
+(when (file-exists-p "~/.emacs.d/lisp/git-status.el")
+  (load "~/.emacs.d/lisp/git-status.el"))
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Minibuffer ;;
 ;;;;;;;;;;;;;;;;;;;;;
