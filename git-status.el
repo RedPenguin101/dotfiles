@@ -30,6 +30,7 @@
 ;;   + / -  (in the diff)     stage / unstage just the hunk at point
 ;;   c                       commit the staged changes
 ;;   L                       vc-print-root-log for the whole tree
+;;   b c / b s               create a branch / switch branch, as in vc-dir
 ;;   P / +                   push / pull, in the background
 ;;   RET                     visit the file
 ;;   g                       refresh
@@ -712,6 +713,31 @@ amended, so that editing it in place is the common case."
     (insert (string-trim-right (git-status--run-git "log" "-1" "--pretty=format:%B")))))
 
 
+;;; Branches
+;;
+;; The vc branch commands already work from this buffer: their interactive
+;; specs read `default-directory' and `vc-root-dir' rather than a vc
+;; fileset.  They know nothing about this buffer though, so the branch name
+;; and ahead/behind counts in the header would stay stale until a refresh.
+
+(defun git-status-create-branch ()
+  "Create a branch and check it out, then redraw the status buffer."
+  (interactive)
+  (call-interactively #'vc-create-branch)
+  (git-status-refresh))
+
+(defun git-status-switch-branch ()
+  "Switch to another branch, then redraw the status buffer."
+  (interactive)
+  (call-interactively #'vc-switch-branch)
+  (git-status-refresh))
+
+(defvar-keymap git-status-branch-map
+  :doc "Branch commands for `git-status-mode', on the `b' prefix."
+  "c" #'git-status-create-branch
+  "s" #'git-status-switch-branch)
+
+
 ;;; Mode
 
 (defvar-keymap git-status-mode-map
@@ -728,6 +754,7 @@ amended, so that editing it in place is the common case."
   "="   #'git-status-diff
   "c"   #'git-status-commit
   "L"   #'vc-print-root-log
+  "b"   git-status-branch-map
   "P"   #'git-status-push
   "+"   #'git-status-pull
   "RET" #'git-status-visit-file
