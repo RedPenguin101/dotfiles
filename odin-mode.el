@@ -33,6 +33,9 @@
     "excl_elem" "excl_elems" "excl_bit_set" "incl" "excl" "card"
     "assert" "panic" "unimplemented" "unreachable"))
 
+(defconst odin-constants
+  '("true" "false" "nil"))
+
 (defvar odin-mode-syntax-table
   (let ((table (make-syntax-table)))
     ;; Operators
@@ -60,7 +63,11 @@
     ("^ *@[a-zA-Z]+" . font-lock-preprocessor-face)
 
     ;; Builtins
-    (,(regexp-opt odin-builtins 'symbols) . font-lock-builtin-face)))
+    (,(regexp-opt odin-builtins 'symbols) . font-lock-builtin-face)
+
+    ;; Literals
+    (,(regexp-opt odin-constants 'symbols) . font-lock-constant-face)
+    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)))
 
 (setq odin--proc-enum-or-struct "^\\(.*?\\)\s*::\s*?\\(proc\\|enum\\|struct\\).*$")
 

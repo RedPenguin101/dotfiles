@@ -86,28 +86,8 @@
 
 ;; Syntax Highlighting
 
-(defun my/font-lock-overrides (&rest _)
-  ;; somewhat following https://tonsky.me/blog/syntax-highlighting/
-  ;; Comments are very distinct
-  (set-face-attribute 'font-lock-comment-face nil
-					  :inherit 'font-lock-warning-face
-                      :foreground 'unspecified
-                      :slant 'normal)
-  (set-face-attribute 'font-lock-comment-delimiter-face nil
-                      :inherit 'font-lock-comment-face
-					  :foreground 'unspecified)
-
-  ;; No highlights on this stuff
-  (set-face-attribute 'font-lock-keyword-face nil
-                       :inherit 'default :foreground 'unspecified :weight 'normal)
-  (set-face-attribute 'font-lock-builtin-face nil
-                       :inherit 'default :foreground 'unspecified :weight 'normal)
-  (set-face-attribute 'font-lock-constant-face nil
-                      :inherit 'default :foreground 'unspecified :weight 'normal)
-  ;; highlighting remaining: function definitions, types, strings
-  )
-
-(add-hook 'enable-theme-functions #'my/font-lock-overrides)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/")
+(load-theme 'phosphor t)
 
 ;; `hl-line-mode' highlights the currently selected line
 ;; Restrict `hl-line-mode' highlighting to the current window, reducing visual
@@ -291,6 +271,8 @@
 ;; when game programming.
 ;; (which-function-mode 1)
 
+(etags-regen-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SEC: Version Control ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -411,9 +393,9 @@
 
 
 ;; Completion in buffer - requires 30.1
-;; Still not really sure about this
-(add-hook 'prog-mode-hook 'completion-preview-mode)
-(add-hook 'conf-mode-hook 'completion-preview-mode)
+;; Don't like it
+;; (add-hook 'prog-mode-hook 'completion-preview-mode)
+;; (add-hook 'conf-mode-hook 'completion-preview-mode)
 
 ;; This is kind of a crap way of getting dabbrev-capf onto the capfs
 (defun standard-capf ()
@@ -965,7 +947,8 @@
               (push '(">=" . ?≥) prettify-symbols-alist)
               (push '("->" . ?→) prettify-symbols-alist)
               (push '("!=" . ?≠) prettify-symbols-alist)
-              (push '(":=" . ?≔) prettify-symbols-alist)
+			  ;; Looks awful in berkeley mono
+              ;; (push '(":=" . ?≔) prettify-symbols-alist)
 
               (prettify-symbols-mode 1)))
 

@@ -10,11 +10,13 @@
 	"if" "else" "while" "for" "switch" "case" "do" "goto"
     "break" "continue" "return"
     "sizeof"
-	"enum" 	"union" "struct" "typedef"
-    "true" "false"))
+	"enum" 	"union" "struct" "typedef"))
 
 (defconst simple-c-builtins
   '("min" "max" "abs"))
+
+(defconst simple-c-constants
+  '("true" "false" "NULL"))
 
 (defconst simple-c-types
   '("char" "int" "long" "short" "void" "bool" "float" "double" "signed" "unsigned"
@@ -54,7 +56,11 @@
 	("\\(?:enum\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" . font-lock-type-face)
 
     ;; Builtins
-    (,(regexp-opt simple-c-builtins 'symbols) . font-lock-builtin-face)))
+    (,(regexp-opt simple-c-builtins 'symbols) . font-lock-builtin-face)
+
+    ;; Literals
+    (,(regexp-opt simple-c-constants 'symbols) . font-lock-constant-face)
+    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)))
 
 (defun simple-c-indent-line ()
   (interactive)
