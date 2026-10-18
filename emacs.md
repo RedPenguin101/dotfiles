@@ -2,6 +2,12 @@
 
 This page is a reference for me on how emacs works, focusing on stuff I tend to forget.
 
+## Finding the face at a point
+
+what-cursor-position with a prefix argument shows the face under point, among other information.
+
+Keyboard shortcut is C-u C-x =
+
 ## Version Control Mode
 
 Simple, fast, and consistent.

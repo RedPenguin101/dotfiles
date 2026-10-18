@@ -816,7 +816,8 @@
   :if (package-installed-p 'markdown-mode)
   :custom
   (markdown-fontify-code-blocks-natively t)
-  (markdown-hide-markup t)
+  ;; doesn't work with very sparse themes
+  ;; (markdown-hide-markup t)
   (markdown-list-indent-width 2))
 
 ;; Additional cool packages not included, but which I use and like

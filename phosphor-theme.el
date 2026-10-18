@@ -82,6 +82,9 @@
    '(font-lock-preprocessor-face ((t nil)))
    '(font-lock-negation-char-face ((t nil)))
 
+   ;; Dired
+   `(dired-directory ((t :foreground ,literal)))
+
    ;; Whitespace
    `(whitespace-line ((t :background ,bg-ui)))
    `(whitespace-trailing ((t :background ,bg-removed)))
