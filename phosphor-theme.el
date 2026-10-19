@@ -1,18 +1,21 @@
 ;;; phosphor-theme.el --- green CRT phosphor -*- lexical-binding: t; -*-
 
 ;; Phosphor: a green-screen CRT as it looked, warm green text on
-;; dark green-grey glass, with everything tinted green.  Only two
-;; things stand out from the text.  Literals (strings, numbers,
+;; dark green-grey glass, with everything tinted green.  In code only
+;; two things stand out from the text.  Literals (strings, numbers,
 ;; true/false and other constants) are bright phosphor, and comments
 ;; are dim.  Keywords, types, builtins and definitions are
-;; deliberately plain text.  UI chrome uses dark tints so it never
+;; deliberately plain text.  Structure (headings, directories) is a
+;; heavier saturated teal.  UI chrome uses dark tints so it never
 ;; outshouts the code.
 
-(deftheme phosphor "Green CRT; bright literals, dim comments.")
+(deftheme phosphor "Green CRT; bright literals, dim comments, teal structure.")
 
 (let ((bg        "#0e130e")
       (fg        "#94f455") ;; alternatives are #99f060 #9fe870.
       (literal   "#e2f7cf")
+      (heading   "#3ee0a8")
+      (punct     "#5e9a40")
       (comment   "#7f8a7c")
       (bg-line   "#151c15")
       (bg-region "#283428")
@@ -64,7 +67,7 @@
    `(show-paren-match ((t :background ,bg-match :weight bold)))
    `(show-paren-mismatch ((t :background ,red :foreground ,bg)))
 
-   ;; Syntax: literals and comments are the only colour
+   ;; Syntax: literals, comments and definitions are the only colour
    `(font-lock-string-face ((t :foreground ,literal)))
    `(font-lock-number-face ((t :foreground ,literal)))
    `(font-lock-constant-face ((t :foreground ,literal)))
@@ -72,18 +75,23 @@
    `(font-lock-comment-face ((t :foreground ,comment)))
    `(font-lock-doc-face ((t :foreground ,comment)))
    `(font-lock-warning-face ((t :foreground ,amber)))
+   `(font-lock-function-name-face ((t :foreground ,heading)))
+   `(font-lock-delimiter-face ((t :foreground ,punct)))
 
    ;; Syntax: plain text
    '(font-lock-keyword-face ((t nil)))
    '(font-lock-builtin-face ((t nil)))
    '(font-lock-type-face ((t nil)))
-   '(font-lock-function-name-face ((t nil)))
+   '(font-lock-function-call-face ((t nil)))
    '(font-lock-variable-name-face ((t nil)))
    '(font-lock-preprocessor-face ((t nil)))
    '(font-lock-negation-char-face ((t nil)))
 
    ;; Dired
-   `(dired-directory ((t :foreground ,literal)))
+   `(dired-directory ((t :foreground ,heading :weight bold)))
+
+   ;; git-status
+   `(git-status-section-heading ((t :foreground ,heading :weight bold)))
 
    ;; Whitespace
    `(whitespace-line ((t :background ,bg-ui)))
@@ -100,14 +108,15 @@
    `(diff-hunk-header ((t :background ,bg-line :foreground ,comment)))
 
    ;; Outlines and org
-   '(outline-1 ((t nil)))
-   '(outline-2 ((t nil)))
-   '(outline-3 ((t nil)))
-   '(outline-4 ((t nil)))
-   '(outline-5 ((t nil)))
-   '(outline-6 ((t nil)))
-   '(outline-7 ((t nil)))
-   '(outline-8 ((t nil)))
+   `(outline-1 ((t :foreground ,heading)))
+   `(outline-2 ((t :foreground ,heading)))
+   `(outline-3 ((t :foreground ,heading)))
+   `(outline-4 ((t :foreground ,heading)))
+   `(outline-5 ((t :foreground ,heading)))
+   `(outline-6 ((t :foreground ,heading)))
+   `(outline-7 ((t :foreground ,heading)))
+   `(outline-8 ((t :foreground ,heading)))
+   `(markdown-header-face ((t :foreground ,heading :weight bold)))
    `(org-block ((t :background ,bg-line :extend t)))
    `(org-code ((t :foreground ,literal)))
    `(org-verbatim ((t :foreground ,literal)))

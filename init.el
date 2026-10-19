@@ -980,6 +980,11 @@
 
 (use-package go-mode
   :config
+  (setq go-fontify-function-calls nil)
+  (font-lock-add-keywords 'go-mode
+                          '(("," . 'font-lock-delimiter-face)
+                            ("\\(\\.\\)[A-Za-z_]" 1 'font-lock-delimiter-face))
+                          'append)
   (add-hook 'go-mode-hook #'standard-capf)
   :bind
   (:map go-mode-map

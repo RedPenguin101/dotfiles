@@ -42,8 +42,10 @@
     (dolist (i '(?: ?+ ?- ?* ?= ?< ?> ?& ?| ?^ ?! ??))
       (modify-syntax-entry i "." table))
 
-    ;; Strings
+    ;; Strings, runes, raw strings
     (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?' "\"" table)
+    (modify-syntax-entry ?` "\"" table)
     (modify-syntax-entry ?\\ "\\" table)
 
     ;; Comments
@@ -59,6 +61,10 @@
     ;; Keywords
     (,(regexp-opt odin-keywords 'symbols) . font-lock-keyword-face)
 
+    ;; Definitions
+    ("^\\s-*\\([A-Za-z_][A-Za-z0-9_]*\\)\\s-*::\\s-*\\(?:proc\\|struct\\|enum\\|union\\)\\_>"
+     1 font-lock-function-name-face)
+
     ;; Attributes
     ("^ *@[a-zA-Z]+" . font-lock-preprocessor-face)
 
@@ -67,7 +73,11 @@
 
     ;; Literals
     (,(regexp-opt odin-constants 'symbols) . font-lock-constant-face)
-    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)))
+    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)
+
+    ;; Separators
+    ("," . 'font-lock-delimiter-face)
+    ("\\(\\.\\)[A-Za-z_]" 1 'font-lock-delimiter-face)))
 
 (setq odin--proc-enum-or-struct "^\\(.*?\\)\s*::\s*?\\(proc\\|enum\\|struct\\).*$")
 

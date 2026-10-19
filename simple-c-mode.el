@@ -60,7 +60,11 @@
 
     ;; Literals
     (,(regexp-opt simple-c-constants 'symbols) . font-lock-constant-face)
-    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)))
+    ("\\_<[0-9][0-9a-zA-Z_.]*\\_>" . 'font-lock-number-face)
+
+    ;; Separators
+    ("[,;]" . 'font-lock-delimiter-face)
+    ("\\(\\.\\)[A-Za-z_]" 1 'font-lock-delimiter-face)))
 
 (defun simple-c-indent-line ()
   (interactive)
