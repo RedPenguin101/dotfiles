@@ -663,6 +663,7 @@
    ("q" . project-query-replace-regexp) ;; C-x p r
    ("p" . project-switch-project)       ;; C-x p p
    ("c" . project-compile)              ;; C-x p c
+   ("r" . project-recompile)
    ))
 
 (define-modal-eval-keys '())
@@ -836,6 +837,12 @@
 ;; https://www.cognitect.com/blog/2013/06/04/clojure-workflow-reloaded
 
 (setq clojure-toplevel-inside-comment-form t)
+(setq cider-show-error-buffer nil)
+
+(use-package clojure-mode
+  :if (package-installed-p 'clojure-mode)
+  :hook
+  (clojure-mode-hook . auto-save-visited-mode))
 
 ;; builtin cider commands:
 ;;   C-c C-x j j: cider-jack in
@@ -858,7 +865,6 @@
 ;; (run ced without prefix arg to remove debug)
 ;; or, put `#dbg' in front of the form you want to instument
 ;; cider-browse-instrumented-defs to see what's currently instrumented
-;;
 
 (add-hook 'cider--debug-mode-hook (lambda () (modal-mode -1)))
 
